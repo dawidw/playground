@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Action items – Interactive prototype</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: "Figtree", system-ui, sans-serif; }
+    /* Pill icon color: no value = #777986, value set = #404252 */
+    .pill-icon-unset svg { color: #777986; }
+    .pill-icon-set svg { color: #404252; }
+    /* Trash icon color */
+    .action-item-delete-btn img { filter: brightness(0) saturate(100%) invert(22%) sepia(95%) saturate(5000%) hue-rotate(350deg) brightness(98%) contrast(105%); }
+    /* Trash icon color: #F62020 */
+    .action-item-delete-icon img { filter: brightness(0) saturate(100%) invert(27%) sepia(98%) saturate(5000%) hue-rotate(350deg) brightness(95%) contrast(90%); }
+    /* Tooltip container */
+    [data-tooltip] { position: relative; }
+    [data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      bottom: 100%;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #404252;
+      color: #fff;
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s, transform 0.15s;
+      z-index: 20;
+    }
+    [data-tooltip]:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-2px);
+    }
+  </style>
+</head>
+<body class="action-items-page min-h-screen bg-[#f8f9fb] text-[#404252]">
+  <div class="action-items-container mx-auto max-w-[1440px] px-6 py-6">
+    <!-- Section 1: Tooltip -->
+    <section class="action-items-section action-items-section--tooltip mb-10 flex items-start gap-6">
+      <div class="action-items-section-header w-[448px] shrink-0">
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Define actions that need to happen in order to start the project</p>
+      </div>
+      <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+        <div id="action-list-tooltip" class="action-items-list"></div>
+        <div class="action-items-add-area border-t border-[#eaecf0] pt-4 mt-4">
+          <button type="button" class="action-items-add-btn add-in-section inline-flex items-center gap-1.5 rounded-md border border-[#eaecf0] bg-white px-3 py-2 text-[14px] font-medium leading-[20px] text-[#5b5d6b] transition hover:bg-[#f8f9fb]" data-section="tooltip">
+            <img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0">
+            Add item
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Expand icon → tag -->
+    <section class="action-items-section action-items-section--expandable mb-10 flex items-start gap-6">
+      <div class="action-items-section-header w-[448px] shrink-0">
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Define actions that need to happen in order to start the project</p>
+      </div>
+      <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+        <div id="action-list-expandable" class="action-items-list"></div>
+        <div class="action-items-add-area border-t border-[#eaecf0] pt-4 mt-4">
+          <button type="button" class="action-items-add-btn add-in-section inline-flex items-center gap-1.5 rounded-md border border-[#eaecf0] bg-white px-3 py-2 text-[14px] font-medium leading-[20px] text-[#5b5d6b] transition hover:bg-[#f8f9fb]" data-section="expandable">
+            <img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0">
+            Add item
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Tags visible -->
+    <section class="action-items-section action-items-section--visible mb-10 flex items-start gap-6">
+      <div class="action-items-section-header w-[448px] shrink-0">
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Define actions that need to happen in order to start the project</p>
+      </div>
+      <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+        <div id="action-list-visible" class="action-items-list"></div>
+        <div class="action-items-add-area border-t border-[#eaecf0] pt-4 mt-4">
+          <button type="button" class="action-items-add-btn add-in-section inline-flex items-center gap-1.5 rounded-md border border-[#eaecf0] bg-white px-3 py-2 text-[14px] font-medium leading-[20px] text-[#5b5d6b] transition hover:bg-[#f8f9fb]" data-section="visible">
+            <img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0">
+            Add item
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Tooltip (pill click edit) -->
+    <section class="action-items-section action-items-section--tooltip-inline mb-10 flex items-start gap-6">
+      <div class="action-items-section-header w-[448px] shrink-0">
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Pill click edit: assignee / due date</p>
+      </div>
+      <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+        <div id="action-list-tooltip-inline" class="action-items-list"></div>
+      </div>
+    </section>
+
+    <!-- Section 5: Expand icon → tag (pill click edit) -->
+    <section class="action-items-section action-items-section--expandable-inline mb-10 flex items-start gap-6">
+      <div class="action-items-section-header w-[448px] shrink-0">
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Pill click edit: assignee / due date</p>
+      </div>
+      <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+        <div id="action-list-expandable-inline" class="action-items-list"></div>
+      </div>
+    </section>
+
+    <!-- Section 6: Tags visible (pill click edit) -->
+    <section class="action-items-section action-items-section--visible-inline mb-10 flex items-start gap-6">
+      <div class="action-items-section-header w-[448px] shrink-0">
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Pill click edit: assignee / due date</p>
+      </div>
+      <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+        <div id="action-list-visible-inline" class="action-items-list"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      const ICON_SIZE = 16;
+      const icon = (name) => {
+        if (name === 'icon-grip-vertical') {
+          return `<svg width="${ICON_SIZE}" height="${ICON_SIZE}" viewBox="0 0 24 24" fill="none" stroke="#9496A1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" aria-hidden="true"><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>`;
+        }
+        if (name === 'icon-trash') {
+          return `<img src="icons/icon-trash.svg" alt="" width="12" height="12" class="shrink-0" aria-hidden="true">`;
+        }
+        return `<img src="icons/${name}.svg" alt="" width="${ICON_SIZE}" height="${ICON_SIZE}" class="shrink-0" aria-hidden="true">`;
+      };
+      const pillIcon = (name) => {
+        if (name === 'Avatar.png') {
+          return `<img src="icons/Avatar.png" alt="" width="${ICON_SIZE}" height="${ICON_SIZE}" class="h-[${ICON_SIZE}px] w-[${ICON_SIZE}px] shrink-0 rounded-full object-cover" aria-hidden="true">`;
+        }
+        if (name === 'tabler-icon-user-circle') {
+          return `<svg width="${ICON_SIZE}" height="${ICON_SIZE}" viewBox="0 0 23 24" fill="none" class="shrink-0" aria-hidden="true"><path d="M2.875 12C2.875 13.1819 3.09809 14.3522 3.53154 15.4442C3.96499 16.5361 4.6003 17.5282 5.4012 18.364C6.20211 19.1997 7.15292 19.8626 8.19936 20.3149C9.24579 20.7672 10.3673 21 11.5 21C12.6327 21 13.7542 20.7672 14.8006 20.3149C15.8471 19.8626 16.7979 19.1997 17.5988 18.364C18.3997 17.5282 19.035 16.5361 19.4685 15.4442C19.9019 14.3522 20.125 13.1819 20.125 12C20.125 10.8181 19.9019 9.64778 19.4685 8.55585C19.035 7.46392 18.3997 6.47177 17.5988 5.63604C16.7979 4.80031 15.8471 4.13738 14.8006 3.68508C13.7542 3.23279 12.6327 3 11.5 3C10.3673 3 9.24579 3.23279 8.19936 3.68508C7.15292 4.13738 6.20211 4.80031 5.4012 5.63604C4.6003 6.47177 3.96499 7.46392 3.53154 8.55585C3.09809 9.64778 2.875 10.8181 2.875 12Z" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M8.625 10C8.625 10.7956 8.9279 11.5587 9.46707 12.1213C10.0062 12.6839 10.7375 13 11.5 13C12.2625 13 12.9938 12.6839 13.5329 12.1213C14.0721 11.5587 14.375 10.7956 14.375 10C14.375 9.20435 14.0721 8.44129 13.5329 7.87868C12.9938 7.31607 12.2625 7 11.5 7C10.7375 7 10.0062 7.31607 9.46707 7.87868C8.9279 8.44129 8.625 9.20435 8.625 10Z" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M5.91101 18.849C6.14821 18.0252 6.63356 17.3032 7.29508 16.79C7.9566 16.2768 8.75903 15.9997 9.58334 16H13.4167C14.2421 15.9997 15.0455 16.2774 15.7075 16.7918C16.3695 17.3062 16.8547 18.0298 17.0909 18.855" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
+        }
+        if (name === 'tabler-icon-calendar-plus') {
+          return `<svg width="${ICON_SIZE}" height="${ICON_SIZE}" viewBox="0 0 24 24" fill="none" class="shrink-0" aria-hidden="true"><path d="M12.5 21H6C5.46957 21 4.96086 20.7893 4.58579 20.4142C4.21071 20.0391 4 19.5304 4 19V7C4 6.46957 4.21071 5.96086 4.58579 5.58579C4.96086 5.21071 5.46957 5 6 5H18C18.5304 5 19.0391 5.21071 19.4142 5.58579C19.7893 5.96086 20 6.46957 20 7V12" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 3V7" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M8 3V7" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M4 11H20" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 19H22" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M19 16V22" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
+        }
+        if (name === 'tabler-icon-calendar-week-outline') {
+          return `<svg width="${ICON_SIZE}" height="${ICON_SIZE}" viewBox="0 0 24 24" fill="none" class="shrink-0" aria-hidden="true"><path d="M4 7C4 6.46957 4.21071 5.96086 4.58579 5.58579C4.96086 5.21071 5.46957 5 6 5H18C18.5304 5 19.0391 5.21071 19.4142 5.58579C19.7893 5.96086 20 6.46957 20 7V19C20 19.5304 19.7893 20.0391 19.4142 20.4142C19.0391 20.7893 18.5304 21 18 21H6C5.46957 21 4.96086 20.7893 4.58579 20.4142C4.21071 20.0391 4 19.5304 4 19V7Z" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 3V7" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M8 3V7" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M4 11H20" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7 14H7.013" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10.01 14H10.015" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M13.01 14H13.015" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16.015 14H16.02" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M13.015 17H13.02" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7.01001 17H7.01501" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10.01 17H10.015" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
+        }
+        return icon(name);
+      };
+      const iconInPill = (name, hasValue) => {
+        const cls = hasValue ? 'pill-icon-set' : 'pill-icon-unset';
+        return `<span class="${cls} inline-flex shrink-0">${pillIcon(name)}</span>`;
+      };
+
+      let items = [
+        { id: '1', title: "Fill in and send NDA's", description: '', assignee: null, dueDate: null },
+        { id: '2', title: 'Chase all consultants about NDA\'s', description: '', assignee: null, dueDate: null },
+        { id: '3', title: 'Schedule interviews with selected freelancers', description: '', assignee: 'John Dope', dueDate: '16 Mar 2026' },
+        { id: '4', title: 'Setup contract documents', description: '', assignee: 'John Dope', dueDate: '16 Mar 2026' },
+        { id: '5', title: 'Send contract documents', description: '', assignee: 'John Dope', dueDate: '16 Mar 2026' },
+      ];
+      let editingId = null;
+      let addingNew = false;
+      let activeSection = null;
+      const assigneeOptions = ['John Dope', 'Jimmy Shaye', 'Dr. Herbert Braun', 'Axel Autonomo'];
+
+      const $listTooltip = document.getElementById('action-list-tooltip');
+      const $listExpandable = document.getElementById('action-list-expandable');
+      const $listVisible = document.getElementById('action-list-visible');
+      const $listTooltipInline = document.getElementById('action-list-tooltip-inline');
+      const $listExpandableInline = document.getElementById('action-list-expandable-inline');
+      const $listVisibleInline = document.getElementById('action-list-visible-inline');
+
+      function uid() {
+        return Date.now().toString(36) + Math.random().toString(36).slice(2);
+      }
+
+      function renderDisplayRow(item, variant) {
+        const isTooltip = variant === 'tooltip';
+        const isExpandable = variant === 'expandable';
+        const isVisible = variant === 'visible';
+
+        const assigneeLabel = item.assignee || 'Add assignee';
+        const dueDateLabel = item.dueDate || 'Add due date';
+
+        let assigneeBlock = '';
+        let dueDateBlock = '';
+
+        const pillBg = 'bg-[#F8F9FB] hover:bg-[#F3F4F8] active:bg-[#EAECF0]';
+        const textUnset = 'text-[#777986] hover:text-[#777986] active:text-[#5B5D6B]';
+        const textSet = 'text-[#404252] hover:text-[#404252] active:text-[#5B5D6B]';
+        const textUnsetExpandable = 'text-[#777986] group-hover/pill:text-[#777986] group-active/pill:text-[#5B5D6B]';
+        const textSetExpandable = 'text-[#404252] group-hover/pill:text-[#404252] group-active/pill:text-[#5B5D6B]';
+        const assigneeTextClass = item.assignee ? textSet : textUnset;
+        const dueTextClass = item.dueDate ? textSet : textUnset;
+        const assigneeExpandableTextClass = item.assignee ? textSetExpandable : textUnsetExpandable;
+        const dueExpandableTextClass = item.dueDate ? textSetExpandable : textUnsetExpandable;
+        if (isTooltip) {
+          assigneeBlock = `<span class="action-item-pill action-item-pill--assignee action-item-pill--tooltip inline-flex cursor-default items-center rounded-full ${pillBg} p-1.5 transition-colors" data-tooltip="${item.assignee || 'No assignee'}">${iconInPill(item.assignee ? 'Avatar.png' : 'tabler-icon-user-circle', !!item.assignee)}</span>`;
+          dueDateBlock = `<span class="action-item-pill action-item-pill--due-date action-item-pill--tooltip inline-flex cursor-default items-center rounded-full ${pillBg} p-1.5 transition-colors" data-tooltip="${item.dueDate || 'No due date'}">${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}</span>`;
+        } else if (isExpandable) {
+          assigneeBlock = `
+            <span class="action-item-pill action-item-pill--assignee action-item-pill--expandable expandable-pill group/pill inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-1 transition-all duration-150 hover:px-2 hover:pr-2">
+              ${iconInPill(item.assignee ? 'Avatar.png' : 'tabler-icon-user-circle', !!item.assignee)}
+              <span class="action-item-pill-label max-w-0 overflow-hidden whitespace-nowrap text-[12px] font-medium ${assigneeExpandableTextClass} transition-[max-width] duration-150 group-hover/pill:max-w-[120px] group-hover/pill:pr-1">${assigneeLabel}</span>
+            </span>`;
+          dueDateBlock = `
+            <span class="action-item-pill action-item-pill--due-date action-item-pill--expandable expandable-pill group/pill inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-1 transition-all duration-150 hover:px-2 hover:pr-2">
+              ${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}
+              <span class="action-item-pill-label max-w-0 overflow-hidden whitespace-nowrap text-[12px] font-medium ${dueExpandableTextClass} transition-[max-width] duration-150 group-hover/pill:max-w-[120px] group-hover/pill:pr-1">${dueDateLabel}</span>
+            </span>`;
+        } else {
+          assigneeBlock = `<span class="action-item-pill action-item-pill--assignee action-item-pill--visible inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-0.5 text-[12px] font-medium ${assigneeTextClass} transition-colors">${iconInPill(item.assignee ? 'Avatar.png' : 'tabler-icon-user-circle', !!item.assignee)}${assigneeLabel}</span>`;
+          dueDateBlock = `<span class="action-item-pill action-item-pill--due-date action-item-pill--visible inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-0.5 chan text-[12px] font-medium ${dueTextClass} transition-colors">${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}${dueDateLabel}</span>`;
+        }
+
+        const row = document.createElement('div');
+        row.className = 'action-item-row flex h-[30px] items-center gap-1.5 p-1 rounded transition-colors hover:bg-[#F8F9FB]';
+        row.dataset.id = item.id;
+        row.innerHTML = `
+          <span class="action-item-row-drag-handle flex cursor-grab items-center text-[#9496a1]" aria-hidden="true">${icon('icon-grip-vertical')}</span>
+          <span class="action-item-row-title min-w-0 flex-1 truncate text-[14px] font-medium text-[#404252]">${escapeHtml(item.title)}</span>
+          <div class="action-item-row-meta flex shrink-0 items-center gap-1.5">
+            ${assigneeBlock}
+            ${dueDateBlock}
+          </div>
+        `;
+
+        row.addEventListener('click', () => startEdit(item.id, variant));
+        return row;
+      }
+
+      function renderEditForm(item) {
+        const assigneeLabel = item.assignee || 'Assignee';
+        const dueLabel = item.dueDate || 'Due date';
+        const assigneeOptionsHtml = assigneeOptions.map(a => `<button type="button" class="assignee-option block w-full px-3 py-1.5 text-left text-[12px] text-[#404252] hover:bg-[#f8f9fb]">${escapeHtml(a)}</button>`).join('');
+        const row = document.createElement('div');
+        row.className = 'action-item-edit-form-wrap p-2 bg-[#F8F9FB] my-2 rounded-lg';
+        row.dataset.id = item.id;
+        const formPillBg = 'bg-[#F8F9FB] hover:bg-[#F3F4F8] active:bg-[#EAECF0]';
+        const formAssigneeTextClass = item.assignee ? 'text-[#404252] hover:text-[#404252] active:text-[#5B5D6B]' : 'text-[#777986] hover:text-[#777986] active:text-[#5B5D6B]';
+        const formDueTextClass = item.dueDate ? 'text-[#404252] hover:text-[#404252] active:text-[#5B5D6B]' : 'text-[#777986] hover:text-[#777986] active:text-[#5B5D6B]';
+        row.innerHTML = `
+          <div class="action-item-edit-form border border-[#d2d4da] rounded-lg">
+          <div class="action-item-edit-form-header bg-white p-2 rounded-tl-lg rounded-tr-lg">
+            <input type="text" class="action-item-edit-form-title edit-title w-full border-0 p-0 text-[14px] font-medium leading-[20px] text-[#404252] placeholder-[#9496a1] focus:ring-0" placeholder="Item title" value="${escapeHtml(item.title)}"/>
+            <input type="text" class="action-item-edit-form-desc edit-desc mt-0.5 w-full border-0 p-0 text-[12px] leading-[18px] text-[#404252] placeholder-[#9496a1] focus:ring-0" placeholder="Item Description" value="${escapeHtml(item.description || '')}"/>
+          </div>
+          <div class="action-item-edit-form-divider h-px bg-[#EAECF0]"></div>
+          <div class="action-item-edit-form-actions flex flex-wrap items-center justify-between gap-2 bg-white p-2 rounded-bl-lg rounded-br-lg">
+            <div class="action-item-edit-form-meta flex flex-wrap items-center gap-1.5 relative">
+              <button type="button" class="action-item-pill action-item-pill--assignee action-item-pill--editable assignee-btn inline-flex items-center gap-1 rounded-full ${formPillBg} px-1.5 py-0.5 text-[12px] font-medium transition-colors assignee-pill" data-empty-text="Assignee">${iconInPill(item.assignee ? 'Avatar.png' : 'tabler-icon-user-circle', !!item.assignee)}<span class="assignee-label ${formAssigneeTextClass}">${escapeHtml(assigneeLabel)}</span></button>
+              <button type="button" class="action-item-pill action-item-pill--due-date action-item-pill--editable due-date-btn inline-flex items-center gap-1 rounded-full ${formPillBg} px-1.5 py-0.5 text-[12px] font-medium transition-colors due-pill" data-empty-text="Due date">${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}<span class="due-label ${formDueTextClass}">${escapeHtml(dueLabel)}</span></button>
+              <div class="action-item-assignee-picker assignee-picker hidden absolute left-0 top-full z-10 mt-1 rounded-lg border border-[#eaecf0] bg-white py-1 shadow-lg min-w-[140px]">
+                ${assigneeOptionsHtml}
+              </div>
+              <div class="action-item-due-picker due-picker hidden absolute left-0 top-full z-10 mt-1 rounded-lg border border-[#eaecf0] bg-white p-2 shadow-lg">
+                <input type="date" class="action-item-due-input due-input w-full border border-[#eaecf0] rounded px-2 py-1 text-[12px] text-[#404252]"/>
+                <button type="button" class="action-item-due-apply due-apply mt-2 w-full rounded bg-[#2e6fe3] py-1 text-[12px] text-white hover:bg-[#2563c4]">Apply</button>
+              </div>
+            </div>
+            <div class="action-item-edit-form-buttons flex items-center gap-2">
+              <button type="button" class="action-item-delete-btn delete-btn inline-flex h-[22px] p-1 items-center justify-center rounded border border-[#eaecf0] bg-white px-1.5 hover:bg-[#f8f9fb]"><span class="action-item-delete-icon inline-flex">${icon('icon-trash')}</span></button>
+              <span class="action-item-edit-form-buttons-divider h-4 w-px bg-[#eaecf0]"></span>
+              <button type="button" class="action-item-cancel-btn cancel-btn inline-flex h-[22px] items-center justify-center rounded border border-[#eaecf0] bg-white px-1.5 text-[12px] text-[#5b5d6b] hover:bg-[#f8f9fb]">Cancel</button>
+              <button type="button" class="action-item-save-btn save-btn inline-flex h-[22px] items-center justify-center rounded bg-[#2e6fe3] px-1.5 text-[12px] text-white hover:bg-[#2563c4]">Save</button>
+            </div>
+          </div>
+        `;
+
+        const titleInput = row.querySelector('.edit-title');
+        if (titleInput) {
+          try {
+            titleInput.focus({ preventScroll: true });
+          } catch (_) {
+            titleInput.focus();
+          }
+        }
+
+        row.querySelector('.assignee-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const picker = row.querySelector('.assignee-picker');
+          picker.classList.toggle('hidden');
+          row.querySelector('.due-picker').classList.add('hidden');
+        });
+        row.querySelectorAll('.assignee-option').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = items.findIndex(i => i.id === item.id);
+            if (idx !== -1) { items[idx].assignee = btn.textContent; }
+            const label = row.querySelector('.assignee-label');
+            label.textContent = btn.textContent;
+            label.className = 'assignee-label text-[#404252] hover:text-[#404252] active:text-[#5B5D6B]';
+            const assigneeIconWrap = row.querySelector('.assignee-pill .pill-icon-unset');
+            if (assigneeIconWrap) {
+              assigneeIconWrap.classList.remove('pill-icon-unset');
+              assigneeIconWrap.classList.add('pill-icon-set');
+              assigneeIconWrap.innerHTML = pillIcon('Avatar.png');
+            }
+            row.querySelector('.assignee-picker').classList.add('hidden');
+          });
+        });
+        row.querySelector('.due-date-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const picker = row.querySelector('.due-picker');
+          const input = row.querySelector('.due-input');
+          if (item.dueDate) {
+            try {
+              const [day, mon, year] = item.dueDate.split(' ');
+              const months = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06', Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' };
+              input.value = `${year}-${months[mon] || '01'}-${day.padStart(2, '0')}`;
+            } catch (_) {}
+          } else {
+            input.value = '';
+          }
+          picker.classList.toggle('hidden');
+          row.querySelector('.assignee-picker').classList.add('hidden');
+        });
+        row.querySelector('.due-apply').addEventListener('click', () => {
+          const input = row.querySelector('.due-input');
+          const val = input.value;
+          if (val) {
+            const d = new Date(val);
+            const formatted = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            const idx = items.findIndex(i => i.id === item.id);
+            if (idx !== -1) items[idx].dueDate = formatted; 
+            const label = row.querySelector('.due-label');
+            label.textContent = formatted;
+            label.className = 'due-label text-[#404252] hover:text-[#404252] active:text-[#5B5D6B]';
+            const dueIconWrap = row.querySelector('.due-pill .pill-icon-unset');
+            if (dueIconWrap) {
+              dueIconWrap.classList.remove('pill-icon-unset');
+              dueIconWrap.classList.add('pill-icon-set');
+              dueIconWrap.innerHTML = pillIcon('tabler-icon-calendar-week-outline');
+            }
+          }
+          row.querySelector('.due-picker').classList.add('hidden');
+        });
+
+        row.querySelector('.delete-btn').addEventListener('click', () => removeItem(item.id));
+        row.querySelector('.cancel-btn').addEventListener('click', () => {
+          editingId = null;
+          addingNew = false;
+          activeSection = null;
+          render();
+        });
+        row.querySelector('.save-btn').addEventListener('click', () => saveEdit(row, item.id));
+        return row;
+      }
+
+      function renderInlinePillRow(item, variant) {
+        const baseVariant = variant.replace('-inline', '');
+        const isTooltip = baseVariant === 'tooltip';
+        const isExpandable = baseVariant === 'expandable';
+        const assigneeLabel = item.assignee || 'Assignee';
+        const dueDateLabel = item.dueDate || 'Due date';
+        const assigneeTooltip = item.assignee || 'No assignee';
+        const dueDateTooltip = item.dueDate || 'No due date';
+
+        const pillBg = 'bg-[#F8F9FB] hover:bg-[#F3F4F8] active:bg-[#EAECF0]';
+        const textUnset = 'text-[#777986] hover:text-[#777986] active:text-[#5B5D6B]';
+        const textSet = 'text-[#404252] hover:text-[#404252] active:text-[#5B5D6B]';
+        const textUnsetExpandable = 'text-[#777986] group-hover/pill:text-[#777986] group-active/pill:text-[#5B5D6B]';
+        const textSetExpandable = 'text-[#404252] group-hover/pill:text-[#404252] group-active/pill:text-[#5B5D6B]';
+        const assigneeTextClass = item.assignee ? textSet : textUnset;
+        const dueTextClass = item.dueDate ? textSet : textUnset;
+        const assigneeExpandableTextClass = item.assignee ? textSetExpandable : textUnsetExpandable;
+        const dueExpandableTextClass = item.dueDate ? textSetExpandable : textUnsetExpandable;
+        const assigneeOptionsHtml = assigneeOptions.map(a => `<button type="button" class="assignee-option-inline block w-full px-3 py-1.5 text-left text-[12px] text-[#404252] hover:bg-[#f8f9fb]">${escapeHtml(a)}</button>`).join('');
+
+        let assigneeBlock = '';
+        let dueDateBlock = '';
+        if (isTooltip) {
+          assigneeBlock = `<button type="button" class="action-item-pill action-item-pill--assignee action-item-pill--tooltip assignee-btn-inline inline-flex items-center rounded-full ${pillBg} p-1.5 transition-colors" data-tooltip="${assigneeTooltip}">${iconInPill(item.assignee ? 'Avatar.png' : 'tabler-icon-user-circle', !!item.assignee)}</button>`;
+          dueDateBlock = `<button type="button" class="action-item-pill action-item-pill--due-date action-item-pill--tooltip due-date-btn-inline inline-flex items-center rounded-full ${pillBg} p-1.5 transition-colors" data-tooltip="${dueDateTooltip}">${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}</button>`;
+        } else if (isExpandable) {
+          assigneeBlock = `
+            <button type="button" class="action-item-pill action-item-pill--assignee action-item-pill--expandable assignee-btn-inline expandable-pill group/pill inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-1 transition-all duration-150 hover:px-2 hover:pr-2">
+              ${iconInPill(item.assignee ? 'Avatar.png' : 'tabler-icon-user-circle', !!item.assignee)}
+              <span class="action-item-pill-label max-w-0 overflow-hidden whitespace-nowrap text-[12px] font-medium ${assigneeExpandableTextClass} transition-[max-width] duration-150 group-hover/pill:max-w-[120px] group-hover/pill:pr-1">${assigneeLabel}</span>
+            </button>`;
+          dueDateBlock = `
+            <button type="button" class="action-item-pill action-item-pill--due-date action-item-pill--expandable due-date-btn-inline expandable-pill group/pill inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-1 transition-all duration-150 hover:px-2 hover:pr-2">
+              ${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}
+              <span class="action-item-pill-label max-w-0 overflow-hidden whitespace-nowrap text-[12px] font-medium ${dueExpandableTextClass} transition-[max-width] duration-150 group-hover/pill:max-w-[120px] group-hover/pill:pr-1">${dueDateLabel}</span>
+            </button>`;
+        } else {
+          assigneeBlock = `<button type="button" class="action-item-pill action-item-pill--assignee action-item-pill--visible assignee-btn-inline inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-0.5 text-[12px] font-medium ${assigneeTextClass} transition-colors">${iconInPill(item.assignee ? 'Avatar.png' : 'tabler-icon-user-circle', !!item.assignee)}${assigneeLabel}</button>`;
+          dueDateBlock = `<button type="button" class="action-item-pill action-item-pill--due-date action-item-pill--visible due-date-btn-inline inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-0.5 text-[12px] font-medium ${dueTextClass} transition-colors">${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}${dueDateLabel}</button>`;
+        }
+
+        const row = document.createElement('div');
+        row.className = 'action-item-row flex h-[30px] items-center gap-1.5 p-1 rounded transition-colors hover:bg-[#F8F9FB]';
+        row.dataset.id = item.id;
+        row.innerHTML = `
+          <span class="action-item-row-drag-handle flex cursor-grab items-center text-[#9496a1]" aria-hidden="true">${icon('icon-grip-vertical')}</span>
+          <span class="action-item-row-title min-w-0 flex-1 truncate text-[14px] font-medium text-[#404252]">${escapeHtml(item.title)}</span>
+          <div class="action-item-row-meta relative flex shrink-0 items-center gap-1.5">
+            ${assigneeBlock}
+            ${dueDateBlock}
+            <div class="action-item-assignee-picker assignee-picker-inline hidden absolute left-0 top-full z-10 mt-1 rounded-lg border border-[#eaecf0] bg-white py-1 shadow-lg min-w-[140px]">
+              ${assigneeOptionsHtml}
+            </div>
+            <div class="action-item-due-picker due-picker-inline hidden absolute left-0 top-full z-10 mt-1 rounded-lg border border-[#eaecf0] bg-white p-2 shadow-lg">
+              <input type="date" class="action-item-due-input due-input-inline w-full border border-[#eaecf0] rounded px-2 py-1 text-[12px] text-[#404252]"/>
+              <button type="button" class="action-item-due-apply due-apply-inline mt-2 w-full rounded bg-[#2e6fe3] py-1 text-[12px] text-white hover:bg-[#2563c4]">Apply</button>
+            </div>
+          </div>
+        `;
+
+        row.querySelector('.assignee-btn-inline').addEventListener('click', (e) => {
+          e.stopPropagation();
+          row.querySelector('.assignee-picker-inline').classList.toggle('hidden');
+          row.querySelector('.due-picker-inline').classList.add('hidden');
+        });
+        row.querySelectorAll('.assignee-option-inline').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = items.findIndex(i => i.id === item.id);
+            if (idx !== -1) items[idx].assignee = btn.textContent;
+            render();
+          });
+        });
+        row.querySelector('.due-date-btn-inline').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const picker = row.querySelector('.due-picker-inline');
+          const input = row.querySelector('.due-input-inline');
+          if (item.dueDate) {
+            try {
+              const [day, mon, year] = item.dueDate.split(' ');
+              const months = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06', Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' };
+              input.value = `${year}-${months[mon] || '01'}-${day.padStart(2, '0')}`;
+            } catch (_) {
+              input.value = '';
+            }
+          } else {
+            input.value = '';
+          }
+          picker.classList.toggle('hidden');
+          row.querySelector('.assignee-picker-inline').classList.add('hidden');
+        });
+        row.querySelector('.due-apply-inline').addEventListener('click', () => {
+          const input = row.querySelector('.due-input-inline');
+          if (!input.value) {
+            row.querySelector('.due-picker-inline').classList.add('hidden');
+            return;
+          }
+          const d = new Date(input.value);
+          const formatted = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+          const idx = items.findIndex(i => i.id === item.id);
+          if (idx !== -1) items[idx].dueDate = formatted;
+          render();
+        });
+
+        row.addEventListener('click', () => startEdit(item.id, variant));
+        return row;
+      }
+
+      function saveEdit(rowEl, id) {
+        const title = rowEl.querySelector('.edit-title').value.trim() || 'Item title';
+        const description = rowEl.querySelector('.edit-desc').value.trim();
+        const assigneeLabel = rowEl.querySelector('.assignee-label');
+        const dueLabelEl = rowEl.querySelector('.due-label');
+        const assignee = assigneeLabel && assigneeLabel.textContent !== 'Assignee' ? assigneeLabel.textContent.trim() : null;
+        const dueDate = dueLabelEl && dueLabelEl.textContent !== 'Due date' ? dueLabelEl.textContent.trim() : null;
+
+        const idx = items.findIndex(i => i.id === id);
+        if (idx !== -1) {
+          items[idx] = { ...items[idx], title, description, assignee, dueDate };
+        } else {
+          items.push({ id: uid(), title, description, assignee, dueDate });
+        }
+        editingId = null;
+        addingNew = false;
+        activeSection = null;
+        render();
+      }
+
+      function startEdit(id, section) {
+        editingId = id;
+        addingNew = false;
+        activeSection = section;
+        render();
+      }
+
+      function removeItem(id) {
+        items = items.filter(i => i.id !== id);
+        if (editingId === id) {
+          editingId = null;
+          addingNew = false;
+          activeSection = null;
+        }
+        render();
+      }
+
+      function escapeHtml(s) {
+        if (!s) return '';
+        const div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+      }
+
+      function render() {
+        const scrollX = window.scrollX;
+        const scrollY = window.scrollY;
+        const displayItems = items.filter(i => i.id !== 'new');
+        const formItem = editingId !== null ? items.find(i => i.id === editingId) : (addingNew ? { id: 'new', title: '', description: '', assignee: null, dueDate: null } : null);
+
+        $listTooltip.innerHTML = '';
+        $listExpandable.innerHTML = '';
+        $listVisible.innerHTML = '';
+        $listTooltipInline.innerHTML = '';
+        $listExpandableInline.innerHTML = '';
+        $listVisibleInline.innerHTML = '';
+
+        const sections = [
+          { key: 'tooltip', list: $listTooltip },
+          { key: 'expandable', list: $listExpandable },
+          { key: 'visible', list: $listVisible },
+        ];
+
+        sections.forEach(({ key, list }) => {
+          if (addingNew && formItem && activeSection === key) {
+            list.appendChild(renderEditForm(formItem));
+          }
+        });
+
+        displayItems.forEach(item => {
+          sections.forEach(({ key, list }) => {
+            if (editingId === item.id && formItem && activeSection === key) {
+              list.appendChild(renderEditForm(formItem));
+            } else {
+              list.appendChild(renderDisplayRow(item, key));
+            }
+          });
+        });
+        const inlineSections = [
+          { key: 'tooltip-inline', list: $listTooltipInline },
+          { key: 'expandable-inline', list: $listExpandableInline },
+          { key: 'visible-inline', list: $listVisibleInline },
+        ];
+        displayItems.forEach(item => {
+          inlineSections.forEach(({ key, list }) => {
+            if (editingId === item.id && formItem && activeSection === key) {
+              list.appendChild(renderEditForm(formItem));
+            } else {
+              list.appendChild(renderInlinePillRow(item, key));
+            }
+          });
+        });
+        window.scrollTo(scrollX, scrollY);
+      }
+
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('.assignee-picker, .due-picker, .assignee-btn, .due-date-btn, .assignee-option, .due-apply, .due-input, .assignee-picker-inline, .due-picker-inline, .assignee-btn-inline, .due-date-btn-inline, .assignee-option-inline, .due-apply-inline, .due-input-inline')) return;
+        document.querySelectorAll('.assignee-picker, .due-picker, .assignee-picker-inline, .due-picker-inline').forEach(el => el.classList.add('hidden'));
+      });
+
+      function onAddItem(e) {
+        addingNew = true;
+        editingId = null;
+        activeSection = e.currentTarget.dataset.section || null;
+        render();
+      }
+      document.querySelectorAll('.add-in-section').forEach(btn => btn.addEventListener('click', onAddItem));
+
+      render();
+    })();
+  </script>
+</body>
+</html>
