@@ -60,8 +60,10 @@
     <!-- Section 1: Tooltip -->
     <section class="action-items-section action-items-section--tooltip mb-10 flex items-start gap-6">
       <div class="action-items-section-header w-[448px] shrink-0">
-        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
-        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Define actions that need to happen in order to start the project</p>
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">#1 Editable Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">
+          Used in <b>Project New/Edit</b>. <br>Can set: item title, description, assignee and due date. <br>Clicking row triggers form.
+        </p>
       </div>
       <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
         <div id="action-list-tooltip" class="action-items-list"></div>
@@ -77,8 +79,10 @@
     <!-- Section 2: Expand icon → tag -->
     <section class="action-items-section action-items-section--expandable mb-10 flex items-start gap-6">
       <div class="action-items-section-header w-[448px] shrink-0">
-        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
-        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Define actions that need to happen in order to start the project</p>
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">#2 Editable Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">
+          Used in <b>Project New/Edit</b>. <br>Can set: item title, description, assignee and due date. <br>Clicking row triggers form.
+        </p>
       </div>
       <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
         <div id="action-list-expandable" class="action-items-list"></div>
@@ -94,8 +98,10 @@
     <!-- Section 3: Tags visible -->
     <section class="action-items-section action-items-section--visible mb-10 flex items-start gap-6">
       <div class="action-items-section-header w-[448px] shrink-0">
-        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
-        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Define actions that need to happen in order to start the project</p>
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">#3 Editable Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">
+          Used in <b>Project New/Edit</b>. <br>Can set: item title, description, assignee and due date. <br>Clicking row triggers form.
+        </p>
       </div>
       <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
         <div id="action-list-visible" class="action-items-list"></div>
@@ -108,45 +114,108 @@
       </div>
     </section>
 
-    <!-- Section 4: Tooltip (pill click edit) -->
-    <section class="action-items-section action-items-section--tooltip-inline mb-10 flex items-start gap-6">
+    <!-- Section 4: Tooltip -->
+    <section class="action-items-section action-items-section--tooltip-mixed mb-10 flex items-start gap-6">
       <div class="action-items-section-header w-[448px] shrink-0">
-        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
-        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Presentable: pill click opens assignee / due date pickers</p>
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">#1 Editable Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">
+          Used in <b>Project New/Edit</b>. <br>Can set: item title, description, assignee and due date. <br>Clicking row triggers form. Clicking pills opens dropdowns.
+        </p>
       </div>
       <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+        <div id="action-list-tooltip-mixed" class="action-items-list"></div>
+        <div class="action-items-add-area border-t border-[#eaecf0] pt-4 mt-4">
+          <button type="button" class="action-items-add-btn add-in-section inline-flex items-center gap-1.5 rounded-md border border-[#eaecf0] bg-white px-3 py-2 text-[14px] font-medium leading-[20px] text-[#5b5d6b] transition hover:bg-[#f8f9fb]" data-section="tooltip-mixed">
+            <img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0">
+            Add item
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Expand icon → tag -->
+    <section class="action-items-section action-items-section--expandable-mixed mb-10 flex items-start gap-6">
+      <div class="action-items-section-header w-[448px] shrink-0">
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">#2 Editable Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">
+          Used in <b>Project New/Edit</b>. <br>Can set: item title, description, assignee and due date. <br>Clicking row triggers form. Clicking pills opens dropdowns.
+        </p>
+      </div>
+      <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+        <div id="action-list-expandable-mixed" class="action-items-list"></div>
+        <div class="action-items-add-area border-t border-[#eaecf0] pt-4 mt-4">
+          <button type="button" class="action-items-add-btn add-in-section inline-flex items-center gap-1.5 rounded-md border border-[#eaecf0] bg-white px-3 py-2 text-[14px] font-medium leading-[20px] text-[#5b5d6b] transition hover:bg-[#f8f9fb]" data-section="expandable-mixed">
+            <img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0">
+            Add item
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: Tags visible -->
+    <section class="action-items-section action-items-section--visible-mixed mb-10 flex items-start gap-6 ">
+      <div class="action-items-section-header w-[448px] shrink-0">
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">#3 Editable Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">
+          Used in <b>Project New/Edit</b>. <br>Can set: item title, description, assignee and due date. <br>Clicking row triggers form. Clicking pills opens dropdowns.
+        </p>
+      </div>
+      <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+        <div id="action-list-visible-mixed" class="action-items-list"></div>
+        <div class="action-items-add-area border-t border-[#eaecf0] pt-4 mt-4">
+          <button type="button" class="action-items-add-btn add-in-section inline-flex items-center gap-1.5 rounded-md border border-[#eaecf0] bg-white px-3 py-2 text-[14px] font-medium leading-[20px] text-[#5b5d6b] transition hover:bg-[#f8f9fb]" data-section="visible-mixed">
+            <img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0">
+            Add item
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: Tooltip (pill click edit) -->
+    <section class="action-items-section action-items-section--tooltip-inline mb-10 flex items-start justify-between gap-6">
+      <div class="action-items-section-header w-[448px] shrink-0">
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">#1 Presentable Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">
+          Used in <b>Project Show</b>. <br>Can set: status, assignee and due date. <br>Clicking row doesn't open the form.
+        </p>
+      </div>
+      <div class="action-items-section-content min-w-0 w-[654px] rounded-lg border border-[#eaecf0] bg-white p-6">
         <div class="mb-3 flex items-center justify-between">
-          <h3 class="text-[24px] font-medium leading-[36px] text-[#101223]">Action items</h3>
-          <button type="button" class="add-inline-section inline-flex h-[22px] w-[22px] items-center justify-center rounded border border-[#EAECF0] bg-white hover:bg-[#f8f9fb]" data-section="tooltip-inline"><img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0"></button>
+          <h3 class="text-[18px] font-medium leading-[28px] text-[#101223]">Action items</h3>
+          <button type="button" class="add-inline-section inline-flex h-[28px] w-[28px] items-center justify-center rounded border border-[#EAECF0] bg-white hover:bg-[#f8f9fb]" data-section="tooltip-inline"><img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0"></button>
         </div>
         <div id="action-list-tooltip-inline" class="action-items-list"></div>
       </div>
     </section>
 
-    <!-- Section 5: Expand icon → tag (pill click edit) -->
-    <section class="action-items-section action-items-section--expandable-inline mb-10 flex items-start gap-6">
+    <!-- Section 8: Expand icon → tag (pill click edit) -->
+    <section class="action-items-section action-items-section--expandable-inline mb-10 flex items-start justify-between gap-6">
       <div class="action-items-section-header w-[448px] shrink-0">
-        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
-        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Presentable: pill click opens assignee / due date pickers</p>
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">#2 Presentable Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">
+          Used in <b>Project Show</b>. <br>Can set: status, assignee and due date. <br>Clicking row doesn't open the form.
+        </p>
       </div>
-      <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+      <div class="action-items-section-content min-w-0 w-[654px] rounded-lg border border-[#eaecf0] bg-white p-6">
         <div class="mb-3 flex items-center justify-between">
-          <h3 class="text-[24px] font-medium leading-[36px] text-[#101223]">Action items</h3>
-          <button type="button" class="add-inline-section inline-flex h-[22px] w-[22px] items-center justify-center rounded border border-[#EAECF0] bg-white hover:bg-[#f8f9fb]" data-section="expandable-inline"><img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0"></button>
+          <h3 class="text-[18px] font-medium leading-[28px] text-[#101223]">Action items</h3>
+          <button type="button" class="add-inline-section inline-flex h-[28px] w-[28px] items-center justify-center rounded border border-[#EAECF0] bg-white hover:bg-[#f8f9fb]" data-section="expandable-inline"><img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0"></button>
         </div>
         <div id="action-list-expandable-inline" class="action-items-list"></div>
       </div>
     </section>
 
-    <!-- Section 6: Tags visible (pill click edit) -->
-    <section class="action-items-section action-items-section--visible-inline mb-10 flex items-start gap-6">
+    <!-- Section 9: Tags visible (pill click edit) -->
+    <section class="action-items-section action-items-section--visible-inline mb-10 flex items-start justify-between gap-6 ">
       <div class="action-items-section-header w-[448px] shrink-0">
-        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Action items</h2>
-        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">Presentable: pill click opens assignee / due date pickers</p>
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">#3 Presentable Action items</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">
+          Used in <b>Project Show</b>. <br>Can set: status, assignee and due date. <br>Clicking row doesn't open the form.
+        </p>
       </div>
-      <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+      <div class="action-items-section-content min-w-0 w-[654px] rounded-lg border border-[#eaecf0] bg-white p-6">
         <div class="mb-3 flex items-center justify-between">
-          <h3 class="text-[24px] font-medium leading-[36px] text-[#101223]">Action items</h3>
+          <h3 class="text-[18px] font-medium leading-[28px] text-[#101223]">Action items</h3>
           <button type="button" class="add-inline-section inline-flex h-[22px] w-[22px] items-center justify-center rounded border border-[#EAECF0] bg-white hover:bg-[#f8f9fb]" data-section="visible-inline"><img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0"></button>
         </div>
         <div id="action-list-visible-inline" class="action-items-list"></div>
@@ -219,6 +288,9 @@
       const $listTooltip = document.getElementById('action-list-tooltip');
       const $listExpandable = document.getElementById('action-list-expandable');
       const $listVisible = document.getElementById('action-list-visible');
+      const $listTooltipMixed = document.getElementById('action-list-tooltip-mixed');
+      const $listExpandableMixed = document.getElementById('action-list-expandable-mixed');
+      const $listVisibleMixed = document.getElementById('action-list-visible-mixed');
       const $listTooltipInline = document.getElementById('action-list-tooltip-inline');
       const $listExpandableInline = document.getElementById('action-list-expandable-inline');
       const $listVisibleInline = document.getElementById('action-list-visible-inline');
@@ -481,8 +553,9 @@
         return row;
       }
 
-      function renderInlinePillRow(item, variant) {
-        const baseVariant = variant.replace('-inline', '');
+      function renderInlinePillRow(item, variant, options = {}) {
+        const { rowStartsEdit = false, draggable = false } = options;
+        const baseVariant = variant.replace('-inline', '').replace('-mixed', '');
         const isTooltip = baseVariant === 'tooltip';
         const isExpandable = baseVariant === 'expandable';
         const assigneeLabel = item.assignee || 'Assignee';
@@ -630,6 +703,145 @@
           render();
         });
 
+        if (draggable) {
+          wireRowDrag(row, item.id);
+        }
+        if (rowStartsEdit) {
+          row.addEventListener('click', () => {
+            if (suppressRowClick) return;
+            startEdit(item.id, variant);
+          });
+        }
+
+        return row;
+      }
+
+      function renderEditableDropdownRow(item, variant) {
+        const baseVariant = variant.replace('-mixed', '');
+        const isTooltip = baseVariant === 'tooltip';
+        const isExpandable = baseVariant === 'expandable';
+        const assigneeLabel = item.assignee || 'Add assignee';
+        const dueDateLabel = item.dueDate || 'Add due date';
+        const assigneeTooltip = item.assignee || 'No assignee';
+        const dueDateTooltip = item.dueDate || 'No due date';
+
+        const pillBg = 'bg-[#F8F9FB] hover:bg-[#F3F4F8] active:bg-[#EAECF0]';
+        const textUnset = 'text-[#777986] hover:text-[#777986] active:text-[#5B5D6B]';
+        const textSet = 'text-[#404252] hover:text-[#404252] active:text-[#5B5D6B]';
+        const textUnsetExpandable = 'text-[#777986] group-hover/pill:text-[#777986] group-active/pill:text-[#5B5D6B]';
+        const textSetExpandable = 'text-[#404252] group-hover/pill:text-[#404252] group-active/pill:text-[#5B5D6B]';
+        const assigneeTextClass = item.assignee ? textSet : textUnset;
+        const dueTextClass = item.dueDate ? textSet : textUnset;
+        const assigneeExpandableTextClass = item.assignee ? textSetExpandable : textUnsetExpandable;
+        const dueExpandableTextClass = item.dueDate ? textSetExpandable : textUnsetExpandable;
+
+        const assigneeOptionsHtml = assigneeOptions.map(a => {
+          const avatar = assigneeAvatarName(a);
+          const avatarHtml = avatar ? pillIcon(avatar) : pillIcon('tabler-icon-user-circle');
+          return `<button type="button" class="assignee-option-mixed block w-full px-3 py-1.5 text-left text-[12px] text-[#404252] hover:bg-[#f8f9fb]" data-assignee="${escapeHtml(a)}"><span class="inline-flex items-center gap-1">${avatarHtml}<span>${escapeHtml(a)}</span></span></button>`;
+        }).join('') + `<button type="button" class="assignee-option-mixed block w-full px-3 py-1.5 text-left text-[12px] text-[#777986] hover:bg-[#f8f9fb]" data-assignee="">Clear assignee</button>`;
+
+        let assigneeBlock = '';
+        let dueDateBlock = '';
+        if (isTooltip) {
+          assigneeBlock = `<button type="button" class="action-item-pill action-item-pill--assignee action-item-pill--tooltip assignee-btn-mixed inline-flex items-center rounded-full ${pillBg} p-1.5 transition-colors" data-tooltip="${assigneeTooltip}">${iconInPill(assigneeIconName(item.assignee), !!item.assignee)}</button>`;
+          dueDateBlock = `<button type="button" class="action-item-pill action-item-pill--due-date action-item-pill--tooltip due-date-btn-mixed inline-flex items-center rounded-full ${pillBg} p-1.5 transition-colors" data-tooltip="${dueDateTooltip}">${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}</button>`;
+        } else if (isExpandable) {
+          assigneeBlock = `
+            <button type="button" class="action-item-pill action-item-pill--assignee action-item-pill--expandable assignee-btn-mixed expandable-pill group/pill inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-1 transition-all duration-150 hover:px-2 hover:pr-2">
+              ${iconInPill(assigneeIconName(item.assignee), !!item.assignee)}
+              <span class="action-item-pill-label max-w-0 overflow-hidden whitespace-nowrap text-[12px] font-medium ${assigneeExpandableTextClass} transition-[max-width] duration-150 group-hover/pill:max-w-[120px] group-hover/pill:pr-1">${assigneeLabel}</span>
+            </button>`;
+          dueDateBlock = `
+            <button type="button" class="action-item-pill action-item-pill--due-date action-item-pill--expandable due-date-btn-mixed expandable-pill group/pill inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-1 transition-all duration-150 hover:px-2 hover:pr-2">
+              ${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}
+              <span class="action-item-pill-label max-w-0 overflow-hidden whitespace-nowrap text-[12px] font-medium ${dueExpandableTextClass} transition-[max-width] duration-150 group-hover/pill:max-w-[120px] group-hover/pill:pr-1">${dueDateLabel}</span>
+            </button>`;
+        } else {
+          assigneeBlock = `<button type="button" class="action-item-pill action-item-pill--assignee action-item-pill--visible assignee-btn-mixed inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-0.5 text-[12px] font-medium ${assigneeTextClass} transition-colors">${iconInPill(assigneeIconName(item.assignee), !!item.assignee)}${assigneeLabel}</button>`;
+          dueDateBlock = `<button type="button" class="action-item-pill action-item-pill--due-date action-item-pill--visible due-date-btn-mixed inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-0.5 text-[12px] font-medium ${dueTextClass} transition-colors">${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}${dueDateLabel}</button>`;
+        }
+
+        const row = document.createElement('div');
+        row.className = 'action-item-row flex h-[30px] items-center gap-1.5 p-1 rounded transition-colors hover:bg-[#F8F9FB]';
+        row.dataset.id = item.id;
+        row.innerHTML = `
+          <span class="action-item-row-drag-handle flex cursor-grab items-center text-[#9496a1]" aria-hidden="true">${icon('icon-grip-vertical')}</span>
+          <span class="action-item-row-title min-w-0 flex-1 truncate text-[14px] font-medium text-[#404252]">${escapeHtml(item.title)}</span>
+          <div class="action-item-row-meta relative flex shrink-0 items-center gap-1.5">
+            ${assigneeBlock}
+            ${dueDateBlock}
+            <div class="action-item-assignee-picker assignee-picker-mixed hidden absolute left-0 top-full z-10 mt-1 rounded-lg border border-[#eaecf0] bg-white py-1 shadow-lg min-w-[140px]">
+              ${assigneeOptionsHtml}
+            </div>
+            <div class="action-item-due-picker due-picker-mixed hidden absolute left-0 top-full z-10 mt-1 rounded-lg border border-[#eaecf0] bg-white p-2 shadow-lg">
+              <input type="date" class="action-item-due-input due-input-mixed w-full border border-[#eaecf0] rounded px-2 py-1 text-[12px] text-[#404252]"/>
+              <button type="button" class="action-item-due-apply due-apply-mixed mt-2 w-full rounded bg-[#2e6fe3] py-1 text-[12px] text-white hover:bg-[#2563c4]">Apply</button>
+              <button type="button" class="action-item-due-clear due-clear-mixed mt-1 w-full rounded border border-[#eaecf0] bg-white py-1 text-[12px] text-[#5b5d6b] hover:bg-[#f8f9fb]">Clear</button>
+            </div>
+          </div>
+        `;
+
+        wireRowDrag(row, item.id);
+        row.addEventListener('click', () => {
+          if (suppressRowClick) return;
+          startEdit(item.id, variant);
+        });
+
+        row.querySelector('.assignee-btn-mixed').addEventListener('click', (e) => {
+          e.stopPropagation();
+          row.querySelector('.assignee-picker-mixed').classList.toggle('hidden');
+          row.querySelector('.due-picker-mixed').classList.add('hidden');
+        });
+        row.querySelectorAll('.assignee-option-mixed').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const idx = items.findIndex(i => i.id === item.id);
+            const selectedAssignee = (btn.dataset.assignee || '').trim();
+            if (idx !== -1) items[idx].assignee = selectedAssignee || null;
+            render();
+          });
+        });
+        row.querySelector('.due-date-btn-mixed').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const picker = row.querySelector('.due-picker-mixed');
+          const input = row.querySelector('.due-input-mixed');
+          if (item.dueDate) {
+            try {
+              const [day, mon, year] = item.dueDate.split(' ');
+              const months = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06', Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' };
+              input.value = `${year}-${months[mon] || '01'}-${day.padStart(2, '0')}`;
+            } catch (_) {
+              input.value = '';
+            }
+          } else {
+            input.value = '';
+          }
+          picker.classList.toggle('hidden');
+          row.querySelector('.assignee-picker-mixed').classList.add('hidden');
+        });
+        row.querySelector('.assignee-picker-mixed').addEventListener('click', (e) => e.stopPropagation());
+        row.querySelector('.due-picker-mixed').addEventListener('click', (e) => e.stopPropagation());
+        row.querySelector('.due-input-mixed').addEventListener('click', (e) => e.stopPropagation());
+        row.querySelector('.due-apply-mixed').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const input = row.querySelector('.due-input-mixed');
+          if (!input.value) {
+            row.querySelector('.due-picker-mixed').classList.add('hidden');
+            return;
+          }
+          const d = new Date(input.value);
+          const formatted = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+          const idx = items.findIndex(i => i.id === item.id);
+          if (idx !== -1) items[idx].dueDate = formatted;
+          render();
+        });
+        row.querySelector('.due-clear-mixed').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = items.findIndex(i => i.id === item.id);
+          if (idx !== -1) items[idx].dueDate = null;
+          render();
+        });
         return row;
       }
 
@@ -686,6 +898,9 @@
         $listTooltip.innerHTML = '';
         $listExpandable.innerHTML = '';
         $listVisible.innerHTML = '';
+        $listTooltipMixed.innerHTML = '';
+        $listExpandableMixed.innerHTML = '';
+        $listVisibleMixed.innerHTML = '';
         $listTooltipInline.innerHTML = '';
         $listExpandableInline.innerHTML = '';
         $listVisibleInline.innerHTML = '';
@@ -711,6 +926,26 @@
             }
           });
         });
+        const mixedSections = [
+          { key: 'tooltip-mixed', list: $listTooltipMixed },
+          { key: 'expandable-mixed', list: $listExpandableMixed },
+          { key: 'visible-mixed', list: $listVisibleMixed },
+        ];
+        displayItems.forEach(item => {
+          mixedSections.forEach(({ key, list }) => {
+            if (editingId === item.id && formItem && activeSection === key) {
+              list.appendChild(renderEditForm(formItem));
+            } else {
+              list.appendChild(renderEditableDropdownRow(item, key));
+            }
+          });
+        });
+        mixedSections.forEach(({ key, list }) => {
+          if (addingNew && formItem && activeSection === key) {
+            list.appendChild(renderEditForm(formItem));
+          }
+        });
+
         const inlineSections = [
           { key: 'tooltip-inline', list: $listTooltipInline },
           { key: 'expandable-inline', list: $listExpandableInline },
@@ -718,7 +953,7 @@
         ];
         displayItems.forEach(item => {
           inlineSections.forEach(({ key, list }) => {
-            list.appendChild(renderInlinePillRow(item, key));
+            list.appendChild(renderInlinePillRow(item, key, { rowStartsEdit: false, draggable: false }));
           });
         });
         inlineSections.forEach(({ key, list }) => {
