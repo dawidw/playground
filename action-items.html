@@ -223,6 +223,31 @@
     </section>
   </div>
 
+  <div class="my-action-items-floating fixed bottom-6 left-6 z-30">
+    <button type="button" id="my-action-items-toggle" class="inline-flex h-[40px] w-[40px] items-center justify-center rounded-lg border border-[#EAECF0] bg-white shadow-[0_2px_12px_rgba(16,18,35,0.12)] transition-all duration-200 ease-out hover:bg-[#f8f9fb]" aria-expanded="false" aria-controls="my-action-items-panel" aria-label="My action items">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M9 7H20" stroke="#777986" stroke-width="1.75" stroke-linecap="round"></path>
+        <path d="M9 12H20" stroke="#777986" stroke-width="1.75" stroke-linecap="round"></path>
+        <path d="M9 17H20" stroke="#777986" stroke-width="1.75" stroke-linecap="round"></path>
+        <path d="M4.5 7H4.51" stroke="#777986" stroke-width="1.75" stroke-linecap="round"></path>
+        <path d="M4.5 12H4.51" stroke="#777986" stroke-width="1.75" stroke-linecap="round"></path>
+        <path d="M4.5 17H4.51" stroke="#777986" stroke-width="1.75" stroke-linecap="round"></path>
+      </svg>
+    </button>
+    <div id="my-action-items-panel" class="absolute bottom-0 left-0 w-[450px] origin-bottom-left rounded-2xl border border-[#EAECF0] bg-white p-4 shadow-[0_10px_28px_rgba(16,18,35,0.14)] opacity-0 translate-y-2 scale-95 pointer-events-none transition-all duration-200 ease-out">
+      <div class="mb-1 flex items-center justify-between">
+        <h3 class="text-[14px] font-medium leading-[20px] text-[#101223]">Your action items</h3>
+        <button type="button" id="my-action-items-close" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-[#777986] hover:bg-[#F8F9FB] hover:text-[#404252]" aria-label="Close my action items panel">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"></path>
+            <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="my-action-items-list" class="space-y-1"></div>
+    </div>
+  </div>
+
   <script>
     (function () {
       const ICON_SIZE = 16;
@@ -294,6 +319,29 @@
       const $listTooltipInline = document.getElementById('action-list-tooltip-inline');
       const $listExpandableInline = document.getElementById('action-list-expandable-inline');
       const $listVisibleInline = document.getElementById('action-list-visible-inline');
+      const $myItemsToggle = document.getElementById('my-action-items-toggle');
+      const $myItemsPanel = document.getElementById('my-action-items-panel');
+      const $myItemsClose = document.getElementById('my-action-items-close');
+      const $myItemsList = document.getElementById('my-action-items-list');
+      let isMyItemsPanelOpen = false;
+
+      function setMyItemsPanelOpen(open) {
+        isMyItemsPanelOpen = open;
+        if (!$myItemsPanel || !$myItemsToggle) return;
+        $myItemsPanel.classList.toggle('opacity-0', !open);
+        $myItemsPanel.classList.toggle('translate-y-2', !open);
+        $myItemsPanel.classList.toggle('scale-95', !open);
+        $myItemsPanel.classList.toggle('pointer-events-none', !open);
+        $myItemsPanel.classList.toggle('opacity-100', open);
+        $myItemsPanel.classList.toggle('translate-y-0', open);
+        $myItemsPanel.classList.toggle('scale-100', open);
+        $myItemsToggle.classList.toggle('opacity-0', open);
+        $myItemsToggle.classList.toggle('scale-95', open);
+        $myItemsToggle.classList.toggle('pointer-events-none', open);
+        $myItemsToggle.classList.toggle('opacity-100', !open);
+        $myItemsToggle.classList.toggle('scale-100', !open);
+        $myItemsToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
 
       function uid() {
         return Date.now().toString(36) + Math.random().toString(36).slice(2);
@@ -845,6 +893,99 @@
         return row;
       }
 
+      function renderMyActionItemRow(item) {
+        const row = document.createElement('div');
+        row.className = 'my-action-item-row flex h-[30px] items-center gap-2 rounded p-1 hover:bg-[#F8F9FB]';
+        row.dataset.id = item.id;
+        const currentStatus = statusMeta(item.status);
+        const dueTooltip = item.dueDate || 'No due date';
+        const dueIcon = iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate);
+        const statusOptionsHtml = statusOptions.map(s => `
+          <button type="button" class="status-option-my flex w-full items-center gap-1.5 px-3 py-1.5 text-left text-[12px] text-[#404252] hover:bg-[#f8f9fb]" data-status="${s.id}">
+            <span class="inline-flex shrink-0">${statusIcon(s.id, 16)}</span>
+            <span>${s.label}</span>
+          </button>
+        `).join('');
+        row.innerHTML = `
+          <div class="relative flex items-center">
+            <button type="button" class="status-btn-my inline-flex h-[18px] w-[18px] items-center justify-center rounded-full hover:bg-[#F3F4F8]" aria-label="Change status">${statusIcon(currentStatus.id, 16)}</button>
+            <div class="status-picker-my hidden absolute bottom-full left-0 z-10 mb-1 min-w-[150px] rounded-lg border border-[#eaecf0] bg-white py-1 shadow-lg">
+              ${statusOptionsHtml}
+            </div>
+          </div>
+          <span class="min-w-0 flex-1 truncate text-[14px] font-medium text-[#404252]">${escapeHtml(item.title)}</span>
+          <div class="relative flex items-center">
+            <button type="button" class="due-date-btn-my inline-flex items-center rounded-full bg-[#F8F9FB] p-1.5" data-tooltip="${dueTooltip}" aria-label="Set due date">${dueIcon}</button>
+            <div class="due-picker-my hidden absolute bottom-full right-0 z-10 mb-1 w-[170px] rounded-lg border border-[#eaecf0] bg-white p-2 shadow-lg">
+              <input type="date" class="due-input-my w-full rounded border border-[#eaecf0] px-2 py-1 text-[12px] text-[#404252]"/>
+              <button type="button" class="due-apply-my mt-2 w-full rounded bg-[#2e6fe3] py-1 text-[12px] text-white hover:bg-[#2563c4]">Apply</button>
+              <button type="button" class="due-clear-my mt-1 w-full rounded border border-[#eaecf0] border-t-[#EAECF0] bg-white py-1 text-[12px] text-[#F62020] hover:bg-[#f8f9fb]">Clear</button>
+            </div>
+          </div>
+        `;
+        row.querySelector('.status-btn-my').addEventListener('click', (e) => {
+          e.stopPropagation();
+          row.querySelector('.status-picker-my').classList.toggle('hidden');
+          row.querySelector('.due-picker-my').classList.add('hidden');
+        });
+        row.querySelector('.status-picker-my').addEventListener('click', (e) => e.stopPropagation());
+        row.querySelectorAll('.status-option-my').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const idx = items.findIndex(i => i.id === item.id);
+            if (idx !== -1) items[idx].status = btn.dataset.status || 'todo';
+            render();
+          });
+        });
+        row.querySelector('.due-date-btn-my').addEventListener('click', (e) => {
+          e.stopPropagation();
+          row.querySelector('.status-picker-my').classList.add('hidden');
+          const picker = row.querySelector('.due-picker-my');
+          const input = row.querySelector('.due-input-my');
+          if (item.dueDate) {
+            try {
+              const [day, mon, year] = item.dueDate.split(' ');
+              const months = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06', Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' };
+              input.value = `${year}-${months[mon] || '01'}-${day.padStart(2, '0')}`;
+            } catch (_) {
+              input.value = '';
+            }
+          } else {
+            input.value = '';
+          }
+          picker.classList.toggle('hidden');
+        });
+        row.querySelector('.due-picker-my').addEventListener('click', (e) => e.stopPropagation());
+        row.querySelector('.due-input-my').addEventListener('click', (e) => e.stopPropagation());
+        row.querySelector('.due-apply-my').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const input = row.querySelector('.due-input-my');
+          if (!input.value) {
+            row.querySelector('.due-picker-my').classList.add('hidden');
+            return;
+          }
+          const d = new Date(input.value);
+          const formatted = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+          const idx = items.findIndex(i => i.id === item.id);
+          if (idx !== -1) items[idx].dueDate = formatted;
+          render();
+        });
+        row.querySelector('.due-clear-my').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = items.findIndex(i => i.id === item.id);
+          if (idx !== -1) items[idx].dueDate = null;
+          render();
+        });
+        return row;
+      }
+
+      function renderMyActionItemsPanel() {
+        if (!$myItemsList) return;
+        $myItemsList.innerHTML = '';
+        const activeItems = items.filter(i => i.id !== 'new' && i.status !== 'done');
+        activeItems.forEach(item => $myItemsList.appendChild(renderMyActionItemRow(item)));
+      }
+
       function saveEdit(rowEl, id) {
         const title = rowEl.querySelector('.edit-title').value.trim() || 'Item title';
         const description = rowEl.querySelector('.edit-desc').value.trim();
@@ -961,12 +1102,16 @@
             list.appendChild(renderEditForm(formItem));
           }
         });
+        renderMyActionItemsPanel();
         window.scrollTo(scrollX, scrollY);
       }
 
       document.addEventListener('click', (e) => {
-        if (e.target.closest('.assignee-picker, .due-picker, .assignee-btn, .due-date-btn, .assignee-option, .due-apply, .due-input, .assignee-picker-inline, .due-picker-inline, .assignee-btn-inline, .due-date-btn-inline, .assignee-option-inline, .due-apply-inline, .due-input-inline, .status-picker-inline, .status-btn-inline, .status-option-inline')) return;
-        document.querySelectorAll('.assignee-picker, .due-picker, .assignee-picker-inline, .due-picker-inline, .status-picker-inline').forEach(el => el.classList.add('hidden'));
+        if (e.target.closest('.assignee-picker, .due-picker, .assignee-btn, .due-date-btn, .assignee-option, .due-apply, .due-input, .assignee-picker-inline, .due-picker-inline, .assignee-btn-inline, .due-date-btn-inline, .assignee-option-inline, .due-apply-inline, .due-input-inline, .status-picker-inline, .status-btn-inline, .status-option-inline, .assignee-picker-mixed, .due-picker-mixed, .assignee-btn-mixed, .due-date-btn-mixed, .assignee-option-mixed, .due-apply-mixed, .due-input-mixed, .status-picker-my, .status-btn-my, .status-option-my, .due-picker-my, .due-date-btn-my, .due-apply-my, .due-input-my, .due-clear-my, #my-action-items-toggle, #my-action-items-panel')) return;
+        document.querySelectorAll('.assignee-picker, .due-picker, .assignee-picker-inline, .due-picker-inline, .status-picker-inline, .assignee-picker-mixed, .due-picker-mixed, .status-picker-my, .due-picker-my').forEach(el => el.classList.add('hidden'));
+        if (isMyItemsPanelOpen) {
+          setMyItemsPanelOpen(false);
+        }
       });
 
       function onAddItem(e) {
@@ -977,6 +1122,19 @@
       }
       document.querySelectorAll('.add-in-section').forEach(btn => btn.addEventListener('click', onAddItem));
       document.querySelectorAll('.add-inline-section').forEach(btn => btn.addEventListener('click', onAddItem));
+      if ($myItemsToggle && $myItemsPanel) {
+        $myItemsToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setMyItemsPanelOpen(!isMyItemsPanelOpen);
+        });
+      }
+      if ($myItemsClose && $myItemsPanel) {
+        $myItemsClose.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setMyItemsPanelOpen(false);
+        });
+      }
+      setMyItemsPanelOpen(false);
 
       render();
     })();
