@@ -53,6 +53,23 @@
       opacity: 1;
       transform: translateX(-50%) translateY(-2px);
     }
+    /* Due date pill color tiers (default / hover / active) */
+    .due-pill--grey { background-color: #F8F9FB; color: #404252; }
+    .due-pill--grey:hover { background-color: #F3F4F8; color: #404252; }
+    .due-pill--grey:active { background-color: #EAECF0; color: #404252; }
+    .due-pill--grey.due-pill--unset { color: #777986; }
+    .due-pill--grey.due-pill--unset:hover { color: #404252; }
+    .due-pill--grey.due-pill--unset:active { color: #5B5D6B; }
+    .due-pill--orange { background-color: #FFF0DB; color: #FF9E0D; }
+    .due-pill--orange:hover { background-color: #FFE7C2; color: #CC7A00; }
+    .due-pill--orange:active { background-color: #FFC97A; color: #995C00; }
+    .due-pill--red { background-color: #FFF1F1; color: #F62020; }
+    .due-pill--red:hover { background-color: #FDC7C7; color: #C30808; }
+    .due-pill--red:active { background-color: #FF8585; color: #900000; }
+    .action-item-pill--due-colored .pill-icon-set,
+    .action-item-pill--due-colored .pill-icon-unset,
+    .action-item-pill--due-colored .pill-icon-set svg,
+    .action-item-pill--due-colored .pill-icon-unset svg { color: inherit; }
   </style>
 </head>
 <body class="action-items-page min-h-screen bg-[#f8f9fb] text-[#404252]">
@@ -221,6 +238,65 @@
         <div id="action-list-visible-inline" class="action-items-list"></div>
       </div>
     </section>
+
+    <!-- Section 10: Copy of #4 with color-coded Due date pill (grey / orange / red) -->
+    <section class="action-items-section action-items-section--tooltip-mixed-colored mb-10 flex items-start gap-6">
+      <div class="action-items-section-header w-[448px] shrink-0">
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">#1 Editable Action items (Due date colored)</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">
+          Same as #4. Used in <b>Project New/Edit</b>. <br>Can set: item title, description, assignee and due date. <br>Clicking row triggers form. Clicking pills opens dropdowns. Due date pill: grey / orange / red by urgency.
+        </p>
+      </div>
+      <div class="action-items-section-content min-w-0 flex-1 rounded-lg border border-[#eaecf0] bg-white p-6">
+        <div id="action-list-tooltip-mixed-colored" class="action-items-list"></div>
+        <div class="action-items-add-area border-t border-[#eaecf0] pt-4 mt-4">
+          <button type="button" class="action-items-add-btn add-in-section inline-flex items-center gap-1.5 rounded-md border border-[#eaecf0] bg-white px-3 py-2 text-[14px] font-medium leading-[20px] text-[#5b5d6b] transition hover:bg-[#f8f9fb]" data-section="tooltip-mixed-colored">
+            <img src="icons/icon-plus.svg" alt="" width="16" height="16" class="shrink-0">
+            Add item
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects and tasks table -->
+    <section class="action-items-section mb-10 flex items-start gap-6">
+      <div class="action-items-section-header w-[448px] shrink-0">
+        <h2 class="action-items-section-title text-[20px] font-medium leading-[30px] text-[#101223]">Projects and tasks</h2>
+        <p class="action-items-section-subtitle mt-1 text-[14px] leading-[20px] text-[#777986]">
+          Project creation and matching. Projects with their associated tasks.
+        </p>
+      </div>
+      <div class="action-items-section-content min-w-0 flex-1 overflow-hidden rounded-lg border border-[#eaecf0] bg-white">
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[400px] border-collapse text-left">
+            <thead>
+              <tr class="border-b border-[#eaecf0] bg-[#f8f9fb]">
+                <th class="px-4 py-3 text-[12px] font-medium uppercase tracking-wider text-[#777986]">Project</th>
+                <th class="px-4 py-3 text-[12px] font-medium uppercase tracking-wider text-[#777986]">Tasks</th>
+              </tr>
+            </thead>
+            <tbody class="text-[14px] leading-[20px] text-[#404252]">
+              <tr class="border-b border-[#eaecf0] transition hover:bg-[#f8f9fb]">
+                <td class="px-4 py-3 font-medium text-[#101223]">VMS Client – Phase 1</td>
+                <td class="px-4 py-3 text-[#5b5d6b]">Fill in and send NDA's, Chase consultants about NDA's, Schedule interviews</td>
+              </tr>
+              <tr class="border-b border-[#eaecf0] transition hover:bg-[#f8f9fb]">
+                <td class="px-4 py-3 font-medium text-[#101223]">Consultant matching</td>
+                <td class="px-4 py-3 text-[#5b5d6b]">Setup contract documents, Send contract documents</td>
+              </tr>
+              <tr class="border-b border-[#eaecf0] transition hover:bg-[#f8f9fb]">
+                <td class="px-4 py-3 font-medium text-[#101223]">Project creation</td>
+                <td class="px-4 py-3 text-[#5b5d6b]">Define scope, Assign team, Kick-off meeting</td>
+              </tr>
+              <tr class="transition hover:bg-[#f8f9fb]">
+                <td class="px-4 py-3 font-medium text-[#101223]">Onboarding</td>
+                <td class="px-4 py-3 text-[#5b5d6b]">Access setup, Documentation review</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   </div>
 
   <div class="my-action-items-floating fixed bottom-6 left-6 z-30">
@@ -319,6 +395,7 @@
       const $listTooltipInline = document.getElementById('action-list-tooltip-inline');
       const $listExpandableInline = document.getElementById('action-list-expandable-inline');
       const $listVisibleInline = document.getElementById('action-list-visible-inline');
+      const $listTooltipMixedColored = document.getElementById('action-list-tooltip-mixed-colored');
       const $myItemsToggle = document.getElementById('my-action-items-toggle');
       const $myItemsPanel = document.getElementById('my-action-items-panel');
       const $myItemsClose = document.getElementById('my-action-items-close');
@@ -350,6 +427,20 @@
       function statusIcon(statusId, size = 16) {
         const meta = statusMeta(statusId);
         return `<img src="icons/${meta.icon}" alt="" width="${size}" height="${size}" class="shrink-0" aria-hidden="true">`;
+      }
+
+      /** Returns 'grey' | 'orange' | 'red' for due date pill. Grey: not set or >2 weeks; orange: >1 week and <=2 weeks; red: <=1 week. */
+      function getDueDateTier(dueDateStr) {
+        if (!dueDateStr || !String(dueDateStr).trim()) return 'grey';
+        const due = new Date(dueDateStr);
+        if (isNaN(due.getTime())) return 'grey';
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        due.setHours(0, 0, 0, 0);
+        const diffDays = (due - now) / (24 * 60 * 60 * 1000);
+        if (diffDays > 14) return 'grey';
+        if (diffDays > 7) return 'orange';
+        return 'red';
       }
 
       function moveItemBefore(dragId, targetId) {
@@ -765,7 +856,8 @@
       }
 
       function renderEditableDropdownRow(item, variant) {
-        const baseVariant = variant.replace('-mixed', '');
+        const useColoredDuePill = variant === 'tooltip-mixed-colored';
+        const baseVariant = useColoredDuePill ? 'tooltip' : variant.replace('-mixed', '');
         const isTooltip = baseVariant === 'tooltip';
         const isExpandable = baseVariant === 'expandable';
         const assigneeLabel = item.assignee || 'Add assignee';
@@ -793,7 +885,13 @@
         let dueDateBlock = '';
         if (isTooltip) {
           assigneeBlock = `<button type="button" class="action-item-pill action-item-pill--assignee action-item-pill--tooltip assignee-btn-mixed inline-flex items-center rounded-full ${pillBg} p-1.5 transition-colors" data-tooltip="${assigneeTooltip}">${iconInPill(assigneeIconName(item.assignee), !!item.assignee)}</button>`;
-          dueDateBlock = `<button type="button" class="action-item-pill action-item-pill--due-date action-item-pill--tooltip due-date-btn-mixed inline-flex items-center rounded-full ${pillBg} p-1.5 transition-colors" data-tooltip="${dueDateTooltip}">${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}</button>`;
+          if (useColoredDuePill) {
+            const dueTier = getDueDateTier(item.dueDate);
+            const unsetClass = dueTier === 'grey' && !item.dueDate ? ' due-pill--unset' : '';
+            dueDateBlock = `<button type="button" class="action-item-pill action-item-pill--due-date action-item-pill--tooltip action-item-pill--due-colored due-date-btn-mixed due-pill due-pill--${dueTier}${unsetClass} inline-flex items-center rounded-full p-1.5 transition-colors" data-tooltip="${dueDateTooltip}">${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}</button>`;
+          } else {
+            dueDateBlock = `<button type="button" class="action-item-pill action-item-pill--due-date action-item-pill--tooltip due-date-btn-mixed inline-flex items-center rounded-full ${pillBg} p-1.5 transition-colors" data-tooltip="${dueDateTooltip}">${iconInPill(item.dueDate ? 'tabler-icon-calendar-week-outline' : 'tabler-icon-calendar-plus', !!item.dueDate)}</button>`;
+          }
         } else if (isExpandable) {
           assigneeBlock = `
             <button type="button" class="action-item-pill action-item-pill--assignee action-item-pill--expandable assignee-btn-mixed expandable-pill group/pill inline-flex items-center gap-1 rounded-full ${pillBg} px-1.5 py-1 transition-all duration-150 hover:px-2 hover:pr-2">
@@ -1045,6 +1143,7 @@
         $listTooltipInline.innerHTML = '';
         $listExpandableInline.innerHTML = '';
         $listVisibleInline.innerHTML = '';
+        if ($listTooltipMixedColored) $listTooltipMixedColored.innerHTML = '';
 
         const sections = [
           { key: 'tooltip', list: $listTooltip },
@@ -1071,6 +1170,7 @@
           { key: 'tooltip-mixed', list: $listTooltipMixed },
           { key: 'expandable-mixed', list: $listExpandableMixed },
           { key: 'visible-mixed', list: $listVisibleMixed },
+          ...($listTooltipMixedColored ? [{ key: 'tooltip-mixed-colored', list: $listTooltipMixedColored }] : []),
         ];
         displayItems.forEach(item => {
           mixedSections.forEach(({ key, list }) => {
