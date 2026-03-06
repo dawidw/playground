@@ -153,7 +153,7 @@ Four hardcoded users — no backend:
 
 ## Development Guidelines for AI Assistants
 
-1. **Keep it single-file.** All logic stays in `action-items.html`. Do not introduce a build step, npm, or a framework unless explicitly requested.
+1. **Keep logic in the appropriate component file.** `action-items.html` is a component catalogue — it lists components, shows each component rendered, and includes an example of its usage in a layout as a subpage. When adding or modifying a component, edit its dedicated file, not the catalogue page itself.
 2. **Always call `render()` after mutating `items`.** Forgetting this leaves the UI out of sync.
 3. **Use `escapeHtml()` for any user-provided strings** inserted via `innerHTML`.
 4. **Preserve scroll position** around `render()` calls that might shift content.
