@@ -124,6 +124,7 @@
   --color-border-light: var(--color-gray-1);
   --color-border-divider: var(--color-gray-0-5);
   --color-border-subtle: var(--color-gray-0-5);
+  --color-text-placeholder: var(--color-gray-4);
   --color-field-border: var(--color-gray-1);
   --color-field-border-hover: var(--color-gray-2);
   --color-field-border-focus: var(--color-carbon-black-5);
