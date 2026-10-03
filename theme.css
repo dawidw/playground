@@ -128,6 +128,11 @@
   --color-focus-neutral: var(--color-gray-6);
   --color-focus-accent: var(--color-canary-yellow-8);
   --color-focus-danger: var(--color-red-7);
+  --color-nav-item-hover: var(--color-gray-1);
+  --color-nav-item-active: var(--color-canary-yellow-0-5);
+  --color-nav-item-active-hover: var(--color-canary-yellow-1);
+  --color-nav-avatar-ring: var(--color-canary-yellow-7);
+  --color-shadow-xs: color-mix(in srgb, var(--color-carbon-black-5) 5%, transparent);
   --color-button-secondary-text: var(--color-carbon-black-3);
   --color-button-secondary-border: var(--color-gray-1);
   --color-button-ghost-text: var(--color-carbon-black-4);
