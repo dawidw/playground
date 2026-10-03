@@ -125,16 +125,20 @@ sub.querySelectorAll(".item:not(#reviewItem)").forEach((el) => el.addEventListen
 // ---- Panel
 const icons = {
   pending: icon("clock"),
-  running: `<span class="spinner"></span>`,
+  running: `<span class="ascii" aria-hidden="true">✢</span>`,
   done: icon("check-circle"),
 };
-$("close").innerHTML = icon("xmark"); $("whyLead").innerHTML = icon("lock") + "Why this rate?"; $("whyChev").innerHTML = icon("nav-arrow-down");
+$("close").innerHTML = icon("xmark"); $("whyLead").innerHTML = icon("hand-brake") + "Why this rate?"; $("whyChev").innerHTML = icon("nav-arrow-down");
 const panelInner = $("panelInner");
 // The panel hugs its content, anchored to the bottom; its height animates as steps appear.
 new ResizeObserver(() => {
   panelInner.style.maxHeight = stage.clientHeight - 32 + "px";
   $("panel").style.height = panelInner.offsetHeight + "px";
 }).observe(panelInner);
+// ASCII "agent is thinking" glyph, shared by every .ascii element
+const ASCII_FRAMES = ["·", "✢", "✳", "✶", "✻", "✽", "✻", "✶", "✳", "✢"];
+let asciiI = 0;
+setInterval(() => { asciiI = (asciiI + 1) % ASCII_FRAMES.length; document.querySelectorAll(".ascii").forEach((el) => { el.textContent = ASCII_FRAMES[asciiI]; }); }, 110);
 const stepsEl = $("steps");
 const PP = { proposal: $("proposal"), suggested: $("suggested"), input: $("suggestedInput"), verdict: $("verdict"), why: $("why"), whyBody: $("whyBody"), approve: $("approve"), toast: $("toast") };
 const pos = (v) => `calc(${((Math.min(active.max, Math.max(active.min, v)) - active.min) / (active.max - active.min)) * 100}% - 2px)`;
@@ -173,7 +177,7 @@ function fillCase() {
   const band = document.querySelector(".band"), span = c.max - c.min;
   band.style.left = ((c.band[0] - c.min) / span) * 100 + "%"; band.style.width = ((c.band[1] - c.band[0]) / span) * 100 + "%";
 }
-function showReviewing(on) { active.slot.innerHTML = on ? `<span class="chip chip-info chip-sm"><span class="spinner" style="width:10px;height:10px;border-width:1.5px"></span>Reviewing…</span>` : ""; }
+function showReviewing(on) { active.slot.innerHTML = on ? `<span class="chip chip-info chip-sm"><span class="ascii" aria-hidden="true">✢</span>Reviewing…</span>` : ""; }
 
 async function runReview() {
   const id = ++flow, c = active;
