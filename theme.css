@@ -123,6 +123,7 @@
   --color-bg-white: var(--color-gray-0);
   --color-bg-black: var(--color-carbon-black-5);
   --color-border-light: var(--color-gray-2);
+  --color-border-divider: var(--color-gray-1);
   --color-button-accent-text: var(--color-canary-yellow-9-5);
   --color-focus-primary: var(--color-gray-0);
   --color-focus-neutral: var(--color-gray-6);
