@@ -118,6 +118,8 @@
 
   /* Semantic */
   --color-text-primary: var(--color-carbon-black-5);
+  --color-text-muted: var(--color-gray-7);
+  --color-bg-light: #FAFAFF;
   --color-cta: var(--color-canary-yellow-5);
   --color-success: var(--color-green-5);
   --color-danger: var(--color-red-5);
