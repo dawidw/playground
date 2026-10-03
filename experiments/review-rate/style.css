@@ -68,8 +68,8 @@
 .scrim { position: absolute; inset: 0; z-index: 40; background: color-mix(in srgb, var(--color-carbon-black-6) 25%, transparent); opacity: 0; pointer-events: none; transition: opacity .25s; }
 .panel { position: absolute; z-index: 50; right: 16px; bottom: 16px; width: min(576px, calc(100% - 32px)); height: 0; overflow: hidden; border-radius: 12px; background: var(--color-bg-white); color: var(--color-text-primary); box-shadow: var(--shadow-default); transform: translateY(calc(100% + 32px)); transition: transform .3s var(--ease), height .3s var(--ease); }
 .panel-inner { display: flex; flex-direction: column; }
-/* Floating footer: content scrolls underneath it */
-.float-footer { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 12px; border: 1px solid var(--color-border-light); background: var(--color-bg-white); box-shadow: var(--shadow-default); }
+/* Footer pinned at the bottom of the floating panel; the body above it scrolls */
+.float-footer { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--color-border-divider); background: var(--color-bg-white); }
 #stage[data-state="working"] .scrim, #stage[data-state="proposal"] .scrim { opacity: 1; pointer-events: auto; }
 #stage[data-state="working"] .panel, #stage[data-state="proposal"] .panel { transform: none; }
 

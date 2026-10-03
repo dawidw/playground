@@ -97,7 +97,7 @@ $("close").innerHTML = icon("xmark"); $("whyLead").innerHTML = icon("lock") + "W
 // The panel hugs its content, anchored to the bottom; its height animates as steps appear.
 const panelInner = $("panelInner");
 new ResizeObserver(() => {
-  panelInner.style.maxHeight = stage.clientHeight - 32 + "px";
+  panelInner.style.maxHeight = stage.clientHeight - 32 + "px"; // hugs its content; scrolls only when it would not fit the stage
   $("panel").style.height = panelInner.offsetHeight + "px";
 }).observe(panelInner);
 const stepsEl = $("steps");
