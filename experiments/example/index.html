@@ -5,14 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Example</title>
   <link rel="stylesheet" href="../../theme.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../../tailwind-config.js"></script>
 </head>
 <body>
-  <main style="max-width:480px;margin:48px auto;padding:0 16px">
-    <a href="../../" style="color:var(--muted)">← Playground</a>
-    <div class="card" style="margin-top:16px">
-      <h2 style="margin-top:0">Example</h2>
-      <p id="out" style="color:var(--muted)">Kliknięć: 0</p>
-      <button class="btn" id="btn">Kliknij</button>
+  <main class="mx-auto max-w-md px-4 py-12">
+    <a href="../../" class="text-muted">← Playground</a>
+    <div class="mt-4 rounded-card border border-line bg-surface p-5 shadow-card">
+      <h2 class="text-xl font-semibold">Example</h2>
+      <p id="out" class="my-2 text-muted">Kliknięć: 0</p>
+      <button id="btn" class="rounded-lg bg-accent px-3.5 py-2 font-medium text-accent-ink hover:brightness-110">Kliknij</button>
     </div>
   </main>
   <script src="script.js"></script>
