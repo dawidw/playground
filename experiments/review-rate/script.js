@@ -222,7 +222,7 @@ async function demo() {
 }
 $("play").addEventListener("click", demo);
 
-// ?preview renders the proposal state at 16:10 with no chrome (used to take preview.png)
+// ?preview renders the proposal state at 16:10 (1040x650) with no chrome, zoomed on the panel (used to take preview.png)
 if (new URLSearchParams(location.search).has("preview")) {
   document.body.classList.add("preview");
   resetPanel(); setState("proposal");
@@ -230,5 +230,4 @@ if (new URLSearchParams(location.search).has("preview")) {
   panelParts.proposal.classList.add("show");
   $("mLimit").style.left = pos(LIMIT); $("mCurrent").style.left = pos(CURRENT); $("mSuggested").style.left = pos(LIMIT);
   panelParts.suggested.textContent = fmt(LIMIT); updateVerdict(LIMIT);
-  panelParts.whyBody.classList.add("open"); panelParts.why.setAttribute("aria-expanded", "true");
 }
