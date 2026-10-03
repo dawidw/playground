@@ -314,3 +314,9 @@ if (new URLSearchParams(location.search).has("preview")) {
   $("mLimit").style.left = pos(active.limit); $("mCurrent").style.left = pos(active.current); $("mSuggested").style.left = pos(active.suggested);
   PP.suggested.textContent = fmt(active.suggested); updateVerdict(active.suggested);
 }
+
+// ?record: autoplay the demo in a loop on a 1280x720 stage (start your screen recording, then reload)
+if (new URLSearchParams(location.search).has("record")) {
+  document.body.classList.add("record"); $("loop").checked = true;
+  setTimeout(demo, 1200);
+}

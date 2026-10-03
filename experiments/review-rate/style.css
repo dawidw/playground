@@ -90,7 +90,7 @@
 .skeleton { display: none; flex-direction: column; justify-content: space-between; opacity: 0; transition: opacity .35s; }
 .skeleton.show { display: flex; opacity: 1; }
 .skeleton.hide { opacity: 0; }
-.sk { border-radius: 6px; background: linear-gradient(90deg, var(--color-gray-0-5) 25%, var(--color-gray-1) 50%, var(--color-gray-0-5) 75%); background-size: 200% 100%; animation: shimmer 1.3s linear infinite; }
+.sk { border-radius: 6px; background: linear-gradient(90deg, var(--color-gray-1) 25%, var(--color-gray-0-5) 50%, var(--color-gray-1) 75%); background-size: 200% 100%; animation: shimmer 1.3s linear infinite; }
 @keyframes shimmer { to { background-position: -200% 0; } }
 .proposal { display: none; opacity: 0; transform: translateY(6px); transition: opacity .5s var(--ease), transform .5s var(--ease); }
 .proposal.measure { display: block; visibility: hidden; }
@@ -164,3 +164,8 @@ body.preview header { display: none; }
 body.preview #steps { display: none; }
 body.preview #stage { width: 780px; height: 488px !important; border-radius: 0; box-shadow: none; }
 body.preview .panel, body.preview .scrim { transition: none; }
+
+/* Record mode (?record): 16:9 stage, no page chrome, demo autoplays in a loop. For screen recordings. */
+body.record main { padding: 0 !important; gap: 0 !important; }
+body.record header { display: none; }
+body.record #stage { width: 1280px; height: 720px !important; border-radius: 0; box-shadow: none; }
