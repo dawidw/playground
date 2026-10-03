@@ -123,6 +123,10 @@
   --color-bg-white: var(--color-gray-0);
   --color-bg-black: var(--color-carbon-black-5);
   --color-border-light: var(--color-gray-2);
+  --color-button-primary-text: var(--color-canary-yellow-9-5);
+  --color-button-secondary-text: var(--color-carbon-black-3);
+  --color-button-secondary-border: var(--color-gray-1);
+  --color-button-ghost-text: var(--color-carbon-black-4);
   --color-shadow-sm: color-mix(in srgb, var(--color-carbon-black-5) 30%, transparent);
   --color-shadow-md: color-mix(in srgb, var(--color-carbon-black-5) 20%, transparent);
   --color-cta: var(--color-canary-yellow-5);
