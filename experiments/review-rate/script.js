@@ -94,6 +94,12 @@ const icons = {
   done: icon("check-circle"),
 };
 $("close").innerHTML = icon("xmark"); $("whyLead").innerHTML = icon("lock") + "Why this rate?"; $("whyChev").innerHTML = icon("nav-arrow-down");
+// The panel hugs its content, anchored to the bottom; its height animates as steps appear.
+const panelInner = $("panelInner");
+new ResizeObserver(() => {
+  panelInner.style.maxHeight = stage.clientHeight - 32 + "px";
+  $("panel").style.height = panelInner.offsetHeight + "px";
+}).observe(panelInner);
 const stepsEl = $("steps");
 const panelParts = { proposal: $("proposal"), suggested: $("suggested"), input: $("suggestedInput"), verdict: $("verdict"), why: $("why"), whyBody: $("whyBody"), approve: $("approve"), counter: $("counter"), lbl: $("lblSuggested"), toast: $("toast") };
 const pos = (v) => `calc(${((Math.min(MAX, Math.max(MIN, v)) - MIN) / (MAX - MIN)) * 100}% - 2px)`;
