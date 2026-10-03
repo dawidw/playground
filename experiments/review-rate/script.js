@@ -239,6 +239,8 @@ function resetPanel() {
 })();
 function closePanel() { flow++; setState("idle"); cases.forEach((c) => { if (c.slot && c.slot.querySelector(".spinner")) c.slot.innerHTML = ""; }); }
 function toggleWhy() {
+  // the panel follows the expanding content frame by frame (no height lag), so the footer never jumps
+  $("panel").classList.add("sync"); clearTimeout(toggleWhy.t); toggleWhy.t = setTimeout(() => $("panel").classList.remove("sync"), 500);
   const o = PP.whyBody.classList.toggle("open"); PP.why.setAttribute("aria-expanded", o);
   if (o) setTimeout(() => $("panelBody").scrollTo({ top: $("panelBody").scrollHeight, behavior: "smooth" }), 320);
 }
