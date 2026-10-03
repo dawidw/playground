@@ -50,7 +50,7 @@
           <h3 class="text-lg font-medium">Review rate · Anna Weber</h3>
           <button id="close" class="icon-btn" aria-label="Close"></button>
         </div>
-        <div class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-4">
+        <div id="panelBody" class="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 pb-24">
           <ol id="steps" class="flex flex-col gap-3"></ol>
           <div id="proposal" class="proposal rounded-xl border border-gray-1 p-4">
             <p class="text-xs font-medium text-muted-light">Suggested daily rate</p>
@@ -76,7 +76,7 @@
             </div>
           </div>
         </div>
-        <div class="flex items-center justify-between border-t border-gray-0-5 px-4 py-3">
+        <div class="float-footer">
           <button id="counter" class="btn-light">Counter offer…</button>
           <div class="flex gap-3">
             <button id="dismiss" class="btn-light">Dismiss</button>

@@ -27,10 +27,10 @@ people.forEach(([name, supplier, type, country, rate, inProject, av], i) => {
   row.innerHTML = `
     <span class="who">${avatar(av)}<span title="${name}">${name}</span></span>
     <span title="${supplier}">${supplier}</span>
-    <span><span class="chip chip-sm ${type === "Agency" ? "chip-info" : "chip-neutral"}">${type}</span></span>
+    <span><span class="chip chip-sm ${type === "Agency" ? "chip-info" : "chip-light"}">${type}</span></span>
     <span title="${country}">${country}</span>
     <span class="rate-cell"><b class="rate font-normal" data-rate="${rate}">${fmt(rate)}</b><span class="slot"></span></span>
-    <span><span class="chip chip-sm ${inProject ? "chip-success" : "chip-neutral"}">${inProject ? "Yes" : "No"}</span></span>
+    <span><span class="chip chip-sm ${inProject ? "chip-success" : "chip-light"}">${inProject ? "Yes" : "No"}</span></span>
     <span class="actions"><button class="btn-light">See profile</button><button class="more" aria-label="More">${icon("more-vert")}</button></span>`;
   rowsEl.appendChild(row);
 });
@@ -154,7 +154,10 @@ function resetPanel() {
   panelParts.approve.classList.remove("loading"); panelParts.approve.disabled = false; updateVerdict(LIMIT);
 }
 function closePanel() { flow++; setState("idle"); showReviewing(false); }
-function toggleWhy() { const o = panelParts.whyBody.classList.toggle("open"); panelParts.why.setAttribute("aria-expanded", o); }
+function toggleWhy() {
+  const o = panelParts.whyBody.classList.toggle("open"); panelParts.why.setAttribute("aria-expanded", o);
+  if (o) setTimeout(() => $("panelBody").scrollTo({ top: $("panelBody").scrollHeight, behavior: "smooth" }), 320);
+}
 function toggleCounter() {
   editing = !editing;
   panelParts.input.classList.toggle("hidden", !editing); panelParts.suggested.classList.toggle("hidden", editing);
