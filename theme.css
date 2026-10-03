@@ -1,26 +1,149 @@
-/* Twój styl w jednym miejscu. Zmień tokeny, a zmieni się każdy eksperyment. */
+/* Twój styl w jednym miejscu. Zmień tokeny, a zmieni się każdy eksperyment.
+   Źródło: biblioteka [AI] Library w Figmie (kolekcje Primitives i Semantic). */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
 
 :root {
+  /* Primitives: palety 0 (jasny) → 10 (ciemny), jak w Figmie */
+  --color-green-0: #FFFFFF;
+  --color-green-1: #CEF7E0;
+  --color-green-2: #9CF0C2;
+  --color-green-3: #6BE8A3;
+  --color-green-4: #39E185;
+  --color-green-5: #08D966;
+  --color-green-6: #06AE52;
+  --color-green-7: #05823D;
+  --color-green-8: #035729;
+  --color-green-9: #022B14;
+  --color-green-10: #000000;
+  --color-green-0-5: #E6FBF0;
+  --color-green-1-5: #B5F4D1;
+  --color-green-8-5: #02411F;
+  --color-green-9-5: #01160A;
+
+  --color-red-0: #FFFFFF;
+  --color-red-1: #F8D1D5;
+  --color-red-2: #F0A4AA;
+  --color-red-3: #E97680;
+  --color-red-4: #E14955;
+  --color-red-5: #DA1B2B;
+  --color-red-6: #AE1622;
+  --color-red-7: #83101A;
+  --color-red-8: #570B11;
+  --color-red-9: #2C0509;
+  --color-red-10: #000000;
+  --color-red-0-5: #FBE8EA;
+  --color-red-1-5: #F4BBBF;
+  --color-red-8-5: #41080D;
+  --color-red-9-5: #160304;
+
+  --color-carbon-black-0: #A5B7B4;
+  --color-carbon-black-1: #899896;
+  --color-carbon-black-2: #6C7977;
+  --color-carbon-black-3: #505B59;
+  --color-carbon-black-4: #333C3A;
+  --color-carbon-black-5: #171D1C;
+  --color-carbon-black-6: #121716;
+  --color-carbon-black-7: #0E1111;
+  --color-carbon-black-8: #090C0B;
+  --color-carbon-black-9: #050606;
+  --color-carbon-black-10: #000000;
+  --color-carbon-black-0-5: #97A8A5;
+  --color-carbon-black-1-5: #7A8986;
+  --color-carbon-black-8-5: #070908;
+  --color-carbon-black-9-5: #020303;
+
+  --color-canary-yellow-0: #FFFFFF;
+  --color-canary-yellow-1: #FEFEE0;
+  --color-canary-yellow-2: #FEFEC0;
+  --color-canary-yellow-3: #FDFDA1;
+  --color-canary-yellow-4: #FDFD81;
+  --color-canary-yellow-5: #FCFC62;
+  --color-canary-yellow-6: #D4D44F;
+  --color-canary-yellow-7: #ACAC3B;
+  --color-canary-yellow-8: #858528;
+  --color-canary-yellow-9: #5D5D14;
+  --color-canary-yellow-10: #353501;
+  --color-canary-yellow-0-5: #FFFFEF;
+  --color-canary-yellow-1-5: #FEFED0;
+  --color-canary-yellow-8-5: #71711E;
+  --color-canary-yellow-9-5: #49490B;
+
+  --color-blue-0: #FFFFFF;
+  --color-blue-1: #DAEEFF;
+  --color-blue-2: #B5DCFF;
+  --color-blue-3: #90CBFF;
+  --color-blue-4: #6BB9FF;
+  --color-blue-5: #46A8FF;
+  --color-blue-6: #3889D2;
+  --color-blue-7: #2A6BA5;
+  --color-blue-8: #1C4C77;
+  --color-blue-9: #0E2E4A;
+  --color-blue-10: #000F1D;
+  --color-blue-0-5: #EDF6FF;
+  --color-blue-1-5: #C8E5FF;
+  --color-blue-8-5: #153D61;
+  --color-blue-9-5: #071E34;
+
+  --color-orange-0: #FFFFFF;
+  --color-orange-1: #FFEED7;
+  --color-orange-2: #FFDCAF;
+  --color-orange-3: #FFCB86;
+  --color-orange-4: #FFB95E;
+  --color-orange-5: #FFA836;
+  --color-orange-6: #CF882B;
+  --color-orange-7: #9E6820;
+  --color-orange-8: #6E4716;
+  --color-orange-9: #3D270B;
+  --color-orange-10: #0D0700;
+  --color-orange-0-5: #FFF6EB;
+  --color-orange-1-5: #FFE5C3;
+  --color-orange-8-5: #563710;
+  --color-orange-9-5: #251705;
+
+  --color-gray-0: #FFFFFF;
+  --color-gray-1: #ECEDEF;
+  --color-gray-2: #D9DCDF;
+  --color-gray-3: #C7CACF;
+  --color-gray-4: #B4B9BF;
+  --color-gray-5: #A1A7AF;
+  --color-gray-6: #848A90;
+  --color-gray-7: #686C72;
+  --color-gray-8: #4B4F53;
+  --color-gray-9: #2F3135;
+  --color-gray-10: #121416;
+  --color-gray-0-5: #F6F6F7;
+  --color-gray-1-5: #E3E5E7;
+  --color-gray-8-5: #3D4044;
+  --color-gray-9-5: #202325;
+
+  /* Semantic */
+  --color-text-primary: var(--color-carbon-black-5);
+  --color-cta: var(--color-canary-yellow-5);
+  --color-success: var(--color-green-5);
+  --color-danger: var(--color-red-5);
+  --color-info: var(--color-blue-5);
+  --color-warning: var(--color-orange-5);
+
+  /* Tokeny strony */
   --font: "Inter", system-ui, sans-serif;
-  --bg: #fafaf9;
+  --bg: var(--color-gray-0-5);
   --surface: #ffffff;
-  --text: #1c1917;
-  --muted: #78716c;
-  --border: #e7e5e4;
-  --accent: #4f46e5;
-  --accent-text: #ffffff;
+  --text: var(--color-text-primary);
+  --muted: var(--color-gray-7);
+  --border: var(--color-gray-1-5);
+  --accent: var(--color-cta);
+  --accent-text: var(--color-text-primary);
   --radius: 12px;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 12px rgb(0 0 0 / 0.04);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0c0a09;
-    --surface: #1c1917;
-    --text: #fafaf9;
-    --muted: #a8a29e;
-    --border: #292524;
+    --bg: var(--color-carbon-black-7);
+    --surface: var(--color-carbon-black-6);
+    --text: var(--color-gray-0-5);
+    --muted: var(--color-gray-4);
+    --border: var(--color-carbon-black-4);
   }
 }
 
