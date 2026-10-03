@@ -19,5 +19,5 @@ Rules:
 Rules:
 - Only tokens and styles are mirrored. Do not recreate the library's base components (buttons, inputs, avatars...) in this repo.
 - CSS variable names mirror Figma code syntax, e.g. `--color-gray-0-5`, `--color-cta`. Figma names can't contain dots, so step 0.5 is `0-5`.
-- Font is Inter. Palette: green, red, carbon-black, canary-yellow, blue, orange, gray (steps 0 to 10). Text `#171D1C`, CTA `#171D1C` (black), accent `#FCFC62` (yellow).
+- Font is SF Pro (system stack, no webfont). Palette: green, red, carbon-black, canary-yellow, blue, orange, gray (steps 0 to 10). Text `#171D1C`, CTA `#171D1C` (black), accent `#FCFC62` (yellow).
 - The repo is public: no company data in experiments.

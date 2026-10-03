@@ -1,6 +1,5 @@
 /* Twój styl w jednym miejscu. Zmień tokeny, a zmieni się każdy eksperyment.
    Źródło: biblioteka [AI] Library w Figmie (kolekcje Primitives i Semantic). */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
 
 :root {
   /* Primitives: palety 0 (jasny) → 10 (ciemny), jak w Figmie */
@@ -122,14 +121,14 @@
   --color-bg-light: #FAFAFF;
   --color-bg-white: var(--color-gray-0);
   --color-bg-black: var(--color-carbon-black-5);
-  --color-border-light: var(--color-gray-2);
-  --color-border-divider: var(--color-gray-1);
+  --color-border-light: var(--color-gray-1);
+  --color-border-divider: var(--color-gray-0-5);
   --color-border-subtle: var(--color-gray-0-5);
-  --color-field-border: var(--color-gray-2);
-  --color-field-border-hover: var(--color-gray-4);
+  --color-field-border: var(--color-gray-1);
+  --color-field-border-hover: var(--color-gray-2);
   --color-field-border-focus: var(--color-carbon-black-5);
   --color-field-disabled: var(--color-gray-0-5);
-  --color-control-border: var(--color-gray-4);
+  --color-control-border: var(--color-gray-2);
   --color-control-off: var(--color-gray-2);
   --color-button-accent-text: var(--color-canary-yellow-9-5);
   --color-focus-primary: var(--color-gray-0);
@@ -154,7 +153,7 @@
   --color-warning: var(--color-orange-5);
 
   /* Tokeny strony: ciemny motyw domyślnie (Semantic: bg/page, bg/surface, text/inverse, text/inverse-muted, border/default) */
-  --font: "Inter", system-ui, sans-serif;
+  --font: "SF Pro", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --bg: var(--color-carbon-black-8);
   --surface: var(--color-carbon-black-7);
   --text: var(--color-gray-0-5);
