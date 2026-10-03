@@ -158,7 +158,8 @@ function renderLegend(v) {
 }
 function updateVerdict(v) {
   const pct = Math.round(((v - active.current) / active.current) * 100), ok = v <= active.limit;
-  PP.verdict.className = "chip " + (ok ? "chip-success" : "chip-danger");
+  // lowering the rate is red, raising it is green (orange when a raise exceeds the limit)
+  PP.verdict.className = "chip " + (v < active.current ? "chip-danger" : ok ? "chip-success" : "chip-warning");
   PP.verdict.textContent = `${pct > 0 ? "+" : ""}${pct}% · ${ok ? "Within limit" : "Above limit · needs approval"}`;
   PP.approve.querySelector(".btn-label").textContent = ok ? "Approve and update" : "Request approval";
   $("mSuggested").style.left = pos(v); $("mSuggested").dataset.v = fmt(v);
@@ -256,7 +257,7 @@ async function approve() {
   const from = c.applied; c.applied = v; lastApplied = c;
   tween(c.rateEl, from, v, 700);
   c.el.classList.add("hl");
-  c.slot.innerHTML = `<span class="diff chip chip-success chip-sm">${v >= from ? "+" : "−"}${fmt(Math.abs(from - v))}</span>`; requestAnimationFrame(() => c.slot.firstChild && c.slot.firstChild.classList.add("show"));
+  c.slot.innerHTML = `<span class="diff chip ${v >= from ? "chip-success" : "chip-danger"} chip-sm">${v >= from ? "+" : "−"}${fmt(Math.abs(from - v))}</span>`; requestAnimationFrame(() => c.slot.firstChild && c.slot.firstChild.classList.add("show"));
   setTimeout(() => c.el.classList.remove("hl"), 1800); setTimeout(() => c.slot.firstChild && c.slot.firstChild.classList.remove("show"), 2600);
   showToast(`Rate updated to ${fmt(v)} · ${c.name}`);
 }

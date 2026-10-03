@@ -26,6 +26,7 @@
 .chip-neutral { background: var(--color-gray-1); color: var(--color-text-primary); }
 .chip-info { background: var(--color-blue-0-5); color: var(--color-blue-8); }
 .chip-success { background: var(--color-green-0-5); color: var(--color-green-8); }
+.chip-warning { background: var(--color-orange-0-5); color: var(--color-orange-8); }
 .chip-danger { background: var(--color-red-0-5); color: var(--color-red-7); }
 .chip-outline-success { border: 1px solid var(--color-green-4); color: var(--color-green-8); }
 
