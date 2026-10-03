@@ -94,7 +94,7 @@
 .skeleton.hide { opacity: 0; }
 .sk { border-radius: 6px; background: linear-gradient(90deg, var(--color-gray-1) 25%, var(--color-gray-0-5) 50%, var(--color-gray-1) 75%); background-size: 200% 100%; animation: shimmer 1.3s linear infinite; }
 @keyframes shimmer { to { background-position: -200% 0; } }
-.proposal { display: none; opacity: 0; transform: translateY(6px); transition: opacity .5s var(--ease), transform .5s var(--ease); }
+.proposal { align-self: start; display: none; opacity: 0; transform: translateY(6px); transition: opacity .5s var(--ease), transform .5s var(--ease); }
 .proposal.measure { display: block; visibility: hidden; }
 .proposal.pending { display: block; }
 .proposal.show { display: block; opacity: 1; transform: none; }

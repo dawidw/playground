@@ -131,13 +131,15 @@ const icons = {
 $("close").innerHTML = icon("xmark"); $("whyLead").innerHTML = icon("hand-brake") + "Why this rate?"; $("whyChev").innerHTML = icon("nav-arrow-down");
 const panelInner = $("panelInner");
 // The panel hugs its content, anchored to the bottom; its height animates as steps appear.
-new ResizeObserver(() => {
+const syncPanel = () => {
   panelInner.style.maxHeight = stage.clientHeight - 32 + "px";
-  $("panel").style.height = panelInner.offsetHeight + "px";
-}).observe(panelInner);
+  const h = panelInner.offsetHeight + "px";
+  if ($("panel").style.height !== h) $("panel").style.height = h;
+};
+new ResizeObserver(syncPanel).observe(panelInner);
 // Braille loaders come from loaders.js (LOADERS): each agent step gets its own little animation
 let asciiI = 0;
-setInterval(() => { asciiI++; document.querySelectorAll(".ascii").forEach((el) => { const fr = LOADERS[el.dataset.anim] || LOADERS.braille; el.textContent = fr[asciiI % fr.length]; }); }, 90);
+setInterval(() => { syncPanel(); asciiI++; document.querySelectorAll(".ascii").forEach((el) => { const fr = LOADERS[el.dataset.anim] || LOADERS.braille; el.textContent = fr[asciiI % fr.length]; }); }, 90);
 const stepAnims = ["breathe"]; // one narrow 1-cell loader for every step, as wide as the check icon
 const stepsEl = $("steps");
 const PP = { proposal: $("proposal"), suggested: $("suggested"), input: $("suggestedInput"), verdict: $("verdict"), why: $("why"), whyBody: $("whyBody"), approve: $("approve"), toast: $("toast") };
@@ -208,9 +210,12 @@ async function runReview() {
   updateVerdict(suggestedValue);
 }
 function measureProposal() {
-  // the skeleton takes the height of the real card, so nothing jumps when they swap
-  const sk = $("skeleton"); sk.style.minHeight = "";
+  // the skeleton takes the height of the real card (with "Why" collapsed), so nothing jumps when they swap
+  const sk = $("skeleton"), wb = PP.whyBody;
+  wb.style.transition = "none"; wb.classList.remove("open"); void wb.offsetHeight; // snap closed, no animation
+  sk.style.minHeight = "";
   PP.proposal.classList.add("measure"); sk.style.minHeight = PP.proposal.offsetHeight + "px"; PP.proposal.classList.remove("measure");
+  requestAnimationFrame(() => { wb.style.transition = ""; });
 }
 function resetPanel() {
   fillCase(); buildSteps(); suggestedValue = active.suggested; editing = false;
