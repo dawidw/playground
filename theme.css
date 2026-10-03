@@ -1,5 +1,5 @@
-/* Twój styl w jednym miejscu. Zmień tokeny, a zmieni się każdy eksperyment.
-   Źródło: biblioteka [AI] Library w Figmie (kolekcje Primitives i Semantic). */
+/* Your style in one place. Change the tokens and every experiment follows.
+   Source: the [AI] Library in Figma (Primitives and Semantic collections). */
 
 :root {
   /* Primitives: palety 0 (jasny) → 10 (ciemny), jak w Figmie */
@@ -153,7 +153,7 @@
   --color-info: var(--color-blue-5);
   --color-warning: var(--color-orange-5);
 
-  /* Tokeny strony: ciemny motyw domyślnie (Semantic: bg/page, bg/surface, text/inverse, text/inverse-muted, border/default) */
+  /* Page tokens: dark theme by default (Semantic: bg/page, bg/surface, text/inverse, text/inverse-muted, border/default) */
   --font: "SF Pro", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-sans: var(--font);
   --bg: var(--color-carbon-black-8);
@@ -165,6 +165,8 @@
   --accent-text: var(--color-text-primary);
   --radius: 12px;
   --shadow: 0 1px 2px var(--color-shadow-sm), 0 4px 12px var(--color-shadow-md);
+  --shadow-xs: 0 1px 2px color-mix(in srgb, black 5%, transparent); /* Figma: Shadow/XS */
+  --shadow-default: 0 4px 6px -1px color-mix(in srgb, black 10%, transparent), 0 2px 4px -2px color-mix(in srgb, black 10%, transparent); /* Figma: shadow/shadow */
   --shadow-2xl: 0 25px 50px -12px color-mix(in srgb, var(--color-carbon-black-5) 25%, transparent);
 }
 

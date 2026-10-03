@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,7 +16,7 @@
       <div class="flex flex-wrap items-end justify-between gap-6">
         <div>
           <h1 class="text-3xl font-semibold">Agentic CRM #1 · Review rate</h1>
-          <p class="text-md text-muted">Agent sprawdza stawkę kontraktora, pokazuje uzasadnienie i czeka na zatwierdzenie. Klikaj albo odpal demo.</p>
+          <p class="text-md text-muted">The agent reviews a contractor's daily rate, explains why, and waits for approval. Click through it or play the demo.</p>
         </div>
         <div class="flex items-center gap-4">
           <label class="flex items-center gap-2 text-base text-muted"><input id="loop" type="checkbox"> Loop</label>
@@ -39,6 +39,7 @@
           <span>Contractor</span><span>Supplier</span><span>Engagement</span><span>Country</span><span>Daily rate</span><span>In project</span><span></span>
         </div>
         <div id="rows" class="flex flex-col"></div>
+        <div id="mcard" class="mcard"></div>
       </div>
 
       <div id="scrim" class="scrim"></div>
@@ -46,7 +47,7 @@
       <aside id="panel" class="panel" aria-hidden="true">
         <div class="flex items-center justify-between border-b border-gray-0-5 px-4 py-3">
           <h3 class="text-lg font-medium">Review rate · Anna Weber</h3>
-          <button id="close" class="icon-btn" aria-label="Close">✕</button>
+          <button id="close" class="icon-btn" aria-label="Close"></button>
         </div>
         <div class="flex flex-1 flex-col gap-4 overflow-auto p-4">
           <ol id="steps" class="flex flex-col gap-3"></ol>
@@ -64,7 +65,7 @@
               <div class="track"><div class="band"></div><i id="mLimit" class="pin pin-limit"></i><i id="mSuggested" class="pin pin-suggested"></i><i id="mCurrent" class="pin pin-current"></i></div>
               <div class="mt-2 flex gap-4 text-xs text-muted-light"><span>Suggested <b id="lblSuggested" class="font-normal">€1,100</b></span><span>Project limit €1,100</span><span>Current €1,250</span></div>
             </div>
-            <button id="why" class="why mt-4" aria-expanded="false"><span>🔒 Why this rate?</span><span class="chev">⌄</span></button>
+            <button id="why" class="why mt-4" aria-expanded="false"><span class="lead" id="whyLead"></span><span class="chev" id="whyChev"></span></button>
             <div id="whyBody" class="why-body">
               <div class="why-inner">
                 <p class="text-xs">The current rate of €1,250 is 14% above the project limit (€1,100) and 16% above the market median for similar contractors in Germany (€1,080).</p>
@@ -87,6 +88,7 @@
       <div id="cursor" class="cursor" aria-hidden="true"></div>
     </section>
   </main>
+  <script src="icons.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
-// Agentic CRM #1: Review rate. Stany: idle → menu → working → proposal → done (+ undo).
-// Dane są wymyślone (repo jest publiczne).
+// Agentic CRM #1: Review rate. States: idle → menu → working → proposal → done (+ undo).
+// All data is made up (the repo is public). Avatars and icons are exported from the Figma libraries.
 const $ = (id) => document.getElementById(id);
 const stage = $("stage");
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -7,61 +7,74 @@ const fmt = (n) => "€" + Math.round(n).toLocaleString("en-US");
 const LIMIT = 1100, CURRENT = 1250, MEDIAN = 1080, MIN = 900, MAX = 1300;
 
 const people = [
-  ["John Doe", "--", "Freelancer", "🇩🇪 Germany", 900, true],
-  ["Jaque Laurent", "Laurent, Inc", "Agency", "🇫🇷 France", 1100, true],
-  ["Anna Weber", "Kienbaum", "Agency", "🇩🇪 Germany", CURRENT, true],
-  ["Marco Rossi", "Northwind Digital", "Agency", "🇮🇹 Italy", 880, false],
-  ["Sofia Lind", "--", "Freelancer", "🇸🇪 Sweden", 1050, true],
-  ["Tomas Novak", "Deloitte Consulting", "Agency", "🇪🇸 Spain", 1400, false],
-  ["Priya Nair", "Acme Analytics", "Agency", "🇬🇧 United Kingdom", 1150, true],
-  ["Jonas Novak", "--", "Freelancer", "🇳🇱 Netherlands", 900, false],
+  ["John Doe", "--", "Freelancer", "🇩🇪 Germany", 900, true, "m1"],
+  ["Jaque Laurent", "Laurent, Inc", "Agency", "🇫🇷 France", 1100, true, "m2"],
+  ["Anna Weber", "Kienbaum", "Agency", "🇩🇪 Germany", CURRENT, true, "w1"],
+  ["Marco Rossi", "Northwind Digital", "Agency", "🇮🇹 Italy", 880, false, "m3"],
+  ["Sofia Lind", "--", "Freelancer", "🇸🇪 Sweden", 1050, true, "w2"],
+  ["Tomas Novak", "Deloitte Consulting", "Agency", "🇪🇸 Spain", 1400, false, "m4"],
+  ["Priya Nair", "Acme Analytics", "Agency", "🇬🇧 United Kingdom", 1150, true, "w3"],
+  ["Jonas Novak", "--", "Freelancer", "🇳🇱 Netherlands", 900, false, "w4"],
 ];
-const initials = (n) => n.split(" ").map((w) => w[0]).join("");
+const avatar = (f, cls = "avatar") => `<img class="${cls}" src="avatars/${f}.png" alt="">`;
 
 // ---- Tabela
 const rowsEl = $("rows");
-people.forEach(([name, supplier, type, country, rate, inProject], i) => {
+people.forEach(([name, supplier, type, country, rate, inProject, av], i) => {
   const row = document.createElement("div");
   row.className = "row";
   row.id = i === 2 ? "row-anna" : "";
   row.innerHTML = `
-    <span class="who"><span class="avatar">${initials(name)}</span>${name}</span>
+    <span class="who">${avatar(av)}${name}</span>
     <span>${supplier}</span>
     <span><span class="chip chip-sm ${type === "Agency" ? "chip-info" : "chip-neutral"}">${type}</span></span>
     <span>${country}</span>
     <span class="rate-cell"><b class="rate font-normal" data-rate="${rate}">${fmt(rate)}</b><span class="slot"></span></span>
     <span><span class="chip chip-sm ${inProject ? "chip-success" : "chip-neutral"}">${inProject ? "Yes" : "No"}</span></span>
-    <span class="actions"><button class="btn-light">See profile</button><button class="more" aria-label="More">⋮</button></span>`;
+    <span class="actions"><button class="btn-light">See profile</button><button class="more" aria-label="More">${icon("more-vert")}</button></span>`;
   rowsEl.appendChild(row);
 });
-const annaRow = $("row-anna");
-const annaRate = annaRow.querySelector(".rate");
-const annaSlot = annaRow.querySelector(".slot");
-const annaMore = annaRow.querySelector(".more");
+// Mobile: the same contractor as a single card
+const anna = people[2];
+$("mcard").innerHTML = `
+  <div class="top">${avatar(anna[6], "avatar avatar-lg")}<div><div class="text-md font-medium">${anna[0]}</div><div class="text-xs text-muted-light">${anna[1]}</div></div></div>
+  <div class="meta"><span class="chip chip-info">${anna[2]}</span><span class="chip chip-neutral">${anna[3]}</span><span class="chip chip-success">In project</span></div>
+  <div class="facts"><div><small>Daily rate</small><span class="rate-cell"><b class="rate font-normal">${fmt(anna[4])}</b><span class="slot"></span></span></div><div><small>Engagement</small>Agency</div></div>
+  <div class="actions"><button class="btn-light">See profile</button><button class="more" aria-label="More">${icon("more-vert")}</button></div>`;
+const mq = matchMedia("(max-width: 720px)");
+let annaRow, annaRate, annaSlot, annaMore;
+function bindTarget() {
+  annaRow = mq.matches ? $("mcard") : $("row-anna");
+  annaRate = annaRow.querySelector(".rate"); annaSlot = annaRow.querySelector(".slot"); annaMore = annaRow.querySelector(".more");
+  annaMore.addEventListener("click", (e) => { e.stopPropagation(); menu.classList.contains("open") ? closeMenus() : openMenu(); });
+}
 
-// ---- Menu (główne + submenu Agent)
+// ---- Menu (main + Agent submenu)
 const menu = document.createElement("div"); menu.className = "menu";
-menu.innerHTML = `<div class="item">Edit</div><div class="item">Request document</div><div class="item">Worker type assessment</div><div class="item">Request self-assessment</div><div class="sep"></div><div class="item" id="agentItem">Agent <span>›</span></div><div class="sep"></div><div class="item danger">Archive</div>`;
+const it = (ic, label, extra = "") => `<div class="item"${extra}><span class="lead">${icon(ic)}${label}</span></div>`;
+menu.innerHTML = it("edit", "Edit") + it("submit-document", "Request document") + it("task-list", "Worker type assessment") + it("mail-out", "Request self-assessment") + `<div class="sep"></div><div class="item" id="agentItem"><span class="lead">${icon("arrow-reduce-tag")}Agent</span>${icon("nav-arrow-right")}</div><div class="sep"></div><div class="item danger"><span class="lead">${icon("archive")}Archive</span></div>`;
 const sub = document.createElement("div"); sub.className = "menu";
-sub.innerHTML = `<div class="item">Find project</div><div class="item">Request missing documents</div><div class="item">Check compliance</div><div class="item" id="reviewItem">Review rate</div>`;
+sub.innerHTML = it("input-search", "Find project") + it("submit-document", "Request missing documents") + it("task-list", "Check compliance") + it("mail-out", "Review rate", ' id="reviewItem"');
 stage.append(menu, sub);
 const agentItem = menu.querySelector("#agentItem"), reviewItem = sub.querySelector("#reviewItem");
 
 const rel = (el) => { const s = stage.getBoundingClientRect(), r = el.getBoundingClientRect(); return { x: r.left - s.left, y: r.top - s.top, w: r.width, h: r.height }; };
 function openMenu() {
   const b = rel(annaMore);
-  menu.style.left = b.x + b.w - 220 + "px"; menu.style.top = b.y + b.h + 6 + "px";
+  const w = menu.offsetWidth || 220;
+  menu.style.left = Math.max(8, b.x + b.w - w) + "px"; menu.style.top = b.y + b.h + 6 + "px";
   menu.classList.add("open");
 }
 function openSub() {
   const m = rel(agentItem);
   agentItem.classList.add("hover");
-  sub.style.left = m.x - 232 + "px"; sub.style.top = m.y - 4 + "px";
+  const sw = sub.offsetWidth || 232;
+  sub.style.left = mq.matches ? Math.max(8, m.x + m.w - sw) + "px" : m.x - sw - 8 + "px";
+  sub.style.top = mq.matches ? m.y + m.h + 4 + "px" : m.y - 4 + "px";
   sub.classList.add("open");
 }
 function closeMenus() { menu.classList.remove("open"); sub.classList.remove("open"); agentItem.classList.remove("hover"); reviewItem.classList.remove("hover"); }
 
-annaMore.addEventListener("click", (e) => { e.stopPropagation(); menu.classList.contains("open") ? closeMenus() : openMenu(); });
 agentItem.addEventListener("mouseenter", openSub);
 agentItem.addEventListener("click", openSub);
 document.addEventListener("click", (e) => { if (!menu.contains(e.target) && !sub.contains(e.target)) closeMenus(); });
@@ -71,14 +84,16 @@ sub.querySelectorAll(".item:not(#reviewItem)").forEach((el) => el.addEventListen
 // ---- Panel
 const steps = [
   ["Reading contract and project limit", "Max daily rate €1,100 · Project SAP S/4HANA rollout"],
-  ["Comparing with 14 similar contractors in Germany", "Median €1,080 · range €900–€1,300"],
+  ["Searching similar profiles", "14 contractors in Germany with matching skills and seniority"],
+  ["Comparing with the 14 similar profiles", "Median €1,080 · range €900–€1,300"],
   ["Checking approval rules", "Over 10% above max needs approval"],
 ];
 const icons = {
-  pending: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
+  pending: icon("clock"),
   running: `<span class="spinner"></span>`,
-  done: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.5 2.5L16 9.5"/></svg>`,
+  done: icon("check-circle"),
 };
+$("close").innerHTML = icon("xmark"); $("whyLead").innerHTML = icon("lock") + "Why this rate?"; $("whyChev").innerHTML = icon("nav-arrow-down");
 const stepsEl = $("steps");
 const panelParts = { proposal: $("proposal"), suggested: $("suggested"), input: $("suggestedInput"), verdict: $("verdict"), why: $("why"), whyBody: $("whyBody"), approve: $("approve"), counter: $("counter"), lbl: $("lblSuggested"), toast: $("toast") };
 const pos = (v) => `calc(${((Math.min(MAX, Math.max(MIN, v)) - MIN) / (MAX - MIN)) * 100}% - 2px)`;
@@ -88,7 +103,7 @@ function setState(s) { stage.dataset.state = s; $("panel").setAttribute("aria-hi
 function setStep(i, status) { const s = stepsEl.children[i]; s.dataset.status = status; s.querySelector(".ico").innerHTML = icons[status]; }
 function buildSteps() {
   stepsEl.innerHTML = "";
-  steps.forEach(([l, d]) => { const li = document.createElement("li"); li.className = "step"; li.dataset.status = "pending"; li.innerHTML = `<span class="ico">${icons.pending}</span><div><div class="label">${l}</div><div class="detail">${d}</div></div>`; stepsEl.appendChild(li); });
+  steps.forEach(([l, d], i) => { const li = document.createElement("li"); li.className = "step" + (i === steps.length - 1 ? " final" : ""); li.dataset.status = "pending"; li.innerHTML = `<span class="ico">${icons.pending}</span><div><div class="label">${l}</div><div class="detail">${d}</div></div>`; stepsEl.appendChild(li); });
 }
 function tween(el, from, to, ms = 600) {
   const t0 = performance.now();
@@ -170,6 +185,8 @@ $("scrim").addEventListener("click", closePanel);
 $("counter").addEventListener("click", toggleCounter);
 $("why").addEventListener("click", toggleWhy);
 $("undo").addEventListener("click", undo);
+bindTarget();
+mq.addEventListener("change", () => { resetAll(); bindTarget(); });
 $("reset").addEventListener("click", () => { demoId++; resetAll(); });
 
 // ---- Demo (z kursorem, pod nagranie)
