@@ -13,6 +13,7 @@ Always update code AND Figma together, in the same turn, and say what was synced
 Rules:
 - Change in Figma (colors, typography, spacing, tokens, styles, layout) → update `theme.css`, `tailwind-config.js` and the pages here.
 - Change in code (tokens, layout) → update the Figma variables/styles/frames.
+- Always use variables for values wherever possible. In Figma bind colors to `Primitives`/`Semantic` variables and spacing, gap, radius, width/height, font size and line height to the `TailwindCSS` variables (text via text styles). In code use CSS variables and Tailwind tokens, no literals. Hardcode only when no variable exists, and say so.
 - Commit and push after code changes. The user tells me about changes they make themselves; I don't poll for them.
 
 Rules:
