@@ -124,6 +124,10 @@
   --color-bg-black: var(--color-carbon-black-5);
   --color-border-light: var(--color-gray-2);
   --color-button-accent-text: var(--color-canary-yellow-9-5);
+  --color-focus-primary: var(--color-gray-0);
+  --color-focus-neutral: var(--color-gray-6);
+  --color-focus-accent: var(--color-canary-yellow-8);
+  --color-focus-danger: var(--color-red-7);
   --color-button-secondary-text: var(--color-carbon-black-3);
   --color-button-secondary-border: var(--color-gray-1);
   --color-button-ghost-text: var(--color-carbon-black-4);
