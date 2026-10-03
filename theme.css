@@ -126,11 +126,11 @@
 
   /* Tokeny strony: ciemny motyw domyślnie (Semantic: bg/page, bg/surface, text/inverse, text/inverse-muted, border/default) */
   --font: "Inter", system-ui, sans-serif;
-  --bg: var(--color-carbon-black-5);
-  --surface: var(--color-carbon-black-4);
+  --bg: var(--color-carbon-black-8);
+  --surface: var(--color-carbon-black-7);
   --text: var(--color-gray-0-5);
-  --muted: var(--color-gray-4);
-  --border: var(--color-carbon-black-3);
+  --muted: var(--color-gray-5);
+  --border: var(--color-gray-9-5);
   --accent: var(--color-cta);
   --accent-text: var(--color-text-primary);
   --radius: 12px;
