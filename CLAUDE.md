@@ -4,11 +4,16 @@ Static HTML/CSS/JS + Tailwind via CDN, no build. Experiments live in `experiment
 
 ## Figma ↔ code sync (always)
 
-The Figma file "[AI] Library" (fileKey `QB7S0UrBUX2qVFo70nLS6Q`) holds the base primitives and design tokens. Keep it and this repo in sync in both directions:
+Always update code AND Figma together, in the same turn, and say what was synced. Files:
 
-- Change in Figma (colors, typography, spacing, tokens, styles) → update `theme.css` and `tailwind-config.js` in the same turn.
-- Change to design tokens in code → update the Figma variables/styles in the library in the same turn.
-- Say what was synced when done.
+- "[AI] Library" (fileKey `QB7S0UrBUX2qVFo70nLS6Q`): base primitives, `Primitives`/`Semantic` variables, paint and text styles.
+- "Playground" (fileKey `rwXlbiSN7hIMmWYjA5648W`): frames `Playground / Index` and `Playground / Example` mirror the pages in this repo.
+- Iconoir copy (fileKey `0OlXq2gdUytl5KYDknF9Ma`): icons, `Icon color` collection (modes mirror Semantic hex values).
+
+Rules:
+- Change in Figma (colors, typography, spacing, tokens, styles, layout) → update `theme.css`, `tailwind-config.js` and the pages here.
+- Change in code (tokens, layout) → update the Figma variables/styles/frames.
+- Commit and push after code changes. The user tells me about changes they make themselves; I don't poll for them.
 
 Rules:
 - Only tokens and styles are mirrored. Do not recreate the library's base components (buttons, inputs, avatars...) in this repo.
