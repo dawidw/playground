@@ -39,11 +39,13 @@ tailwind.config = {
       lg: ["18px", "28px"], xl: ["20px", "30px"], "2xl": ["24px", "30px"], "3xl": ["28px", "34px"],
       "4xl": ["32px", "38px"], "5xl": ["40px", "48px"], "6xl": ["60px", "74px"], "7xl": ["72px", "88px"],
       header: ["24px", "28px"],
+      // Button/Text styles (interlinia = rozmiar, żeby tekst był wycentrowany w pillach i przyciskach)
+      "btn-sm": ["12px", "12px"], "btn-2xs": ["10px", "10px"],
     },
     extend: {
       fontFamily: { sans: "var(--font)" },
       borderRadius: { card: "var(--radius)" },
-      boxShadow: { card: "var(--shadow)" },
+      boxShadow: { card: "var(--shadow)", "2xl": "var(--shadow-2xl)" },
     },
   },
 };
