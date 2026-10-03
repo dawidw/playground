@@ -9,14 +9,30 @@
   <script src="tailwind-config.js"></script>
 </head>
 <body>
-  <main class="mx-auto max-w-2xl px-4 py-12">
-    <h1 class="text-3xl font-semibold">Playground</h1>
-    <p class="mb-8 text-muted">Eksperymenty w moim stylu.</p>
-    <ul class="grid gap-3">
-      <li>
-        <a href="experiments/example/" class="block rounded-card border border-line bg-surface p-5 shadow-card hover:border-accent">
-          <strong class="block">Example</strong>
-          <span class="text-sm text-muted">Szablon eksperymentu: skopiuj folder i zmień.</span>
+  <main class="mx-auto w-full max-w-[1600px] px-6 py-12 lg:px-10">
+    <header class="mb-10">
+      <h1 class="text-3xl font-semibold">Playground</h1>
+      <p class="text-muted">Eksperymenty w moim stylu.</p>
+    </header>
+
+    <!-- 12 kolumn: karta = 3 kolumny od lg, 6 od sm, 12 na telefonie -->
+    <ul class="grid grid-cols-12 gap-6">
+      <!--
+        Nowy eksperyment: skopiuj <li>, zmień href, nazwę i opis.
+        Screen komponentu: experiments/<nazwa>/preview.png (16:10). Bez pliku widać placeholder.
+      -->
+      <li class="col-span-12 sm:col-span-6 lg:col-span-3">
+        <a href="experiments/example/" class="group block h-full overflow-hidden rounded-card border border-line bg-surface shadow-card transition-colors hover:border-accent">
+          <div class="relative aspect-[16/10] bg-bg">
+            <img src="experiments/example/preview.png" alt="" loading="lazy"
+                 class="absolute inset-0 h-full w-full object-cover"
+                 onerror="this.remove()">
+            <span class="absolute inset-0 flex items-center justify-center text-sm text-muted">preview.png</span>
+          </div>
+          <div class="p-5">
+            <strong class="block font-semibold">Example</strong>
+            <span class="text-sm text-muted">Szablon eksperymentu: skopiuj folder i zmień.</span>
+          </div>
         </a>
       </li>
     </ul>

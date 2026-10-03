@@ -7,3 +7,4 @@ Miejsce na eksperymenty. Czysty HTML/CSS/JS, bez builda.
 - dopisz nowy eksperyment do listy w `index.html`
 
 Podgląd lokalnie: `python3 -m http.server`
+- screen komponentu na karcie: `experiments/<nazwa>/preview.png` (proporcje 16:10), bez pliku widać placeholder
