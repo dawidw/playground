@@ -124,27 +124,17 @@
   --color-info: var(--color-blue-5);
   --color-warning: var(--color-orange-5);
 
-  /* Tokeny strony */
+  /* Tokeny strony: ciemny motyw domyślnie (Semantic: bg/page, bg/surface, text/inverse, text/inverse-muted, border/default) */
   --font: "Inter", system-ui, sans-serif;
-  --bg: var(--color-gray-0-5);
-  --surface: #ffffff;
-  --text: var(--color-text-primary);
-  --muted: var(--color-gray-7);
-  --border: var(--color-gray-1-5);
+  --bg: var(--color-carbon-black-5);
+  --surface: var(--color-carbon-black-4);
+  --text: var(--color-gray-0-5);
+  --muted: var(--color-gray-4);
+  --border: var(--color-carbon-black-3);
   --accent: var(--color-cta);
   --accent-text: var(--color-text-primary);
   --radius: 12px;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 12px rgb(0 0 0 / 0.04);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: var(--color-carbon-black-7);
-    --surface: var(--color-carbon-black-6);
-    --text: var(--color-gray-0-5);
-    --muted: var(--color-gray-4);
-    --border: var(--color-carbon-black-4);
-  }
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.2);
 }
 
 body {
