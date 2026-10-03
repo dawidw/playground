@@ -33,6 +33,13 @@ tailwind.config = {
       info: "var(--color-info)",
       warning: "var(--color-warning)",
     },
+    // Skala z text styles w AI Library (nazwa -> [rozmiar, interlinia]). Zastępuje domyślną skalę Tailwinda.
+    fontSize: {
+      "2xs": ["10px", "16px"], xs: ["12px", "18px"], base: ["14px", "20px"], md: ["16px", "24px"],
+      lg: ["18px", "28px"], xl: ["20px", "30px"], "2xl": ["24px", "30px"], "3xl": ["28px", "34px"],
+      "4xl": ["32px", "38px"], "5xl": ["40px", "48px"], "6xl": ["60px", "74px"], "7xl": ["72px", "88px"],
+      header: ["24px", "28px"],
+    },
     extend: {
       fontFamily: { sans: "var(--font)" },
       borderRadius: { card: "var(--radius)" },

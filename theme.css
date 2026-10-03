@@ -121,6 +121,8 @@
   --color-text-muted: var(--color-gray-7);
   --color-bg-light: #FAFAFF;
   --color-bg-white: var(--color-gray-0);
+  --color-shadow-sm: color-mix(in srgb, var(--color-carbon-black-5) 30%, transparent);
+  --color-shadow-md: color-mix(in srgb, var(--color-carbon-black-5) 20%, transparent);
   --color-cta: var(--color-canary-yellow-5);
   --color-success: var(--color-green-5);
   --color-danger: var(--color-red-5);
@@ -137,7 +139,7 @@
   --accent: var(--color-cta);
   --accent-text: var(--color-text-primary);
   --radius: 12px;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.2);
+  --shadow: 0 1px 2px var(--color-shadow-sm), 0 4px 12px var(--color-shadow-md);
 }
 
 body {
