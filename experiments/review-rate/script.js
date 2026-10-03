@@ -161,7 +161,7 @@ function updateVerdict(v) {
   PP.verdict.className = "chip " + (ok ? "chip-success" : "chip-danger");
   PP.verdict.textContent = `${pct > 0 ? "+" : ""}${pct}% · ${ok ? "Within limit" : "Above limit · needs approval"}`;
   PP.approve.querySelector(".btn-label").textContent = ok ? "Approve and update" : "Request approval";
-  $("mSuggested").style.left = pos(v);
+  $("mSuggested").style.left = pos(v); $("mSuggested").dataset.v = fmt(v);
   renderLegend(v);
 }
 function fillCase() {
@@ -176,7 +176,8 @@ function showReviewing(on) { active.slot.innerHTML = on ? `<span class="chip chi
 
 async function runReview() {
   const id = ++flow, c = active;
-  closeMenus(); resetPanel(); setState("working"); showReviewing(true);
+  closeMenus(); resetPanel(); measureProposal(); setState("working"); showReviewing(true);
+  $("skeleton").classList.add("show");
   await sleep(450);
   for (let i = 0; i < c.steps.length; i++) {
     if (id !== flow) return;
@@ -188,19 +189,41 @@ async function runReview() {
   await sleep(250);
   if (id !== flow) return;
   setState("proposal");
-  PP.proposal.classList.add("show");
+  PP.proposal.classList.add("pending"); await sleep(30);
+  $("skeleton").classList.add("hide"); PP.proposal.classList.add("show");
+  setTimeout(() => { $("skeleton").classList.remove("show", "hide"); }, 420);
+  PP.verdict.classList.remove("pop"); void PP.verdict.offsetWidth; setTimeout(() => PP.verdict.classList.add("pop"), 500);
   $("mLimit").style.left = pos(c.limit); $("mCurrent").style.left = pos(c.current); $("mSuggested").style.left = pos(c.current);
   await sleep(120);
   $("mSuggested").style.left = pos(c.suggested);
   tween(PP.suggested, c.current, suggestedValue, 700);
   updateVerdict(suggestedValue);
 }
+function measureProposal() {
+  // the skeleton takes the height of the real card, so nothing jumps when they swap
+  const sk = $("skeleton"); sk.style.minHeight = "";
+  PP.proposal.classList.add("measure"); sk.style.minHeight = PP.proposal.offsetHeight + "px"; PP.proposal.classList.remove("measure");
+}
 function resetPanel() {
   fillCase(); buildSteps(); suggestedValue = active.suggested; editing = false;
-  PP.proposal.classList.remove("show"); PP.whyBody.classList.remove("open"); PP.why.setAttribute("aria-expanded", "false");
+  PP.proposal.classList.remove("show", "pending"); $("skeleton").classList.remove("show", "hide"); PP.verdict.classList.remove("pop"); PP.whyBody.classList.remove("open"); PP.why.setAttribute("aria-expanded", "false");
   PP.input.classList.add("hidden"); PP.suggested.classList.remove("hidden"); PP.suggested.textContent = fmt(active.current);
   PP.approve.classList.remove("loading"); PP.approve.disabled = false; updateVerdict(suggestedValue);
 }
+// Drag the blue pin along the range to try other rates
+(() => {
+  const pin = $("mSuggested"), track = pin.parentElement;
+  const set = (x) => {
+    const r = track.getBoundingClientRect(), f = Math.min(1, Math.max(0, (x - r.left) / r.width));
+    suggestedValue = Math.round((active.min + f * (active.max - active.min)) / 10) * 10;
+    if (editing) PP.input.value = suggestedValue; else PP.suggested.textContent = fmt(suggestedValue);
+    updateVerdict(suggestedValue);
+  };
+  pin.addEventListener("pointerdown", (e) => { e.preventDefault(); pin.setPointerCapture(e.pointerId); pin.classList.add("drag"); set(e.clientX); });
+  pin.addEventListener("pointermove", (e) => { if (pin.classList.contains("drag")) set(e.clientX); });
+  const end = () => pin.classList.remove("drag");
+  pin.addEventListener("pointerup", end); pin.addEventListener("pointercancel", end);
+})();
 function closePanel() { flow++; setState("idle"); cases.forEach((c) => { if (c.slot && c.slot.querySelector(".spinner")) c.slot.innerHTML = ""; }); }
 function toggleWhy() {
   const o = PP.whyBody.classList.toggle("open"); PP.why.setAttribute("aria-expanded", o);
