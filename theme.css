@@ -125,6 +125,12 @@
   --color-border-light: var(--color-gray-2);
   --color-border-divider: var(--color-gray-1);
   --color-border-subtle: var(--color-gray-0-5);
+  --color-field-border: var(--color-gray-2);
+  --color-field-border-hover: var(--color-gray-4);
+  --color-field-border-focus: var(--color-carbon-black-5);
+  --color-field-disabled: var(--color-gray-0-5);
+  --color-control-border: var(--color-gray-4);
+  --color-control-off: var(--color-gray-2);
   --color-button-accent-text: var(--color-canary-yellow-9-5);
   --color-focus-primary: var(--color-gray-0);
   --color-focus-neutral: var(--color-gray-6);
