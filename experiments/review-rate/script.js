@@ -125,7 +125,7 @@ sub.querySelectorAll(".item:not(#reviewItem)").forEach((el) => el.addEventListen
 // ---- Panel
 const icons = {
   pending: icon("clock"),
-  running: `<span class="ascii" aria-hidden="true">✢</span>`,
+  running: (i = 0) => `<span class="ascii" data-anim="${stepAnims[i % stepAnims.length]}" aria-hidden="true">⠋</span>`,
   done: icon("check-circle"),
 };
 $("close").innerHTML = icon("xmark"); $("whyLead").innerHTML = icon("hand-brake") + "Why this rate?"; $("whyChev").innerHTML = icon("nav-arrow-down");
@@ -135,17 +135,41 @@ new ResizeObserver(() => {
   panelInner.style.maxHeight = stage.clientHeight - 32 + "px";
   $("panel").style.height = panelInner.offsetHeight + "px";
 }).observe(panelInner);
-// ASCII "agent is thinking" glyph, shared by every .ascii element
-const ASCII_FRAMES = ["·", "✢", "✳", "✶", "✻", "✽", "✻", "✶", "✳", "✢"];
+// Braille "agent is thinking" loaders: each step gets its own little animation (U+2800 + dot bitmask)
+const B = (m) => String.fromCharCode(0x2800 + m);
+const COLS = [0x47, 0xb8]; // left column dots 1,2,3,7 / right column dots 4,5,6,8
+const ROWS = [0x09, 0x12, 0x24, 0xc0]; // top → bottom, both columns
+const ANIMS = (() => {
+  const a = {};
+  a.spin = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+  const orbit = [0x01, 0x02, 0x04, 0x40, 0x80, 0x20, 0x10, 0x08];
+  a.orbit = Array.from({ length: 16 }, (_, f) => B(orbit[f % 8]) + B(orbit[(f + 4) % 8]) + B(orbit[(f + 2) % 8]));
+  // wave: bars of different heights moving across 3 cells
+  a.wave = Array.from({ length: 24 }, (_, f) => Array.from({ length: 3 }, (_, i) => {
+    const h = Math.round(((Math.sin((f - i * 2.2) / 3.2) + 1) / 2) * 4);
+    let m = 0; for (let r = 0; r < h; r++) m |= ROWS[3 - r]; return B(m);
+  }).join(""));
+  // scan: a vertical bar sweeping back and forth over 3 cells (6 columns)
+  a.scan = Array.from({ length: 10 }, (_, f) => { const p = f < 6 ? f : 10 - f; return Array.from({ length: 3 }, (_, i) => B(((p === i * 2) ? COLS[0] : 0) | ((p === i * 2 + 1) ? COLS[1] : 0))).join(""); });
+  // cascade: dots falling through 3 cells at different speeds
+  a.cascade = Array.from({ length: 16 }, (_, f) => Array.from({ length: 3 }, (_, i) => B([0x01, 0x02, 0x04, 0x40][(f + i) % 4] | [0x08, 0x10, 0x20, 0x80][(f + i * 2 + 1) % 4])).join(""));
+  // sparkle: pseudo random dots
+  let seed = 7; const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+  a.sparkle = Array.from({ length: 20 }, () => Array.from({ length: 3 }, () => { let m = 0; for (let b = 0; b < 8; b++) if (rnd() < 0.3) m |= 1 << b; return B(m); }).join(""));
+  // pulse: fills up and empties
+  a.pulse = Array.from({ length: 12 }, (_, f) => { const h = f < 6 ? f : 12 - f; let m = 0; for (let r = 0; r < Math.min(4, h); r++) m |= ROWS[3 - r]; return B(m).repeat(3); });
+  return a;
+})();
 let asciiI = 0;
-setInterval(() => { asciiI = (asciiI + 1) % ASCII_FRAMES.length; document.querySelectorAll(".ascii").forEach((el) => { el.textContent = ASCII_FRAMES[asciiI]; }); }, 110);
+setInterval(() => { asciiI++; document.querySelectorAll(".ascii").forEach((el) => { const fr = ANIMS[el.dataset.anim] || ANIMS.spin; el.textContent = fr[asciiI % fr.length]; }); }, 90);
+const stepAnims = ["orbit", "wave", "scan", "sparkle"];
 const stepsEl = $("steps");
 const PP = { proposal: $("proposal"), suggested: $("suggested"), input: $("suggestedInput"), verdict: $("verdict"), why: $("why"), whyBody: $("whyBody"), approve: $("approve"), toast: $("toast") };
 const pos = (v) => `calc(${((Math.min(active.max, Math.max(active.min, v)) - active.min) / (active.max - active.min)) * 100}% - 2px)`;
 let flow = 0, suggestedValue = 0, editing = false, toastTimer;
 
 function setState(s) { stage.dataset.state = s; $("panel").setAttribute("aria-hidden", s === "idle"); }
-function setStep(i, status) { const s = stepsEl.children[i]; s.dataset.status = status; s.querySelector(".ico").innerHTML = icons[status]; }
+function setStep(i, status) { const s = stepsEl.children[i]; s.dataset.status = status; const ic = icons[status]; s.querySelector(".ico").innerHTML = typeof ic === "function" ? ic(i) : ic; }
 function buildSteps() {
   stepsEl.innerHTML = "";
   active.steps.forEach(([l, d]) => { const li = document.createElement("li"); li.className = "step"; li.dataset.status = "pending"; li.innerHTML = `<span class="ico">${icons.pending}</span><div><div class="label">${l}</div><div class="detail">${d}</div></div>`; stepsEl.appendChild(li); });
@@ -177,7 +201,7 @@ function fillCase() {
   const band = document.querySelector(".band"), span = c.max - c.min;
   band.style.left = ((c.band[0] - c.min) / span) * 100 + "%"; band.style.width = ((c.band[1] - c.band[0]) / span) * 100 + "%";
 }
-function showReviewing(on) { active.slot.innerHTML = on ? `<span class="chip chip-info chip-sm"><span class="ascii" aria-hidden="true">✢</span>Reviewing…</span>` : ""; }
+function showReviewing(on) { active.slot.innerHTML = on ? `<span class="chip chip-info chip-sm"><span class="ascii" data-anim="spin" aria-hidden="true">⠋</span>Reviewing…</span>` : ""; }
 
 async function runReview() {
   const id = ++flow, c = active;

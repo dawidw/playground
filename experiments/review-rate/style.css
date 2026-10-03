@@ -77,7 +77,7 @@
 /* Steps */
 .step { display: none; gap: 8px; }
 .step.show { display: flex; animation: rise .35s var(--ease); }
-.step .ico { width: 16px; height: 16px; margin-top: 2px; display: grid; place-items: center; color: var(--color-text-primary); }
+.step .ico { width: 30px; height: 16px; margin-top: 2px; display: flex; align-items: center; justify-content: flex-start; color: var(--color-text-primary); flex: none; }
 .step[data-status="pending"] .ico { color: var(--color-text-muted); }
 .step[data-status="done"] .ico { color: var(--color-green-6); }
 .step .ico .spinner { width: 12px; height: 12px; border-width: 1.5px; color: var(--color-text-primary); }
@@ -176,7 +176,6 @@ body.record #stage { width: 1280px; height: 720px !important; border-radius: 0; 
 /* The verdict pill may wrap onto its own line (mobile) instead of stretching the card */
 #verdict { max-width: 100%; white-space: normal; height: auto; min-height: 24px; padding-top: 4px; padding-bottom: 4px; line-height: 14px; }
 
-/* Animated ASCII glyph: the agent is thinking */
-.ascii { display: inline-block; width: 1em; text-align: center; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; line-height: 1; color: var(--color-text-primary); }
-.step .ico .ascii { font-size: 15px; }
-.chip .ascii { font-size: 12px; color: currentColor; width: .9em; }
+/* Braille loaders: the agent is thinking */
+.ascii { display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 15px; line-height: 1; letter-spacing: 0; white-space: pre; color: var(--color-text-primary); }
+.chip .ascii { font-size: 13px; color: currentColor; }
