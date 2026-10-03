@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agentic CRM · Raise rate</title>
+  <link rel="stylesheet" href="../../theme.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../../tailwind-config.js"></script>
+</head>
+<body>
+  <main class="flex w-full flex-col gap-10 px-10 py-12">
+    <header class="flex flex-col gap-4 pb-2">
+      <a href="../../" class="text-md text-muted">← Playground</a>
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <h1 class="text-3xl font-semibold">Agentic CRM #2 · Raise rate to retain</h1>
+          <p class="text-md text-muted">The agent notices a contractor's rate is below the market, explains the retention risk, and proposes a raise. Click through it or play the demo.</p>
+        </div>
+        <div class="flex items-center gap-4">
+          <label class="flex items-center gap-2 text-base text-muted"><input id="loop" type="checkbox"> Loop</label>
+          <button id="reset" class="btn-dark-secondary">Reset</button>
+          <button id="play" class="btn-dark-primary">Play demo</button>
+        </div>
+      </div>
+    </header>
+
+    <section id="stage" class="relative h-[760px] w-full overflow-hidden rounded-3xl bg-light shadow-card" data-state="idle">
+      <div id="app" class="absolute inset-4 flex flex-col overflow-hidden rounded-xl bg-white text-ink-light">
+        <div class="flex items-center justify-between px-6 pb-3 pt-5">
+          <div>
+            <h2 class="text-lg font-medium">Contractors</h2>
+            <p class="text-xs text-muted-light">Manage all contractors across agencies and direct engagements</p>
+          </div>
+          <span class="chip chip-neutral">All · 8</span>
+        </div>
+        <div class="row row-head text-xs text-muted-light">
+          <span>Contractor</span><span>Supplier</span><span>Engagement</span><span>Country</span><span>Daily rate</span><span>In project</span><span></span>
+        </div>
+        <div id="rows" class="flex flex-col"></div>
+        <div id="mcard" class="mcard"></div>
+      </div>
+
+      <div id="scrim" class="scrim"></div>
+
+      <aside id="panel" class="panel" aria-hidden="true">
+        <div id="panelInner" class="panel-inner">
+        <div class="flex items-center justify-between border-b border-gray-0-5 px-4 py-3">
+          <h3 class="text-lg font-medium">Review rate · Marco Rossi</h3>
+          <button id="close" class="icon-btn" aria-label="Close"></button>
+        </div>
+        <div id="panelBody" class="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4">
+          <ol id="steps" class="flex flex-col gap-3"></ol>
+          <div id="proposal" class="proposal rounded-xl border border-gray-1 p-4">
+            <p class="text-xs font-medium text-muted-light">Suggested daily rate</p>
+            <div class="mt-3 flex items-center gap-3">
+              <span id="current" class="text-xl font-semibold text-muted-light">€880</span>
+              <span class="text-xl font-semibold text-muted-light">→</span>
+              <span id="suggested" class="text-xl font-semibold">€880</span>
+              <input id="suggestedInput" class="suggested-input hidden text-xl font-semibold" type="number" value="980">
+              <span id="verdict" class="chip chip-success">+11% · Within limit</span>
+            </div>
+            <div class="mt-4">
+              <div class="mb-2 flex justify-between text-xs"><span class="font-medium">Market range · Italy</span><span class="text-muted-light">Median €1,020</span></div>
+              <div class="track"><div class="band"></div><i id="mLimit" class="pin pin-limit"></i><i id="mSuggested" class="pin pin-suggested"></i><i id="mCurrent" class="pin pin-current"></i></div>
+              <div class="mt-2 flex gap-4 text-xs text-muted-light"><span>Current €880</span><span>Suggested <b id="lblSuggested" class="font-normal">€980</b></span><span>Project limit €1,100</span></div>
+            </div>
+            <button id="why" class="why mt-4" aria-expanded="false"><span class="lead" id="whyLead"></span><span class="chev" id="whyChev"></span></button>
+            <div id="whyBody" class="why-body">
+              <div class="why-inner">
+                <p class="text-xs">Marco's rate of €880 is 14% below the market median for similar contractors in Italy (€1,020) and has not changed since January 2025.</p>
+                <p class="mt-3 text-xs">He received 2 competing requests in the last 30 days and his current contract ends in 6 weeks. €980 is still below the median and within the €1,100 project limit, so no exception approval is needed, and it makes it more likely he stays available to you.</p>
+                <p class="foot text-xs">Sources: contract, project history, market data (12 contractors), inbound requests</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="float-footer">
+          <button id="counter" class="btn-light">Counter offer…</button>
+          <div class="flex gap-3">
+            <button id="dismiss" class="btn-light">Dismiss</button>
+            <button id="approve" class="btn-dark"><span class="btn-label">Approve and update</span></button>
+          </div>
+        </div>
+        </div>
+      </aside>
+
+      <div id="toast" class="toast"><span id="toastMsg"></span><button id="undo">Undo</button></div>
+      <div id="cursor" class="cursor" aria-hidden="true"></div>
+    </section>
+  </main>
+  <script src="icons.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
