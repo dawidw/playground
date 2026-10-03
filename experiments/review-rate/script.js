@@ -177,7 +177,6 @@ function showReviewing(on) { active.slot.innerHTML = on ? `<span class="chip chi
 async function runReview() {
   const id = ++flow, c = active;
   closeMenus(); resetPanel(); measureProposal(); setState("working"); showReviewing(true);
-  $("skeleton").classList.add("show");
   await sleep(450);
   for (let i = 0; i < c.steps.length; i++) {
     if (id !== flow) return;
@@ -186,7 +185,11 @@ async function runReview() {
     if (id !== flow) return;
     setStep(i, "done");
   }
-  await sleep(250);
+  // Skeleton of the suggested rate card, only briefly after the last agent step
+  await sleep(200);
+  if (id !== flow) return;
+  $("skeleton").classList.add("show");
+  await sleep(1100);
   if (id !== flow) return;
   setState("proposal");
   PP.proposal.classList.add("pending"); await sleep(30);
