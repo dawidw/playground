@@ -121,6 +121,7 @@
   --color-text-muted: var(--color-gray-7);
   --color-bg-light: #FAFAFF;
   --color-bg-white: var(--color-gray-0);
+  --color-border-light: var(--color-gray-2);
   --color-shadow-sm: color-mix(in srgb, var(--color-carbon-black-5) 30%, transparent);
   --color-shadow-md: color-mix(in srgb, var(--color-carbon-black-5) 20%, transparent);
   --color-cta: var(--color-canary-yellow-5);
