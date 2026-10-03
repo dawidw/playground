@@ -139,3 +139,9 @@
   .toast { left: 16px; right: 16px; transform: translateY(24px); }
   .toast.show { transform: none; }
 }
+
+/* Preview mode (16:10, no page chrome) */
+body.preview main { padding: 0 !important; gap: 0 !important; }
+body.preview header { display: none; }
+body.preview #stage { width: 1440px; height: 900px !important; border-radius: 0; box-shadow: none; }
+body.preview .panel, body.preview .scrim { transition: none; }
