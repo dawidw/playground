@@ -138,7 +138,7 @@ new ResizeObserver(() => {
 // Braille loaders come from loaders.js (LOADERS): each agent step gets its own little animation
 let asciiI = 0;
 setInterval(() => { asciiI++; document.querySelectorAll(".ascii").forEach((el) => { const fr = LOADERS[el.dataset.anim] || LOADERS.braille; el.textContent = fr[asciiI % fr.length]; }); }, 90);
-const stepAnims = ["orbit", "helix", "rain", "scan"];
+const stepAnims = ["breathe"]; // one narrow 1-cell loader for every step, as wide as the check icon
 const stepsEl = $("steps");
 const PP = { proposal: $("proposal"), suggested: $("suggested"), input: $("suggestedInput"), verdict: $("verdict"), why: $("why"), whyBody: $("whyBody"), approve: $("approve"), toast: $("toast") };
 const pos = (v) => `calc(${((Math.min(active.max, Math.max(active.min, v)) - active.min) / (active.max - active.min)) * 100}% - 2px)`;
@@ -177,7 +177,7 @@ function fillCase() {
   const band = document.querySelector(".band"), span = c.max - c.min;
   band.style.left = ((c.band[0] - c.min) / span) * 100 + "%"; band.style.width = ((c.band[1] - c.band[0]) / span) * 100 + "%";
 }
-function showReviewing(on) { active.slot.innerHTML = on ? `<span class="chip chip-info chip-sm"><span class="ascii" data-anim="braille" aria-hidden="true">⠋</span>Reviewing…</span>` : ""; }
+function showReviewing(on) { active.slot.innerHTML = on ? `<span class="chip chip-info chip-sm"><span class="ascii" data-anim="breathe" aria-hidden="true">⠁</span>Reviewing…</span>` : ""; }
 
 async function runReview() {
   const id = ++flow, c = active;
