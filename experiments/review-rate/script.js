@@ -25,10 +25,10 @@ people.forEach(([name, supplier, type, country, rate, inProject, av], i) => {
   row.className = "row";
   row.id = i === 2 ? "row-anna" : "";
   row.innerHTML = `
-    <span class="who">${avatar(av)}${name}</span>
-    <span>${supplier}</span>
+    <span class="who">${avatar(av)}<span title="${name}">${name}</span></span>
+    <span title="${supplier}">${supplier}</span>
     <span><span class="chip chip-sm ${type === "Agency" ? "chip-info" : "chip-neutral"}">${type}</span></span>
-    <span>${country}</span>
+    <span title="${country}">${country}</span>
     <span class="rate-cell"><b class="rate font-normal" data-rate="${rate}">${fmt(rate)}</b><span class="slot"></span></span>
     <span><span class="chip chip-sm ${inProject ? "chip-success" : "chip-neutral"}">${inProject ? "Yes" : "No"}</span></span>
     <span class="actions"><button class="btn-light">See profile</button><button class="more" aria-label="More">${icon("more-vert")}</button></span>`;
