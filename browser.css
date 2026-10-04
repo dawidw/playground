@@ -3,12 +3,17 @@
 .canvas { width: 100%; max-width: 1180px; margin-inline: auto; }
 .window { overflow: hidden; border-radius: 20px; background: var(--color-bg-white); box-shadow: 0 0 0 1px color-mix(in srgb, black 4%, transparent), 0 6px 16px -8px color-mix(in srgb, black 12%, transparent); }
 .window #stage { border-radius: 0; box-shadow: none; }
-.toolbar { position: relative; display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px; background: var(--color-bg-white); border-bottom: 1px solid var(--color-border-divider); color: var(--color-text-muted); }
+.toolbar { position: relative; display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 16px; background: var(--color-bg-white); border-bottom: 1px solid var(--color-border-divider); color: var(--color-text-muted); }
 .lights { display: flex; gap: 8px; margin-right: 4px; }
 .lights i { width: 12px; height: 12px; border-radius: 50%; }
 .lights i:nth-child(1) { background: #ff5f57; } .lights i:nth-child(2) { background: #febc2e; } .lights i:nth-child(3) { background: #28c840; }
+.pill-btn { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 10px; border-radius: 999px; background: var(--color-gray-0-5); }
+.pill-btn svg, .tb-icons svg { width: 16px; height: 16px; }
+.pill-btn.back svg:first-child { transform: scaleX(-1); }
+.tb-icons { display: flex; gap: 8px; margin-left: auto; }
+.tb-icons span { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 999px; background: var(--color-gray-0-5); }
 .url { position: absolute; left: 50%; transform: translateX(-50%); width: min(360px, 50%); height: 32px; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; background: var(--color-gray-0-5); color: var(--color-text-primary); font-size: 13px; }
-@media (max-width: 720px) { .window { border-radius: 14px; } .url { width: min(260px, 60%); } }
+@media (max-width: 720px) { .window { border-radius: 14px; } .url { width: min(260px, 60%); } .toolbar .pill-btn, .tb-icons { display: none; } }
 /* ?preview and ?record render the stage alone */
 body.preview .canvas, body.record .canvas { max-width: none; }
 body.preview .window, body.record .window { border-radius: 0; box-shadow: none; }
@@ -20,5 +25,5 @@ body.preview .toolbar, body.record .toolbar { display: none; }
   header { gap: 4px !important; padding-bottom: 0 !important; }
   header p { display: none; }
   header h1 { font-size: 22px !important; line-height: 28px !important; }
-  .window #stage { height: max(380px, calc(100vh - 12px - 91px - 56px)) !important; }
+  .window #stage { height: max(380px, calc(100vh - 12px - 91px - 48px)) !important; }
 }
