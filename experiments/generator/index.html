@@ -68,10 +68,20 @@
             </div>
 
             <div class="field" id="size-field" hidden>
-              <label class="lbl" for="csize">Circle size</label>
-              <div class="flex items-center gap-3">
-                <input type="range" id="csize" min="0.5" max="1.5" step="0.01" value="1" class="min-w-0 flex-1">
-                <span id="csizeVal" class="w-12 text-right font-mono text-base text-muted-light">Auto</span>
+              <span class="lbl">Circle</span>
+              <div class="grid grid-cols-[32px_minmax(0,1fr)_48px] items-center gap-x-3 gap-y-2 text-base text-muted-light">
+                <label for="csize">Size</label>
+                <input type="range" id="csize" min="0.5" max="1.5" step="0.01" value="1">
+                <span id="csizeVal" class="text-right font-mono">Auto</span>
+                <label for="cx">X</label>
+                <input type="range" id="cx" min="0" max="1" step="0.005" value="0.5">
+                <span id="cxVal" class="text-right font-mono">Auto</span>
+                <label for="cy">Y</label>
+                <input type="range" id="cy" min="0" max="1" step="0.005" value="0.5">
+                <span id="cyVal" class="text-right font-mono">Auto</span>
+              </div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-base text-muted-light">Or drag the circle on the preview.</span>
                 <button type="button" class="btn-light" id="csizeAuto">Auto</button>
               </div>
             </div>

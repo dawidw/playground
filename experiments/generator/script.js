@@ -65,24 +65,26 @@ function steps(r,p,w,h){const n=4+Math.floor(r()*3),bw=w*.7/n,x0=w*.15,base=h*.8
   defs+=`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${stops.map((c,k)=>`<stop offset="${k/2}" stop-color="${c}"/>`).join('')}</linearGradient>`;
   body+=`<rect x="${f(x0+i*bw)}" y="${f(base-hh)}" width="${f(bw)}" height="${f(hh)}" fill="url(#${id})"/>`;}
  return{defs,body,bg:p.dark};}
-function fangor(r,p,w,h,o={}){
-  const n=4+Math.floor(r()*4),cols=seq(r,p.inks,n),[b0,b1]=seq(r,p.inks,2),m=Math.min(w,h);
-  const cx=w*(.38+r()*.24),cy=h*(.38+r()*.24),rx=m*(.34+r()*.12)*(w>h?1.15:1)*(o.size??1),ry=rx*(r()<.5?1:.6+r()*.5);
-  const ang=r()*Math.PI*2,ox=cx+Math.cos(ang)*rx*.55,oy=cy+Math.sin(ang)*ry*.55,k=.3+r()*.25;
-  const ring=cols.map((c,i)=>`<stop offset="${f(i/n*.85)}" stop-color="${c}"/>`).join('')+
-    `<stop offset=".85" stop-color="${cols[n-1]}"/><stop offset="1" stop-color="${cols[n-1]}" stop-opacity="0"/>`;
-  const defs=`<linearGradient id="fb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${b0}"/><stop offset="1" stop-color="${b1}"/></linearGradient>`+
-    `<radialGradient id="fr">${ring}</radialGradient>`+
-    `<radialGradient id="fa"><stop offset="0" stop-color="${p.accent}"/><stop offset=".45" stop-color="${p.accent}" stop-opacity=".9"/><stop offset="1" stop-color="${p.accent}" stop-opacity="0"/></radialGradient>`;
-  const body=`<rect width="${w}" height="${h}" fill="url(#fb)"/>`+
-    `<ellipse cx="${f(cx)}" cy="${f(cy)}" rx="${f(rx)}" ry="${f(ry)}" fill="url(#fr)"/>`+
-    `<ellipse cx="${f(ox)}" cy="${f(oy)}" rx="${f(rx*k)}" ry="${f(ry*k)}" fill="url(#fa)"/>`;
-  return{defs,body};}
+function fangor(r, p, w, h, o = {}) {
+  const m = Math.min(w, h), n = 6 + Math.floor(r() * 4), jx = r(), jy = r();
+  const cx = w * (o.x ?? (.4 + jx * .2)), cy = h * (o.y ?? (.4 + jy * .2));
+  const rx = m * (.3 + r() * .12) * (w > h ? 1.15 : 1) * (o.size ?? 1), ry = rx * (r() < .5 ? 1 : .62 + r() * .3);
+  const cyc = [0, 1, 0, 2, 1, 3].map(i => p.inks[i % p.inks.length]), last = cyc[(n - 1) % 6];
+  const stops = [[0, p.light, 1], [.07, p.light, 1]];
+  for (let i = 0; i < n; i++) stops.push([.14 + i * (.66 / (n - 1)), cyc[i % 6], 1]);
+  stops.push([.9, last, .95], [1, last, 0]);
+  const g = stops.map(([off, c, a]) => `<stop offset="${f(off)}" stop-color="${c}" stop-opacity="${a}"/>`).join('');
+  const dx = rx * .07 * (r() < .5 ? -1 : 1), dy = ry * .05 * (r() < .5 ? -1 : 1);
+  // a faint, slightly larger echo behind the main disc makes the edge vibrate
+  const body = `<ellipse cx="${f(cx + dx)}" cy="${f(cy + dy)}" rx="${f(rx * 1.08)}" ry="${f(ry * 1.08)}" fill="url(#fr)" opacity=".22"/>` +
+    `<ellipse cx="${f(cx)}" cy="${f(cy)}" rx="${f(rx)}" ry="${f(ry)}" fill="url(#fr)"/>`;
+  return { defs: `<radialGradient id="fr">${g}</radialGradient>`, body };
+}
 // one soft-edged ring on a flat ground. inks run from the centre out: [hole, band, band, ..., halo];
 // neighbouring inks blend, the halo fades into the paper
 function ring(r, p, w, h, o = {}) {
   const n = p.inks.length, m = Math.min(w, h), bands = n - 2;
-  const cx = w * (.5 + (r() - .5) * .08), cy = h * (.5 + (r() - .5) * .08), rs = r(), R = m * .41 * (o.size ?? (.7 + rs * .7));
+  const jx = r(), jy = r(), cx = w * (o.x ?? (.5 + (jx - .5) * .08)), cy = h * (o.y ?? (.5 + (jy - .5) * .08)), rs = r(), R = m * .41 * (o.size ?? (.7 + rs * .7));
   const hs = p.core || (.1 + r() * .12), lo = hs + .12, hi = p.core ? .84 : .78, stops = [[0, p.inks[0], 1], [hs, p.inks[0], 1]];
   for (let i = 0; i < bands; i++) {
     const c = lo + (i + .5) * (hi - lo) / bands;
@@ -121,7 +123,7 @@ function generate(motif,p,seed,w,h,o={}){const r=rng(seed),m=MOTIFS[motif](r,p,w
 /* ---- UI ---- */
 const MOTIF_LABEL = { stripes: "Stripes", rings: "Rings and towers", mosaic: "Mosaic", blob: "Halo blob", diagonals: "Triangles", steps: "Steps" };
 const PALETTE_LABEL = { baron: "Baron", zloto: "Gold", roger: "King Roger", marek: "Father Marek", brasilia: "Brasília", anima: "Anima", wesoft: "Wesoft", fangor: "Fangor red", fangor_blue: "Fangor blue", fangor_green: "Fangor green", soft_flame: "Flame", soft_tricolor: "Tricolor", soft_violet: "Violet", soft_orchard: "Orchard", soft_candy: "Candy", soft_navy: "Navy", soft_cobalt: "Cobalt", soft_ochre: "Ochre", soft_orchid: "Orchid", soft_redcore: "Red core" };
-const SIZES = [["Portrait", 1200, 1600], ["Square", 1200, 1200], ["Landscape", 1440, 900], ["Banner", 1600, 500]];
+const SIZES = [["Portrait", 1200, 1600], ["Square", 1200, 1200], ["Landscape", 1440, 900], ["Card 16:10", 1280, 800], ["Banner", 1600, 500]];
 const POSTER_MOTIFS = Object.keys(MOTIF_LABEL);
 const prefix = { poster: null, fangor: "fangor", soft: "soft_" };
 const palettesOf = g => Object.keys(PALETTES).filter(k => (g === "poster") ? !k.startsWith("fangor") && !k.startsWith("soft_") : k.startsWith(prefix[g]));
@@ -130,11 +132,12 @@ const clone = o => JSON.parse(JSON.stringify(o));
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const uri = s => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s);
 
-const S = { group: "poster", motif: "stripes", palette: "baron", seed: 7, w: 1200, h: 1600, work: clone(PALETTES.baron), modified: false, size: null };
+const S = { group: "poster", motif: "stripes", palette: "baron", seed: 7, w: 1200, h: 1600, work: clone(PALETTES.baron), modified: false, size: null, cx: null, cy: null };
 let hist = [], lastSig = "", toastT;
 
 const motifName = () => (S.group === "fangor" ? "fangor" : S.group === "soft" ? "ring" : S.motif);
-const svg = () => generate(motifName(), S.work, S.seed, S.w, S.h, { size: S.size ?? undefined });
+const opts = () => ({ size: S.size ?? undefined, x: S.cx ?? undefined, y: S.cy ?? undefined });
+const svg = () => generate(motifName(), S.work, S.seed, S.w, S.h, opts());
 
 function fillSelects() {
   $("motif").innerHTML = POSTER_MOTIFS.map(m => `<option value="${m}">${MOTIF_LABEL[m]}</option>`).join("");
@@ -147,14 +150,23 @@ function fillSelects() {
 function fillSizes() {
   $("sizes").innerHTML = SIZES.map(([n, w, h]) => `<button type="button" data-w="${w}" data-h="${h}" aria-pressed="${S.w === w && S.h === h}">${n}</button>`).join("");
 }
+const minInks = () => (S.group === "soft" ? 3 : 2);
 function fillSwatches() {
   const named = [["paper", "Paper"], ["dark", "Dark"], ["light", "Light"], ["accent", "Accent"]];
   const one = (key, idx, label) => {
     const v = idx == null ? S.work[key] : S.work.inks[idx];
     return `<label style="background:${v}" title="${label}"><input type="color" value="${v}" data-key="${key}" ${idx == null ? "" : `data-idx="${idx}"`} aria-label="${label}"></label>`;
   };
-  $("swatches").innerHTML = named.map(([k, l]) => one(k, null, l)).join("") + '<span class="break"></span>' + S.work.inks.map((_, i) => one("inks", i, "Ink " + (i + 1))).join("");
+  const canRemove = S.work.inks.length > minInks();
+  const ink = i => `<span class="inkwrap">${one("inks", i, "Ink " + (i + 1))}${canRemove ? `<button type="button" class="rm" data-rm="${i}" aria-label="Remove ink ${i + 1}">×</button>` : ""}</span>`;
+  $("swatches").innerHTML = named.map(([k, l]) => one(k, null, l)).join("") + '<span class="break"></span>' + S.work.inks.map((_, i) => ink(i)).join("") + '<button type="button" class="add" id="addInk" aria-label="Add a color">+</button>';
   $("resetColors").hidden = !S.modified;
+}
+function addInk() {
+  const c = hsl(Math.random() * 360, 55 + Math.random() * 30, 40 + Math.random() * 20);
+  S.work.inks.splice(S.group === "soft" ? S.work.inks.length - 1 : S.work.inks.length, 0, c);
+  S.modified = true;
+  fillSwatches(); render();
 }
 function toast(t) { $("toast").textContent = t; clearTimeout(toastT); toastT = setTimeout(() => ($("toast").textContent = ""), 2400); }
 
@@ -165,15 +177,18 @@ function render(push = true) {
   $("recipe").textContent = `${motifName()} · ${S.palette} · ${S.seed} · ${S.w}×${S.h}`;
   $("csize").value = S.size ?? 1;
   $("csizeVal").textContent = S.size == null ? "Auto" : S.size.toFixed(2) + "×";
+  $("cx").value = S.cx ?? .5; $("cxVal").textContent = S.cx == null ? "Auto" : Math.round(S.cx * 100) + "%";
+  $("cy").value = S.cy ?? .5; $("cyVal").textContent = S.cy == null ? "Auto" : Math.round(S.cy * 100) + "%";
+  $("preview").style.cursor = S.group === "poster" ? "" : "grab";
   $("seed").value = S.seed; $("w").value = S.w; $("h").value = S.h;
   $("g-poster").setAttribute("aria-pressed", S.group === "poster");
   $("g-fangor").setAttribute("aria-pressed", S.group === "fangor");
   $("g-soft").setAttribute("aria-pressed", S.group === "soft");
   document.querySelectorAll("#sizes button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.w === S.w && +b.dataset.h === S.h));
-  const sig = [motifName(), S.palette, S.seed, S.w, S.h, S.size, JSON.stringify(S.work)].join("|");
+  const sig = [motifName(), S.palette, S.seed, S.w, S.h, S.size, S.cx, S.cy, JSON.stringify(S.work)].join("|");
   if (push && sig !== lastSig) {
     lastSig = sig;
-    hist.unshift({ sig, state: clone(S), thumb: uri(generate(motifName(), S.work, S.seed, Math.round(S.w / 4), Math.round(S.h / 4), { size: S.size ?? undefined })) });
+    hist.unshift({ sig, state: clone(S), thumb: uri(generate(motifName(), S.work, S.seed, Math.round(S.w / 4), Math.round(S.h / 4), opts())) });
     hist = hist.slice(0, 10);
     drawHist();
   }
@@ -201,6 +216,7 @@ function rollAll() {
   if ($("randColors").checked) { S.work = randomPalette(S.group, Math.random); S.modified = true; }
   else if (!$("lockPalette").checked) { S.palette = pick(palettesOf(S.group)); S.work = clone(PALETTES[S.palette]); S.modified = false; }
   S.seed = Math.floor(Math.random() * 100000);
+  S.size = null; S.cx = null; S.cy = null;
   fillSelects(); fillSwatches(); render();
 }
 
@@ -225,7 +241,21 @@ $("seedRand").onclick = () => { S.seed = Math.floor(Math.random() * 100000); ren
 $("rollAll").onclick = rollAll;
 $("rollColors").onclick = rollColors;
 $("csize").oninput = e => { S.size = +e.target.value; render(); };
-$("csizeAuto").onclick = () => { S.size = null; render(); };
+$("csizeAuto").onclick = () => { S.size = null; S.cx = null; S.cy = null; render(); };
+$("cx").oninput = e => { S.cx = +e.target.value; render(); };
+$("cy").oninput = e => { S.cy = +e.target.value; render(); };
+// drag the circle on the preview
+let drag = false;
+const dragTo = e => {
+  const b = $("preview").getBoundingClientRect();
+  S.cx = Math.min(1, Math.max(0, (e.clientX - b.left) / b.width));
+  S.cy = Math.min(1, Math.max(0, (e.clientY - b.top) / b.height));
+  render(false);
+};
+$("preview").style.touchAction = "none";
+$("preview").addEventListener("pointerdown", e => { if (S.group === "poster") return; drag = true; e.target.setPointerCapture(e.pointerId); e.preventDefault(); dragTo(e); });
+$("preview").addEventListener("pointermove", e => { if (drag) dragTo(e); });
+$("preview").addEventListener("pointerup", () => { if (drag) { drag = false; render(true); } });
 $("sizes").onclick = e => { const b = e.target.closest("button"); if (!b) return; S.w = +b.dataset.w; S.h = +b.dataset.h; render(); };
 const dim = (id, key) => ($(id).onchange = e => { S[key] = Math.max(200, Math.min(4000, Math.round(+e.target.value || S[key]))); render(); });
 dim("w", "w"); dim("h", "h");
@@ -239,6 +269,11 @@ $("swatches").oninput = e => {
   render(false);
 };
 $("swatches").onchange = () => render(true);
+$("swatches").onclick = e => {
+  const rm = e.target.closest("[data-rm]");
+  if (rm) { S.work.inks.splice(+rm.dataset.rm, 1); S.modified = true; fillSwatches(); render(); }
+  else if (e.target.closest("#addInk")) addInk();
+};
 $("resetColors").onclick = () => setPalette(S.palette);
 $("hist").onclick = e => {
   const b = e.target.closest("button");

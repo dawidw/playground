@@ -27,3 +27,9 @@
 .hist button { flex: 0 0 auto; height: 40px; padding: 0; border-radius: 6px; overflow: hidden; border: 1px solid var(--color-control-border); background: var(--color-gray-0-5); cursor: pointer; }
 .hist button[aria-current="true"] { box-shadow: 0 0 0 2px var(--color-focus-neutral); }
 .hist img { display: block; height: 100%; width: auto; }
+.sw .inkwrap { position: relative; display: block; width: 32px; height: 32px; }
+.sw .rm { position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; border-radius: 999px; border: 1px solid var(--color-control-border); background: var(--color-bg-white); color: var(--color-text-muted); font-size: 12px; line-height: 1; display: none; place-items: center; cursor: pointer; z-index: 1; }
+.sw .inkwrap:hover .rm, .sw .inkwrap:focus-within .rm { display: grid; }
+.sw .add { width: 32px; height: 32px; border-radius: 8px; border: 1px dashed var(--color-control-border); background: transparent; color: var(--color-text-muted); font-size: 16px; cursor: pointer; }
+.sw .add:hover { background: var(--color-gray-0-5); }
+input[type="range"] { accent-color: var(--color-cta); min-width: 0; }
