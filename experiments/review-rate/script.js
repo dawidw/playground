@@ -98,7 +98,8 @@ menu.innerHTML = it("edit", "Edit") + it("submit-document", "Request document") 
 sub.innerHTML = it("input-search", "Find project") + it("submit-document", "Request missing documents") + it("task-list", "Check compliance") + it("mail-out", "Review rate", ' id="reviewItem"');
 stage.append(menu, sub);
 const agentItem = menu.querySelector("#agentItem"), reviewItem = sub.querySelector("#reviewItem");
-const rel = (el) => { const s = stage.getBoundingClientRect(), r = el.getBoundingClientRect(); return { x: r.left - s.left, y: r.top - s.top, w: r.width, h: r.height }; };
+let fitZ = 1; // the browser window is scaled down to fit the viewport (see fit() below)
+const rel = (el) => { const s = stage.getBoundingClientRect(), r = el.getBoundingClientRect(); return { x: (r.left - s.left) / fitZ, y: (r.top - s.top) / fitZ, w: r.width / fitZ, h: r.height / fitZ }; };
 function openMenu() {
   const b = rel(active.more), w = menu.offsetWidth || 220;
   menu.style.left = Math.max(8, b.x + b.w - w) + "px";
@@ -237,7 +238,8 @@ function resetPanel() {
   const end = () => pin.classList.remove("drag");
   pin.addEventListener("pointerup", end); pin.addEventListener("pointercancel", end);
 })();
-function closePanel() { flow++; setState("idle"); cases.forEach((c) => { if (c.slot && c.slot.querySelector(".spinner")) c.slot.innerHTML = ""; }); }
+// closing the panel also drops the "Reviewing…" chip
+function closePanel() { flow++; setState("idle"); cases.forEach((c) => { if (c.slot && c.slot.querySelector(".ascii, .spinner")) c.slot.innerHTML = ""; }); }
 function toggleWhy() {
   // the panel follows the expanding content frame by frame (no height lag), so the footer never jumps
   $("panel").classList.add("sync"); clearTimeout(toggleWhy.t); toggleWhy.t = setTimeout(() => $("panel").classList.remove("sync"), 500);
@@ -335,3 +337,16 @@ if (new URLSearchParams(location.search).has("record")) {
   document.body.classList.add("record"); $("loop").checked = true;
   setTimeout(demo, 1200);
 }
+
+// Fit the whole browser window into the visible viewport height (scale down, never up)
+function fit() {
+  const cv = document.querySelector(".canvas");
+  if (!cv || document.body.classList.contains("preview") || document.body.classList.contains("record")) return;
+  cv.style.transform = ""; cv.style.marginBottom = "";
+  const H = cv.offsetHeight, top = cv.getBoundingClientRect().top + window.scrollY;
+  fitZ = Math.max(0.6, Math.min(1, (window.innerHeight - 12 - top) / H));
+  cv.style.transformOrigin = "top center";
+  cv.style.transform = fitZ < 1 ? `scale(${fitZ})` : "";
+  cv.style.marginBottom = fitZ < 1 ? `${-(1 - fitZ) * H}px` : "";
+}
+window.addEventListener("resize", fit); window.addEventListener("load", fit); fit();
