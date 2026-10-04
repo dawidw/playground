@@ -344,7 +344,7 @@ function fit() {
   if (!cv || document.body.classList.contains("preview") || document.body.classList.contains("record")) return;
   cv.style.transform = ""; cv.style.marginBottom = "";
   const H = cv.offsetHeight, top = cv.getBoundingClientRect().top + window.scrollY;
-  fitZ = Math.max(0.6, Math.min(1, (window.innerHeight - 12 - top) / H));
+  fitZ = Math.max(1, Math.min(1, (window.innerHeight - 12 - top) / H));
   cv.style.transformOrigin = "top center";
   cv.style.transform = fitZ < 1 ? `scale(${fitZ})` : "";
   cv.style.marginBottom = fitZ < 1 ? `${-(1 - fitZ) * H}px` : "";
