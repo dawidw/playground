@@ -195,5 +195,3 @@ body.record #stage { width: 1280px; height: 720px !important; border-radius: 0; 
 @keyframes textShimmer { to { background-position: -50% 0; } }
 @media (prefers-reduced-motion: reduce) { .step[data-status="running"] .label, .step[data-status="running"] .detail { animation: none; color: var(--color-text-muted); -webkit-text-fill-color: currentColor; background: none; } }
 
-body.record .canvas { max-width: none; }
-body.preview .canvas { max-width: none; }
