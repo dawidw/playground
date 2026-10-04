@@ -1,7 +1,7 @@
 /* Browser window around a stage: light canvas + macOS-style window with a toolbar.
    Markup: .canvas > .window > (.toolbar + #stage). The window colors (traffic lights) are the macOS system colors. */
 .canvas { background: var(--color-gray-1); border-radius: 24px; padding: 56px; }
-.window { overflow: hidden; border-radius: 20px; background: var(--color-bg-white); box-shadow: 0 0 0 1px color-mix(in srgb, black 8%, transparent), 0 24px 48px -16px color-mix(in srgb, black 28%, transparent); }
+.window { overflow: hidden; border-radius: 20px; background: var(--color-bg-white); box-shadow: 0 0 0 1px color-mix(in srgb, black 4%, transparent), 0 6px 16px -8px color-mix(in srgb, black 12%, transparent); }
 .window #stage { border-radius: 0; box-shadow: none; }
 .toolbar { display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px; background: var(--color-bg-white); border-bottom: 1px solid var(--color-border-divider); color: var(--color-text-muted); }
 .lights { display: flex; gap: 8px; margin-right: 4px; }

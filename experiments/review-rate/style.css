@@ -184,3 +184,13 @@ body.record #stage { width: 1280px; height: 720px !important; border-radius: 0; 
 
 /* While the Why disclosure animates, the panel height follows the content with no transition */
 .panel.sync { transition: transform .3s var(--ease); }
+
+/* Running agent step: shimmering text, like a "generating…" label (a light band sweeps across the letters) */
+.step[data-status="running"] .label, .step[data-status="running"] .detail, .chip.shimmer {
+  color: transparent; -webkit-text-fill-color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(100deg, var(--color-gray-8) 35%, var(--color-gray-3) 50%, var(--color-gray-8) 65%);
+  background-size: 250% 100%; background-position: 150% 0; animation: textShimmer 1.7s linear infinite;
+}
+.step[data-status="running"] .detail { background-image: linear-gradient(100deg, var(--color-gray-6) 35%, var(--color-gray-2) 50%, var(--color-gray-6) 65%); }
+@keyframes textShimmer { to { background-position: -50% 0; } }
+@media (prefers-reduced-motion: reduce) { .step[data-status="running"] .label, .step[data-status="running"] .detail { animation: none; color: var(--color-text-muted); -webkit-text-fill-color: currentColor; background: none; } }
