@@ -47,13 +47,30 @@
               <div class="seg" role="group" aria-label="Family">
                 <button type="button" id="g-poster" aria-pressed="true">Poster</button>
                 <button type="button" id="g-fangor" aria-pressed="false">Fangor</button>
-                <button type="button" id="g-soft" aria-pressed="false">Soft ring</button>
+              </div>
+            </div>
+
+            <div class="field" id="variant-field" hidden>
+              <span class="lbl">Style</span>
+              <div class="seg" role="group" aria-label="Fangor style">
+                <button type="button" id="v-random" aria-pressed="true">Random</button>
+                <button type="button" id="v-ring" aria-pressed="false">Ring</button>
+                <button type="button" id="v-dream" aria-pressed="false">Dream</button>
               </div>
             </div>
 
             <div class="field" id="motif-field">
               <label class="lbl" for="motif">Motif</label>
               <select id="motif" class="control"></select>
+            </div>
+
+            <div class="field" id="grain-field" hidden>
+              <label class="lbl" for="grain">Granularity</label>
+              <div class="grid grid-cols-[minmax(0,1fr)_72px_auto] items-center gap-3 text-base text-muted-light">
+                <input type="range" id="grain" min="5" max="30" step="1" value="11">
+                <span id="grainVal" class="text-right font-mono">Auto</span>
+                <button type="button" class="btn-light" id="grainAuto">Auto</button>
+              </div>
             </div>
 
             <div class="field">
@@ -127,6 +144,7 @@
       </div>
     </div>
   </main>
+  <script src="gen.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
