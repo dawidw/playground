@@ -1,0 +1,29 @@
+/* Generator controls, on the light stage. Tokens only (theme.css), same button recipes as review-rate. */
+#stage { overflow-y: auto; }
+.field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.lbl { font-size: 12px; line-height: 18px; font-weight: 500; color: var(--color-text-muted); }
+.control { width: 100%; min-width: 0; height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--color-field-border); background: var(--color-bg-white); color: var(--color-text-primary); font-size: 14px; }
+.control:hover { border-color: var(--color-field-border-hover); }
+.control:focus-visible { outline: none; border-color: var(--color-field-border-focus); box-shadow: 0 0 0 2px var(--color-focus-neutral); }
+.btn-light, .btn-dark { height: 36px; border-radius: 8px; padding: 0 12px; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid var(--color-button-secondary-border); background: var(--color-bg-white); color: var(--color-button-secondary-text); transition: background .15s; white-space: nowrap; }
+.btn-light:hover { background: var(--color-gray-0-5); }
+.btn-dark { background: var(--color-cta); color: var(--color-bg-white); border-color: transparent; }
+.btn-dark:hover { background: var(--color-carbon-black-4); }
+.btn-light:focus-visible, .btn-dark:focus-visible, .seg button:focus-visible, .chips button:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-focus-neutral); }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding: 2px; gap: 2px; border-radius: 10px; background: var(--color-gray-1); }
+.seg button { height: 32px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--color-text-muted); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--color-bg-white); color: var(--color-text-primary); box-shadow: var(--shadow-xs); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { height: 28px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--color-button-secondary-border); background: var(--color-bg-white); color: var(--color-button-secondary-text); font-size: 12px; font-weight: 500; cursor: pointer; }
+.chips button[aria-pressed="true"] { background: var(--color-cta); border-color: transparent; color: var(--color-bg-white); }
+.sw { display: flex; flex-wrap: wrap; gap: 6px; }
+.sw label { position: relative; display: block; width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--color-control-border); overflow: hidden; cursor: pointer; }
+.sw input { position: absolute; inset: -6px; width: calc(100% + 12px); height: calc(100% + 12px); border: 0; padding: 0; cursor: pointer; background: none; }
+.sw .break { flex-basis: 100%; height: 0; }
+.check { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.check input { accent-color: var(--color-cta); }
+.toast-line { min-height: 18px; font-size: 12px; line-height: 18px; color: var(--color-text-muted); }
+.hist { display: flex; gap: 6px; overflow-x: auto; max-width: 60%; padding: 2px; }
+.hist button { flex: 0 0 auto; height: 40px; padding: 0; border-radius: 6px; overflow: hidden; border: 1px solid var(--color-control-border); background: var(--color-gray-0-5); cursor: pointer; }
+.hist button[aria-current="true"] { box-shadow: 0 0 0 2px var(--color-focus-neutral); }
+.hist img { display: block; height: 100%; width: auto; }
