@@ -1,6 +1,6 @@
 /* Browser window around a stage: light canvas + macOS-style window with a toolbar.
    Markup: .canvas > .window > (.toolbar + #stage). The window colors (traffic lights) are the macOS system colors. */
-.canvas { width: 100%; background: var(--color-gray-1); border-radius: 24px; padding: 40px; }
+.canvas { width: 100%; background: var(--color-gray-1); border-radius: 24px; padding: 40px; max-width: 1180px; margin-inline: auto; }
 .window { overflow: hidden; border-radius: 20px; background: var(--color-bg-white); box-shadow: 0 0 0 1px color-mix(in srgb, black 4%, transparent), 0 6px 16px -8px color-mix(in srgb, black 12%, transparent); }
 .window #stage { border-radius: 0; box-shadow: none; }
 .toolbar { display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px; background: var(--color-bg-white); border-bottom: 1px solid var(--color-border-divider); color: var(--color-text-muted); }
