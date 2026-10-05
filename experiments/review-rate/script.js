@@ -396,6 +396,9 @@ if (recParams.has("record")) {
   });
   $("rbLoop").addEventListener("change", (e) => { $("loop").checked = e.target.checked; });
   $("rbFollow").addEventListener("change", (e) => { ctl.follow = e.target.checked; applyZoom(); });
+  // Hide the bar while the pointer is outside the page, so it never ends up in a recording
+  document.documentElement.addEventListener("mouseleave", () => bar.classList.add("away"));
+  document.documentElement.addEventListener("mouseenter", () => bar.classList.remove("away"));
   document.addEventListener("keydown", (e) => {
     if (e.key === "h" || e.key === "H") bar.classList.toggle("hidden");
     if (e.key === " ") { e.preventDefault(); $("rbPlay").click(); }

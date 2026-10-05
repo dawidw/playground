@@ -177,7 +177,9 @@ body.record .cursor { transition: left calc(.7s / var(--speed, 1)) var(--ease), 
 body.paused *, body.paused *::before, body.paused *::after { animation-play-state: paused !important; }
 /* Record control bar: fixed to the bottom of the viewport, below the capture area */
 #recbar { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 1000; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; max-width: calc(100vw - 24px); padding: 8px 12px; border-radius: 14px; background: color-mix(in srgb, var(--color-bg-black) 88%, transparent); border: 1px solid var(--color-gray-9); color: var(--color-gray-0-5); font-size: 12px; backdrop-filter: blur(12px); }
+#recbar { transition: opacity .15s; }
 #recbar.hidden { display: none; }
+#recbar.away { opacity: 0; pointer-events: none; }
 #recbar .lab { color: var(--color-gray-4); display: inline-flex; align-items: center; gap: 6px; }
 #recbar .hint { margin-left: 4px; }
 #recbar .rb { height: 28px; padding: 0 10px; border-radius: 8px; color: var(--color-gray-0-5); background: transparent; cursor: pointer; }
