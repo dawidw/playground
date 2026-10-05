@@ -4,7 +4,17 @@
 // States: idle → menu → working → proposal → done (+ undo). All data is made up (the repo is public).
 const $ = (id) => document.getElementById(id);
 const stage = $("stage");
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// Pausable sleep whose pace follows ctl.speed (?record control bar); stays plain in normal use
+const ctl = { speed: 1, paused: false, only: "both", zoom: 1, follow: true };
+const sleep = (ms) => new Promise((res) => {
+  let left = ms;
+  (function tick() {
+    if (ctl.paused) return setTimeout(tick, 60);
+    if (left <= 0) return res();
+    const d = Math.min(40, left);
+    setTimeout(() => { left -= d * ctl.speed; tick(); }, d);
+  })();
+});
 const fmt = (n) => "€" + Math.round(n).toLocaleString("en-US");
 
 const people = [
@@ -297,14 +307,15 @@ mq.addEventListener("change", () => { resetAll(); bindTargets(); });
 // ---- Demo (with a cursor, for recording): Anna first, then on to Marco
 let demoId = 0;
 const cursor = $("cursor");
-async function moveTo(el, dx = 0.5, dy = 0.5) { const r = rel(el); cursor.style.left = r.x + r.w * dx + "px"; cursor.style.top = r.y + r.h * dy + "px"; await sleep(800); }
+async function moveTo(el, dx = 0.5, dy = 0.5) { const r = rel(el); cursor.style.left = r.x + r.w * dx + "px"; cursor.style.top = r.y + r.h * dy + "px"; applyZoom(r.x + r.w * dx, r.y + r.h * dy); await sleep(800); }
 async function click() { cursor.classList.add("click"); await sleep(140); cursor.classList.remove("click"); await sleep(60); }
 async function demo() {
   const id = ++demoId; resetAll();
   const alive = () => id === demoId;
   do {
     cursor.style.left = "40%"; cursor.style.top = "60%"; cursor.classList.add("on"); await sleep(500);
-    for (const c of cases) {
+    const list = ctl.only === "both" ? cases : [cases[ctl.only === "anna" ? 0 : 1]];
+    for (const c of list) {
       active = c;
       await moveTo(c.more); if (!alive()) return; await click(); openMenu(); await sleep(350);
       await moveTo(agentItem, 0.3); if (!alive()) return; openSub(); await sleep(300);
@@ -312,7 +323,7 @@ async function demo() {
       await click(); await runReview(); if (!alive()) return; await sleep(900);
       await moveTo(PP.why, 0.2); if (!alive()) return; await click(); toggleWhy(); await sleep(2200);
       await moveTo(PP.approve); if (!alive()) return; await click(); await approve(); if (!alive()) return;
-      await moveTo(c.rateEl, 0.5, 0.5); await sleep(c === cases[cases.length - 1] ? 2800 : 1600); if (!alive()) return;
+      await moveTo(c.rateEl, 0.5, 0.5); await sleep(c === list[list.length - 1] ? 2800 : 1600); if (!alive()) return;
       PP.toast.classList.remove("show");
     }
     if (!$("loop").checked) break;
@@ -332,9 +343,63 @@ if (new URLSearchParams(location.search).has("preview")) {
   PP.suggested.textContent = fmt(active.suggested); updateVerdict(active.suggested);
 }
 
-// ?record: autoplay the demo in a loop on a 1280x720 stage (start your screen recording, then reload)
-if (new URLSearchParams(location.search).has("record")) {
+// ?record: autoplay the demo in a loop on a 1280x720 stage (start your screen recording, then reload).
+// A control bar sits below the stage, outside the 1280x720 capture area (press H to hide it).
+// URL params: speed=0.5..1.5, only=anna|marco, zoom=1..2, ratio=16:9|1:1|4:5
+function applyZoom(cx, cy) {
+  if (!document.body.classList.contains("record")) return;
+  const W = stage.offsetWidth, H = stage.offsetHeight, z = ctl.zoom;
+  fitZ = z;
+  if (cx === undefined) { cx = ctl.cx ?? W / 2; cy = ctl.cy ?? H / 2; }
+  ctl.cx = cx; ctl.cy = cy;
+  const fx = ctl.follow && z > 1 ? cx : W / 2, fy = ctl.follow && z > 1 ? cy : H / 2;
+  const tx = Math.min(0, Math.max(W - z * W, W / 2 - z * fx)), ty = Math.min(0, Math.max(H - z * H, H / 2 - z * fy));
+  stage.style.transformOrigin = "0 0";
+  stage.style.transform = z > 1 ? `translate(${tx}px, ${ty}px) scale(${z})` : "";
+}
+const recParams = new URLSearchParams(location.search);
+if (recParams.has("record")) {
   document.body.classList.add("record"); $("loop").checked = true;
+  const RATIOS = { "16:9": [1280, 720], "1:1": [800, 800], "4:5": [800, 1000] };
+  const setRatio = (k) => { const [w, h] = RATIOS[k] || RATIOS["16:9"]; document.documentElement.style.setProperty("--rw", w + "px"); document.documentElement.style.setProperty("--rh", h + "px"); applyZoom(); };
+  const setSpeed = (v) => { ctl.speed = v; document.documentElement.style.setProperty("--speed", v); };
+  if (recParams.get("speed")) setSpeed(Math.min(1.5, Math.max(0.5, parseFloat(recParams.get("speed")) || 1)));
+  if (recParams.get("only")) ctl.only = recParams.get("only") === "marco" ? "marco" : "anna";
+  if (recParams.get("zoom")) ctl.zoom = Math.min(2, Math.max(1, parseFloat(recParams.get("zoom")) || 1));
+  setRatio(recParams.get("ratio") in RATIOS ? recParams.get("ratio") : "16:9");
+
+  const bar = document.createElement("div");
+  bar.id = "recbar";
+  const btn = (id, label) => `<button id="${id}" class="rb">${label}</button>`;
+  const seg = (name, opts, cur) => `<span class="seg" data-seg="${name}">${opts.map(([v, l]) => `<button class="rb${String(v) === String(cur) ? " on" : ""}" data-v="${v}">${l}</button>`).join("")}</span>`;
+  bar.innerHTML = [
+    btn("rbPlay", "Pause"), btn("rbRestart", "Restart"),
+    `<label class="lab">Loop <input id="rbLoop" type="checkbox" checked></label>`,
+    `<span class="lab">Speed</span>`, seg("speed", [[0.5, "0.5×"], [0.75, "0.75×"], [1, "1×"], [1.5, "1.5×"]], ctl.speed),
+    `<span class="lab">Zoom</span>`, seg("zoom", [[1, "1×"], [1.25, "1.25×"], [1.5, "1.5×"], [2, "2×"]], ctl.zoom),
+    `<label class="lab">Follow cursor <input id="rbFollow" type="checkbox" checked></label>`,
+    `<span class="lab">Case</span>`, seg("only", [["both", "Both"], ["anna", "Anna"], ["marco", "Marco"]], ctl.only),
+    `<span class="lab">Crop</span>`, seg("ratio", Object.keys(RATIOS).map((k) => [k, k]), recParams.get("ratio") in RATIOS ? recParams.get("ratio") : "16:9"),
+    `<span class="lab hint">H hides</span>`,
+  ].join("");
+  document.body.appendChild(bar);
+  const mark = (name, v) => bar.querySelectorAll(`[data-seg="${name}"] .rb`).forEach((b) => b.classList.toggle("on", b.dataset.v === String(v)));
+  bar.addEventListener("click", (e) => {
+    const b = e.target.closest(".rb"); if (!b) return;
+    const g = b.parentElement.dataset.seg, v = b.dataset.v;
+    if (g === "speed") { setSpeed(+v); mark(g, v); }
+    if (g === "zoom") { ctl.zoom = +v; mark(g, v); applyZoom(); }
+    if (g === "only") { ctl.only = v; mark(g, v); demo(); }
+    if (g === "ratio") { setRatio(v); mark(g, v); demo(); }
+    if (b.id === "rbPlay") { ctl.paused = !ctl.paused; document.body.classList.toggle("paused", ctl.paused); b.textContent = ctl.paused ? "Play" : "Pause"; }
+    if (b.id === "rbRestart") { ctl.paused = false; document.body.classList.remove("paused"); $("rbPlay").textContent = "Pause"; demo(); }
+  });
+  $("rbLoop").addEventListener("change", (e) => { $("loop").checked = e.target.checked; });
+  $("rbFollow").addEventListener("change", (e) => { ctl.follow = e.target.checked; applyZoom(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "h" || e.key === "H") bar.classList.toggle("hidden");
+    if (e.key === " ") { e.preventDefault(); $("rbPlay").click(); }
+  });
   setTimeout(demo, 1200);
 }
 
