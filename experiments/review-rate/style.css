@@ -210,3 +210,6 @@ body.paused *, body.paused *::before, body.paused *::after { animation-play-stat
 @keyframes textShimmer { to { background-position: -50% 0; } }
 @media (prefers-reduced-motion: reduce) { .step[data-status="running"] .label, .step[data-status="running"] .detail { animation: none; color: var(--color-text-muted); -webkit-text-fill-color: currentColor; background: none; } }
 
+
+/* Embed mode (?embed): the record stage with no bar, no scrollbars, transparent page */
+body.embed { overflow: hidden; background: transparent; }

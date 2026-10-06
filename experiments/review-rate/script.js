@@ -358,15 +358,20 @@ function applyZoom(cx, cy) {
   stage.style.transform = z > 1 ? `translate(${tx}px, ${ty}px) scale(${z})` : "";
 }
 const recParams = new URLSearchParams(location.search);
-if (recParams.has("record")) {
+// ?embed: same loop as ?record, but with no control bar and a 16:10 stage, for iframes on other pages
+const embed = recParams.has("embed");
+if (recParams.has("record") || embed) {
   document.body.classList.add("record"); $("loop").checked = true;
-  const RATIOS = { "16:9": [1280, 720], "1:1": [800, 800], "4:5": [800, 1000] };
+  if (embed) document.body.classList.add("embed");
+  const RATIOS = { "16:9": [1280, 720], "16:10": [1280, 800], "1:1": [800, 800], "4:5": [800, 1000] };
   const setRatio = (k) => { const [w, h] = RATIOS[k] || RATIOS["16:9"]; document.documentElement.style.setProperty("--rw", w + "px"); document.documentElement.style.setProperty("--rh", h + "px"); applyZoom(); };
   const setSpeed = (v) => { ctl.speed = v; document.documentElement.style.setProperty("--speed", v); };
   if (recParams.get("speed")) setSpeed(Math.min(1.5, Math.max(0.5, parseFloat(recParams.get("speed")) || 1)));
   if (recParams.get("only")) ctl.only = recParams.get("only") === "marco" ? "marco" : "anna";
   if (recParams.get("zoom")) ctl.zoom = Math.min(2, Math.max(1, parseFloat(recParams.get("zoom")) || 1));
-  setRatio(recParams.get("ratio") in RATIOS ? recParams.get("ratio") : "16:9");
+  setRatio(recParams.get("ratio") in RATIOS ? recParams.get("ratio") : embed ? "16:10" : "16:9");
+
+  if (!embed) {
 
   const bar = document.createElement("div");
   bar.id = "recbar";
@@ -403,6 +408,7 @@ if (recParams.has("record")) {
     if (e.key === "h" || e.key === "H") bar.classList.toggle("hidden");
     if (e.key === " ") { e.preventDefault(); $("rbPlay").click(); }
   });
+  }
   setTimeout(demo, 1200);
 }
 
