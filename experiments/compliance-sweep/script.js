@@ -55,7 +55,19 @@ people.forEach((p) => {
 });
 
 let chips = people.map(() => "");
-function paint() { chips.forEach((html, i) => { rows[i].innerHTML = html; }); }
+function paint() {
+  let fresh = 0;
+  chips.forEach((html, i) => {
+    const slot = rows[i];
+    if (slot.dataset.html === html) return;
+    slot.dataset.html = html;
+    slot.innerHTML = html;
+    const el = slot.firstElementChild;
+    if (!el) return;
+    el.style.animationDelay = (fresh * 50) + "ms";
+    fresh++;
+  });
+}
 function blanks() { chips = people.map(() => ""); paint(); }
 
 $("more").innerHTML = icon("more-vert");
