@@ -79,18 +79,18 @@ const rel = (el) => {
   return { x: (r.left - s.left) / fitZ, y: (r.top - s.top) / fitZ, w: r.width / fitZ, h: r.height / fitZ };
 };
 function openMenu() {
-  const b = rel($("more")), w = Math.max(menu.offsetWidth, 220);
-  menu.style.left = Math.min(Math.max(8, b.x + b.w - w), stage.clientWidth - w - 8) + "px";
-  menu.style.top = (b.y + b.h + 6) + "px";
+  const b = rel($("more")), w = menu.offsetWidth;
+  menu.style.top = (b.y + b.h + 4) + "px";
+  menu.style.left = (b.x + b.w - w) + "px";
   menu.classList.add("open");
   menu.inert = false;
   $("more").classList.add("open");
 }
 function openSub() {
-  const m = rel(agentItem), sw = Math.max(sub.offsetWidth, 240), sh = Math.max(sub.offsetHeight, 120);
   agentItem.classList.add("hover");
-  sub.style.left = Math.max(8, m.x - sw - 8) + "px";
-  sub.style.top = Math.min(Math.max(8, m.y - 4), stage.clientHeight - sh - 8) + "px";
+  const sw = sub.offsetWidth;
+  sub.style.top = menu.style.top;
+  sub.style.left = (parseFloat(menu.style.left) - 4 - sw) + "px";
   sub.classList.add("open");
   sub.inert = false;
 }
