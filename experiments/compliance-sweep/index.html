@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agentic CRM · Compliance sweep</title>
+  <link rel="stylesheet" href="../../browser.css">
+  <link rel="stylesheet" href="../../theme.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../../tailwind-config.js"></script>
+</head>
+<body>
+  <main class="flex w-full flex-col gap-10 px-10 py-12">
+    <header class="flex flex-col gap-4 pb-2">
+      <a href="../../" class="text-md text-muted">← Playground</a>
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <h1 class="text-3xl font-semibold">Agentic CRM #2 · Compliance sweep</h1>
+          <p class="text-md text-muted">The agent walks the whole list. Six people stay quiet. Two need you: one draft to send, one decision it will not make.</p>
+        </div>
+        <div class="flex items-center gap-4">
+          <label class="flex items-center gap-2 text-base text-muted"><input id="loop" type="checkbox"> Loop</label>
+          <button id="reset" class="btn-dark-secondary">Reset</button>
+          <button id="play" class="btn-dark-primary">Play demo</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="canvas">
+      <div class="window">
+        <div class="toolbar" aria-hidden="true">
+          <div class="lights"><i></i><i></i><i></i></div>
+          <div class="url"><span>acme.com</span></div>
+        </div>
+        <section id="stage" class="relative h-[640px] w-full overflow-hidden bg-light" data-state="idle">
+          <div id="app" class="absolute inset-4 flex flex-col overflow-hidden rounded-xl bg-white text-ink-light">
+            <div class="flex items-center justify-between px-6 pb-3 pt-5">
+              <div>
+                <h2 class="text-lg font-medium">Contractors</h2>
+                <p class="text-xs text-muted-light">Manage all contractors across agencies and direct engagements</p>
+              </div>
+              <button id="more" class="more" aria-label="Collection actions"></button>
+            </div>
+            <div class="row row-head text-xs text-muted-light">
+              <span>Contractor</span><span>Supplier</span><span>Engagement</span><span>Country</span><span>In project</span><span></span>
+            </div>
+            <div id="rows" class="flex flex-col"></div>
+          </div>
+
+          <div id="scrim" class="scrim"></div>
+          <aside id="panel" class="panel" aria-hidden="true">
+            <div id="panelInner" class="panel-inner">
+              <div class="flex items-center justify-between border-b border-gray-0-5 px-4 py-3">
+                <h3 id="panelTitle" class="text-lg font-medium">Check compliance</h3>
+                <button id="close" class="icon-btn" aria-label="Close"></button>
+              </div>
+              <div id="panelBody" class="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4">
+                <p id="intro" class="text-lg font-medium"></p>
+                <ol id="steps" class="flex flex-col gap-3"></ol>
+                <div id="cards" class="flex flex-col gap-3"></div>
+                <div id="message" class="msg" hidden>
+                  <div class="msg-head">
+                    <span class="label">Message</span>
+                    <button id="edit" class="btn-light">Edit</button>
+                  </div>
+                  <p class="meta">To Tomas Novak · right to work</p>
+                  <p id="msgBody">Hi Tomas — your right to work expires on 23 October. Please send the renewed document so we can keep you on the SAP S/4HANA rollout.</p>
+                  <textarea id="msgInput" hidden></textarea>
+                </div>
+                <div id="question" class="msg" hidden>
+                  <p class="label">Needs a decision</p>
+                  <p id="qBody">Jonas has worked only for Acme for 18 months, with no other clients on file. That can look like employment. I will not mark it.</p>
+                  <button id="leave" class="btn-light wide">Leave as freelancer</button>
+                  <button id="flag" class="btn-dark wide"><span class="btn-label">Flag employment risk</span></button>
+                </div>
+              </div>
+              <div id="footer" class="float-footer">
+                <div id="footerLeft"></div>
+                <div id="footerRight" class="flex gap-3"></div>
+              </div>
+            </div>
+          </aside>
+
+          <div id="toast" class="toast"><span id="toastMsg"></span><button id="undo">Undo</button></div>
+          <div id="cursor" class="cursor" aria-hidden="true"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script src="../review-rate/loaders.js"></script>
+  <script src="../review-rate/icons.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
