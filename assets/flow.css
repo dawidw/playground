@@ -1,0 +1,57 @@
+/* Isometric "how it works" section (assets/flow.js). Dark plate, tokens from theme.css.
+   Hardcoded: the three macOS window dots (system colors, same as browser.css). */
+.flow { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 960px) { .flow { grid-template-columns: minmax(0, 1fr); } }
+.flow-fig { background: var(--color-carbon-black-7); border-radius: 20px; padding: 18px 20px 16px; color: var(--color-gray-6); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.flow-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; font-size: 12px; letter-spacing: .08em; }
+.flow-cap { text-transform: uppercase; }
+.flow-fig .f-readout { color: var(--color-gray-0-5); text-align: right; }
+.flow svg { display: block; width: 100%; height: auto; outline: none; }
+.flow .f-face { fill: var(--color-carbon-black-6); stroke: var(--color-gray-7); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linejoin: round; transition: stroke .35s; }
+.flow .f-face.f-top { fill: var(--color-carbon-black-5); }
+.flow .f-face.f-glass { fill: var(--color-carbon-black-8); }
+.flow .f-detail { fill: none; stroke: var(--color-gray-9); stroke-width: 1; vector-effect: non-scaling-stroke; transition: stroke .35s; }
+.flow .f-rail { fill: none; stroke: var(--color-gray-7); opacity: .55; stroke-width: 1; stroke-dasharray: 3 7; vector-effect: non-scaling-stroke; }
+.flow text { fill: var(--color-gray-6); font-family: inherit; transition: fill .35s; }
+.flow text.f-live, .flow .f-obj.on text.f-hot { fill: var(--color-gray-0-5); }
+.flow .f-lab { font-size: 12px; letter-spacing: .14em; text-anchor: middle; }
+.flow .f-lab.on { fill: var(--color-gray-0-5); }
+.flow .f-obj.on .f-face { stroke: var(--color-gray-0-5); }
+.flow .f-obj.on .f-detail.f-glow { stroke: var(--color-gray-0-5); }
+.flow .f-th { fill: none; stroke: var(--color-gray-7); stroke-width: 1; vector-effect: non-scaling-stroke; opacity: .35; transition: stroke .4s, opacity .4s; transition-delay: calc(var(--d, 0) * .22s); }
+.flow .f-obj.on .f-th { stroke: var(--color-gray-0-5); opacity: 1; }
+.flow .ui-a, .flow .ui-b, .flow .ui-c { opacity: 0; transition: opacity .4s; pointer-events: none; }
+.flow [data-ui="a"] .ui-a, .flow [data-ui="b"] .ui-b, .flow [data-ui="c"] .ui-c { opacity: 1; pointer-events: auto; }
+.flow .dot-r { fill: #ff5f57; } .flow .dot-y { fill: #febc2e; } .flow .dot-g { fill: #28c840; }
+.flow .f-reveal { opacity: 0; transition: opacity .4s; transition-delay: calc(var(--d, 0) * .45s); }
+.flow .on > .f-reveal, .flow .on .f-reveal { opacity: 1; }
+.flow .f-chip { fill: var(--color-canary-yellow-5); }
+.flow .f-press { cursor: pointer; transition: transform 60ms ease-out; }
+.flow .f-press.down { transform: translateY(4px); }
+.flow .f-press:hover .f-face, .flow .f-press.down .f-face { stroke: var(--color-gray-0-5); }
+.flow .f-gate .f-chk { opacity: 0; fill: var(--color-gray-0-5); transition: opacity .3s; }
+.flow .f-gate.lit .f-face { stroke: var(--color-gray-0-5); }
+.flow .f-gate.lit .f-chk { opacity: 1; }
+.flow .f-hlbar { fill: var(--color-gray-0-5); opacity: 0; transition: opacity .3s; }
+.flow .f-hlbar.on { opacity: .16; }
+.flow .f-tile { transition: opacity .3s; }
+.flow .f-tile .f-face, .flow .f-tile .f-face.f-top { fill: var(--color-gray-0-5); stroke: var(--color-gray-0-5); }
+.flow .f-tile text { fill: var(--color-carbon-black-6); font-weight: 600; }
+
+.flow-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.flow-steps li { border: 1px solid var(--color-gray-9); border-radius: 12px; background: var(--color-carbon-black-7); transition: border-color .3s, background .3s; }
+.flow-steps li.on { border-color: var(--color-gray-5); background: var(--color-carbon-black-6); }
+.flow-steps li > button { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 10px 14px; text-align: left; color: var(--color-gray-4); cursor: pointer; font: inherit; font-size: 14px; font-weight: 500; }
+.flow-steps li.on > button { color: var(--color-gray-0-5); }
+.flow-steps .f-n { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--color-gray-8); font: 500 11px ui-monospace, SFMono-Regular, Menlo, monospace; }
+.flow-steps li.on .f-n { background: var(--color-gray-0-5); color: var(--color-carbon-black-6); border-color: var(--color-gray-0-5); }
+.flow-steps .f-fl { font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--color-gray-7); text-align: right; }
+.flow-steps .f-more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s; }
+.flow-steps li.on .f-more { grid-template-rows: 1fr; }
+.flow-steps .f-more > div { overflow: hidden; min-height: 0; padding: 0 14px; }
+.flow-steps li.on .f-more > div { padding-bottom: 14px; }
+.flow-steps p { margin: 0 0 10px 34px; color: var(--color-gray-5); font-size: 13px; line-height: 1.55; }
+.flow-steps pre { margin: 0 0 0 34px; padding: 10px 12px; border-radius: 8px; background: var(--color-carbon-black-8); color: var(--color-gray-1); font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) { .flow .f-reveal, .flow .f-th, .flow .f-press, .flow-steps .f-more { transition: none; } }
+
+body.record .flow-section, body.preview .flow-section { display: none; }

@@ -6,6 +6,7 @@
   <title>Agentic CRM · Review rate</title>
   <link rel="stylesheet" href="../../browser.css?v=202610041254">
   <link rel="stylesheet" href="../../theme.css?v=202610041248">
+  <link rel="stylesheet" href="../../assets/flow.css?v=202610142239">
   <link rel="stylesheet" href="style.css?v=202610051430">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="../../tailwind-config.js?v=202610040028"></script>
@@ -115,9 +116,19 @@
       </section>
       </div>
     </div>
+
+    <section class="flow-section flex flex-col gap-5">
+      <div>
+        <h2 class="text-2xl font-semibold">How one request travels</h2>
+        <p class="text-md text-muted">From the click to the proposal on screen: the interface, the database, the prompt, the model call, the checks, and back. Click a step to read it; the plate on the loop carries the command, query or message of that step.</p>
+      </div>
+      <div id="flow"></div>
+    </section>
   </main>
   <script src="loaders.js?v=202610040110"></script>
   <script src="icons.js?v=202610040110"></script>
   <script src="script.js?v=202610051430"></script>
+  <script src="../../assets/flow.js?v=202610142239"></script>
+  <script src="flow.js?v=202610142239"></script>
 </body>
 </html>
