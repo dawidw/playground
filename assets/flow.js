@@ -134,9 +134,12 @@ const FR = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"
 let fi = 0;
 setInterval(() => { fi = (fi + 1) % FR.length; document.querySelectorAll(".flow-spin").forEach((e) => { e.textContent = FR[fi] + " " + e.dataset.label; }); }, 90);
 
-function mount(root, c) {
+function mount(root, c, opts) {
+  opts = opts || {};
+  if (root._flow) root._flow.destroy();
   const steps = FIX.map((f, i) => Object.assign({}, f, c.steps[i]));
   root.classList.add("flow");
+  root.classList.toggle("flow-compact", !!opts.compact);
   root.innerHTML = fc(`<div class="flow-fig"><div class="flow-row"><span>${c.fig}</span><span class="flow-cap">${c.caption}</span></div>` +
     `<svg viewBox="170 70 740 720" role="img" tabindex="0" aria-label="${c.alt}">${sceneSvg(c)}</svg>` +
     `<div class="flow-row"><span>button or enter plays · space steps · r resets</span><span class="readout"></span></div></div>` +
@@ -180,6 +183,8 @@ function mount(root, c) {
     const prev = cur > 0 ? steps[cur - 1].at : null;
     q(".f-readout").textContent = cur === 0 ? "ready" : `step ${cur} of 8 · ${s.flow}`;
     qa(".flow-steps li").forEach((li) => { const on = +li.dataset.i === cur; li.classList.toggle("on", on); li.querySelector("button").setAttribute("aria-expanded", on); });
+    const ul = q(".flow-steps"), act = ul.querySelector("li.on");
+    if (act && ul.scrollHeight > ul.clientHeight + 2) ul.scrollTo({ top: Math.max(0, act.offsetTop - 8), behavior: reduce ? "auto" : "smooth" });
     setCode();
     const p = s.path;
     if (!going) { const e = p[p.length - 1]; place(e[0], e[1]); return; }
@@ -210,6 +215,7 @@ function mount(root, c) {
   const toggle = () => { if (playing) { userPaused = true; stop(); } else { userPaused = false; if (cur >= 8) show(0, false); play(); } };
   const api = {
     el: root,
+    destroy() { stop(); cancelAnimationFrame(anim); const i = figs.indexOf(api); if (i >= 0) figs.splice(i, 1); io.unobserve(root); root._flow = null; root.innerHTML = ""; },
     visible: (v) => { visible = v; if (v && !userPaused && !playing) play(); if (!v && playing) stop(); },
     key(e) {
       if (e.key === " " || e.key === "ArrowRight") { e.preventDefault(); userPaused = true; stop(); show(cur >= 8 ? 0 : cur + 1, true); }
@@ -226,6 +232,7 @@ function mount(root, c) {
   root.addEventListener("pointerenter", () => { current = api; });
   root.addEventListener("focusin", () => { current = api; });
   show(0, false);
+  root._flow = api;
   figs.push(api);
   if ("IntersectionObserver" in window) io.observe(root); else api.visible(true);
 }
@@ -239,5 +246,5 @@ window.addEventListener("keydown", (e) => {
   current.key(e);
 });
 
-window.Flow = { mount };
+window.Flow = { mount, configs: window.FlowConfigs = window.FlowConfigs || {} };
 })();

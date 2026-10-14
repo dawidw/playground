@@ -1,7 +1,7 @@
 /* Isometric "how it works" section (assets/flow.js). Dark plate, tokens from theme.css.
    Hardcoded: the three macOS window dots (system colors, same as browser.css). */
 .flow { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; align-items: start; }
-@media (max-width: 960px) { .flow { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 960px) { .flow:not(.flow-compact) { grid-template-columns: minmax(0, 1fr); } }
 .flow-fig { background: var(--color-carbon-black-7); border-radius: 20px; padding: 18px 20px 16px; color: var(--color-gray-6); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .flow-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; font-size: 12px; letter-spacing: .08em; }
 .flow-cap { text-transform: uppercase; }
@@ -38,10 +38,10 @@
 .flow .f-tile .f-face, .flow .f-tile .f-face.f-top { fill: var(--color-gray-0-5); stroke: var(--color-gray-0-5); }
 .flow .f-tile text { fill: var(--color-carbon-black-6); font-weight: 600; }
 
-.flow-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.flow-steps { position: relative; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .flow-steps li { border: 1px solid var(--color-gray-9); border-radius: 12px; background: var(--color-carbon-black-7); transition: border-color .3s, background .3s; }
 .flow-steps li.on { border-color: var(--color-gray-5); background: var(--color-carbon-black-6); }
-.flow-steps li > button { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 10px 14px; text-align: left; color: var(--color-gray-4); cursor: pointer; font: inherit; font-size: 14px; font-weight: 500; }
+.flow-steps li > button { background: none; border: 0; display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 10px 14px; text-align: left; color: var(--color-gray-4); cursor: pointer; font: inherit; font-size: 14px; font-weight: 500; }
 .flow-steps li.on > button { color: var(--color-gray-0-5); }
 .flow-steps .f-n { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--color-gray-8); font: 500 11px ui-monospace, SFMono-Regular, Menlo, monospace; }
 .flow-steps li.on .f-n { background: var(--color-gray-0-5); color: var(--color-carbon-black-6); border-color: var(--color-gray-0-5); }
@@ -55,3 +55,17 @@
 @media (prefers-reduced-motion: reduce) { .flow .f-reveal, .flow .f-th, .flow .f-press, .flow-steps .f-more { transition: none; } }
 
 body.record .flow-section, body.preview .flow-section { display: none; }
+
+/* Compact: embedded in a narrow column (landing page). The step list takes the figure's height and scrolls. */
+.flow-compact { gap: 12px; }
+.flow-compact .flow-fig { padding: 14px 16px 12px; border-radius: 16px; }
+.flow-compact .flow-steps { gap: 6px; }
+.flow-compact .flow-steps li > button { padding: 8px 12px; font-size: 13px; }
+.flow-compact .flow-steps p { font-size: 12px; margin-left: 34px; }
+.flow-compact .flow-steps pre { font-size: 11px; }
+.flow-compact .flow-steps .fl { display: none; }
+@media (min-width: 721px) { .flow-compact { align-items: stretch; } .flow-compact .flow-steps { contain: size; overflow-y: auto; min-height: 0; scrollbar-width: none; } .flow-compact .flow-steps::-webkit-scrollbar { display: none; } }
+@media (max-width: 720px) { .flow-compact { grid-template-columns: minmax(0, 1fr); } .flow-compact .flow-steps { max-height: 360px; overflow-y: auto; scrollbar-width: none; } }
+
+/* Same width and centering as the browser window (.canvas in browser.css) */
+.flow-section { width: 100%; max-width: 1180px; margin-inline: auto; margin-top: 48px; margin-bottom: 24px; }

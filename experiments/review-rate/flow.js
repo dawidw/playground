@@ -1,7 +1,7 @@
 // "How it works" illustration for Review rate (Anna Weber case). All data is made up (the repo is public).
 (() => {
 const blue = "var(--color-blue-4)", orange = "var(--color-orange-4)", green = "var(--color-green-4)";
-Flow.mount(document.getElementById("flow"), {
+const cfg = {
   fig: "Fig 1", caption: "Request flow · Review rate",
   alt: "Isometric illustration of one Review rate request: a monitor with the interface, a database, a prompt document, the Claude API and validation gates, joined by a loop. A plate carrying the current command or prompt travels around the loop.",
   ui: {
@@ -49,5 +49,8 @@ Flow.mount(document.getElementById("flow"), {
       desc: "State becomes “proposal”, deltaPct is computed in code, the steps stream in and the card is drawn. Only Approve writes: PATCH /api/contractors/{id}, with Undo for 10 s.",
       out: 'state = "proposal"   // deltaPct: -12\nApprove > PATCH /api/contractors/c_103\n          { "rate": 1100 }\nDismiss > nothing is written' },
   ],
-});
+};
+Flow.configs["review-rate"] = cfg;
+const el = document.getElementById("flow");
+if (el) Flow.mount(el, cfg);
 })();

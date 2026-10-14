@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How the agents work · Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme.css">
+  <link rel="stylesheet" href="../assets/flow.css?v=202610142250">
+  <style>
+    /* Embeddable view (the dawidw.pl landing loads it in an iframe and resizes it from the posted height). */
+    html, body { margin: 0; background: transparent; }
+    body { color: var(--color-gray-0-5); font-family: Inter, "SF Pro", system-ui, sans-serif; padding: 2px; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+    .tabs button { font: 500 13px/1 Inter, system-ui, sans-serif; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--color-gray-9); background: transparent; color: var(--color-gray-5); cursor: pointer; }
+    .tabs button:hover { color: var(--color-gray-0-5); border-color: var(--color-gray-7); }
+    .tabs button[aria-pressed="true"] { color: var(--color-gray-0-5); border-color: var(--color-gray-5); }
+  </style>
+</head>
+<body>
+  <div class="tabs" role="group" aria-label="Choose an experiment">
+    <button type="button" data-k="review-rate" aria-pressed="true">Review rate</button>
+    <button type="button" data-k="compliance-sweep" aria-pressed="false">Compliance sweep</button>
+  </div>
+  <div id="flow"></div>
+  <script src="../assets/flow.js?v=202610141000"></script>
+  <script src="../experiments/review-rate/flow.js?v=202610141000"></script>
+  <script src="../experiments/compliance-sweep/flow.js?v=202610141000"></script>
+  <script>
+    (() => {
+      const el = document.getElementById("flow");
+      const pick = (k) => {
+        document.querySelectorAll(".tabs button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.k === k));
+        Flow.mount(el, Flow.configs[k], { compact: true });
+      };
+      document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => pick(b.dataset.k)));
+      pick("review-rate");
+      // Tell the parent page how tall this view is, so it can size the iframe.
+      const post = () => parent !== window && parent.postMessage({ type: "flow-height", height: Math.ceil(document.body.getBoundingClientRect().height) + 4 }, "*");
+      new ResizeObserver(post).observe(document.body);
+      post();
+    })();
+  </script>
+</body>
+</html>

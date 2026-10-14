@@ -1,7 +1,7 @@
 // "How it works" illustration for Compliance sweep. All data is made up (the repo is public).
 (() => {
 const blue = "var(--color-blue-4)", orange = "var(--color-orange-4)", green = "var(--color-green-4)";
-Flow.mount(document.getElementById("flow"), {
+const cfg = {
   fig: "Fig 2", caption: "Request flow · Compliance sweep",
   alt: "Isometric illustration of one compliance sweep: a monitor with the contractor list, a document store, a sheet of send rules, the Claude API that drafts one chase message, and guardrail gates, joined by a loop. A plate carrying the current command, rule or message travels around the loop.",
   ui: {
@@ -49,5 +49,8 @@ Flow.mount(document.getElementById("flow"), {
       desc: "The panel shows the result: six clear, a draft for Tomas, a decision for Jonas. Sending is a button the human presses. For Jonas the human picks Leave as freelancer or Flag risk, with Undo on both.",
       out: "6 clear · Tomas: draft ready · Jonas: needs you\n[ Review Tomas ]  then  [ Send message ]\nJonas: [ Leave as freelancer ] [ Flag risk ]" },
   ],
-});
+};
+Flow.configs["compliance-sweep"] = cfg;
+const el = document.getElementById("flow");
+if (el) Flow.mount(el, cfg);
 })();
