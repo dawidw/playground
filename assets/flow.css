@@ -69,3 +69,15 @@ body.record .flow-section, body.preview .flow-section { display: none; }
 
 /* Same width and centering as the browser window (.canvas in browser.css) */
 .flow-section { width: 100%; max-width: 1180px; margin-inline: auto; margin-top: 48px; margin-bottom: 24px; }
+
+/* Sweep scene: contractors on the belt (tokens) and the plate that glides between stations */
+.flow .f-tok { opacity: 0; transition: opacity .35s; transition-delay: calc(var(--i, 0) * .07s); }
+.flow .f-tok.vis { opacity: 1; }
+.flow .f-tok .f-face.f-top { fill: var(--color-carbon-black-4); transition: fill .3s; }
+.flow .f-tok text { fill: var(--color-gray-2); font-weight: 600; transition: fill .3s; }
+.flow .f-tok.is-clear .f-face.f-top { fill: var(--color-green-5); }
+.flow .f-tok.is-chase .f-face.f-top { fill: var(--color-canary-yellow-5); }
+.flow .f-tok.is-esc .f-face.f-top { fill: var(--color-orange-5); }
+.flow .f-tok.is-clear text, .flow .f-tok.is-chase text, .flow .f-tok.is-esc text { fill: var(--color-carbon-black-6); }
+.flow .f-tile.f-glide { transition: transform .9s cubic-bezier(.4, 0, .2, 1), opacity .3s; }
+@media (prefers-reduced-motion: reduce) { .flow .f-tok, .flow .f-tile.f-glide { transition: none; } }
