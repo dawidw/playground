@@ -17,14 +17,14 @@ const sleep = (ms) => new Promise((res) => {
 });
 
 const people = [
-  { name: "John Doe", ini: "JD", supplier: "--", type: "Freelancer", country: "🇩🇪 Germany", inProject: true },
-  { name: "Jaque Laurent", ini: "JL", supplier: "Laurent, Inc", type: "Agency", country: "🇫🇷 France", inProject: true },
-  { name: "Anna Weber", ini: "AW", supplier: "Kienbaum", type: "Agency", country: "🇩🇪 Germany", inProject: true },
-  { name: "Marco Rossi", ini: "MR", supplier: "Northwind Digital", type: "Agency", country: "🇮🇹 Italy", inProject: false },
-  { name: "Sofia Lind", ini: "SL", supplier: "--", type: "Freelancer", country: "🇸🇪 Sweden", inProject: true },
-  { name: "Tomas Novak", ini: "TN", supplier: "Deloitte Consulting", type: "Agency", country: "🇪🇸 Spain", inProject: false },
-  { name: "Priya Nair", ini: "PN", supplier: "Acme Analytics", type: "Agency", country: "🇬🇧 United Kingdom", inProject: true },
-  { name: "Jonas Novak", ini: "JN", supplier: "--", type: "Freelancer", country: "🇳🇱 Netherlands", inProject: false },
+  { name: "John Doe", photo: "john", supplier: "--", type: "Freelancer", country: "🇩🇪 Germany", inProject: true },
+  { name: "Jaque Laurent", photo: "jaque", supplier: "Laurent, Inc", type: "Agency", country: "🇫🇷 France", inProject: true },
+  { name: "Anna Weber", photo: "anna", supplier: "Kienbaum", type: "Agency", country: "🇩🇪 Germany", inProject: true },
+  { name: "Marco Rossi", photo: "marco", supplier: "Northwind Digital", type: "Agency", country: "🇮🇹 Italy", inProject: false },
+  { name: "Sofia Lind", photo: "sofia", supplier: "--", type: "Freelancer", country: "🇸🇪 Sweden", inProject: true },
+  { name: "Tomas Novak", photo: "tomas", supplier: "Deloitte Consulting", type: "Agency", country: "🇪🇸 Spain", inProject: false },
+  { name: "Priya Nair", photo: "priya", supplier: "Acme Analytics", type: "Agency", country: "🇬🇧 United Kingdom", inProject: true },
+  { name: "Jonas Novak", photo: "jonas", supplier: "--", type: "Freelancer", country: "🇳🇱 Netherlands", inProject: false },
 ];
 const TOMAS = 5, JONAS = 7;
 const STEPS = [
@@ -44,7 +44,7 @@ people.forEach((p) => {
   const row = document.createElement("div");
   row.className = "row";
   row.innerHTML = `
-    <span class="who"><span class="avatar">${p.ini}</span><span title="${p.name}">${p.name}</span><span class="slot"></span></span>
+    <span class="who"><img class="avatar" src="avatars/${p.photo}.jpg" alt=""><span title="${p.name}">${p.name}</span><span class="slot"></span></span>
     <span title="${p.supplier}">${p.supplier}</span>
     <span><span class="chip chip-sm ${p.type === "Agency" ? "chip-info" : "chip-light"}">${p.type}</span></span>
     <span title="${p.country}">${p.country}</span>
@@ -168,7 +168,7 @@ function setStep(i, status) {
   s.querySelector(".ico").innerHTML = icons[status];
 }
 function personCard(p, line, pill, cls) {
-  return `<div class="person"><span class="avatar lg">${p.ini}</span><div class="copy"><strong>${p.name}</strong><p>${line}</p></div><span class="chip chip-sm ${cls}">${pill}</span></div>`;
+  return `<div class="person"><img class="avatar lg" src="avatars/${p.photo}.jpg" alt=""><div class="copy"><strong>${p.name}</strong><p>${line}</p></div><span class="chip chip-sm ${cls}">${pill}</span></div>`;
 }
 function show(el, on) { el.hidden = !on; }
 function footer(left, right) {
