@@ -13,6 +13,7 @@
     /* Embeddable view (the dawidw.pl landing loads it in an iframe and resizes it from the posted height). */
     html, body { margin: 0; background: transparent; }
     body { color: var(--color-gray-0-5); font-family: Inter, "SF Pro", system-ui, sans-serif; padding: 2px; }
+    .tabs[hidden] { display: none; }
     .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
     .tabs button { font: 500 13px/1 Inter, system-ui, sans-serif; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--color-gray-9); background: transparent; color: var(--color-gray-5); cursor: pointer; }
     .tabs button:hover { color: var(--color-gray-0-5); border-color: var(--color-gray-7); }
@@ -36,7 +37,10 @@
         Flow.mount(el, Flow.configs[k], { compact: true });
       };
       document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => pick(b.dataset.k)));
-      pick("review-rate");
+      // ?only=<experiment> shows a single figure and hides the tabs (used on the landing).
+      const only = new URLSearchParams(location.search).get("only");
+      if (only && Flow.configs[only]) document.querySelector(".tabs").hidden = true;
+      pick(only && Flow.configs[only] ? only : "review-rate");
       // Tell the parent page how tall this view is, so it can size the iframe.
       const post = () => parent !== window && parent.postMessage({ type: "flow-height", height: Math.ceil(document.body.getBoundingClientRect().height) + 4 }, "*");
       new ResizeObserver(post).observe(document.body);
