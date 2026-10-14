@@ -104,6 +104,14 @@
 .cursor.on { opacity: 1; }
 .cursor.click { scale: .8; }
 
+body.preview { margin: 0; }
+body.preview main { padding: 0 !important; gap: 0 !important; }
+body.preview header { display: none; }
+body.preview .canvas, body.preview .window { width: 800px; margin: 0; }
+body.preview #stage { width: 800px; height: 500px !important; }
+body.preview .panel, body.preview .scrim, body.preview .step.show, body.preview .slot .chip { animation: none; transition: none; }
+body.preview .step .detail { display: none; }
+
 body.record main { padding: 0 !important; gap: 0 !important; }
 body.record header { display: none; }
 body.record #stage { height: 720px !important; }

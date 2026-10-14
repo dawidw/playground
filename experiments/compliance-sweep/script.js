@@ -440,7 +440,15 @@ async function demo() {
 $("play").addEventListener("click", demo);
 
 const q = new URLSearchParams(location.search);
-if (q.has("preview")) document.body.classList.add("preview");
+if (q.has("preview")) {
+  document.body.classList.add("preview");
+  chips[TOMAS] = chip("chip-warning", "Expires in 9d");
+  chips[JONAS] = chip("chip-warning", "Needs you");
+  markQuiet([TOMAS, JONAS]);
+  paint();
+  renderExceptions();
+  setState("exceptions");
+}
 if (q.has("record")) {
   document.body.classList.add("record");
   $("loop").checked = q.get("loop") !== "0";
