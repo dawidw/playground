@@ -259,8 +259,8 @@ async function runSweep() {
     setStep(i, "done");
     return true;
   };
-  if (!await beat(0, () => { chips[0] = chips[1] = chips[2] = chips[3] = clearChip(); paint(); })) return;
-  if (!await beat(1, () => { chips[4] = checkingChip(); paint(); })) return;
+  if (!await beat(0)) return;
+  if (!await beat(1, () => { chips[0] = chips[1] = chips[2] = chips[3] = clearChip(); chips[4] = checkingChip(); paint(); })) return;
   chips[4] = clearChip(); chips[6] = clearChip(); paint();
   if (!await beat(2)) return;
   if (!await beat(3, () => { chips[TOMAS] = chip("chip-warning", "Expires in 9d"); chips[JONAS] = chip("chip-warning", "Needs you"); paint(); })) return;
