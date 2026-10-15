@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Agentic commerce</title>
+  <link rel="stylesheet" href="../../theme.css">
+  <link rel="stylesheet" href="style.css?v=45">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../../tailwind-config.js"></script>
+</head>
+<body>
+  <main class="stagewrap">
+    <header class="page-head">
+      <span class="eyebrow">Playground</span>
+      <h1>Agentic commerce</h1>
+      <p>Karma dla psa, od rozmowy z agentem do paczkomatu. Klikaj podpowiedzi albo pisz w oknie wiadomości.</p>
+      <div class="scn" role="tablist" aria-label="Scenariusz">
+        <button class="scn-btn" data-s="1" role="tab"><i>1</i>Shop</button>
+        <button class="scn-btn" data-s="2" role="tab"><i>2</i>InPost Pay</button>
+        <button class="scn-btn" data-s="3" role="tab"><i>3</i>Zaufana osoba</button>
+      </div>
+      <button id="reset" class="btn-reset">Restart</button>
+    </header>
+
+    <!-- iPhone 18: outline only. On phones (<= 640px) the frame disappears and the chat fills the screen. -->
+    <div class="phone" id="phone">
+      <div class="screen" id="screen">
+        <div class="statusbar" aria-hidden="true">
+          <span class="time">21:15</span>
+          <span class="island"></span>
+          <span class="sys">
+            <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".35"/></svg>
+            <span class="net">5G</span>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x=".5" y=".5" width="22" height="11" rx="3.5" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="12" height="8" rx="2.200" fill="currentColor"/><path d="M24 4v4c.8-.3 1.500-1 1.500-2S24.800 4.300 24 4Z" fill="currentColor" opacity=".5"/></svg>
+          </span>
+        </div>
+
+        <div id="push" class="push" aria-live="polite"></div>
+
+        <div class="chat-head">
+          <button class="icon-btn" id="menuBtn" aria-label="Menu"><svg width="20" height="16" viewBox="0 0 20 16" stroke="currentColor" stroke-width="2.400" stroke-linecap="round"><path d="M2 2h16M2 8h16M2 14h16"/></svg></button>
+          <span class="logo" role="img" aria-label="Boski"><i></i></span>
+          <button class="icon-btn" id="addBtn" aria-label="Add Boski"><svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2v14M2 9h14"/></svg></button>
+        </div>
+
+        <div id="thread" class="thread" role="log" aria-live="polite"></div>
+
+        <div id="optpanel" class="optpanel"><div class="op-in"></div></div>
+        <div class="composer">
+          <div id="attach" class="attach" role="menu">
+            <button role="menuitem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.800"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg>Choose a photo</button>
+            <button role="menuitem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.500-2.500h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.500"/></svg>Take a photo</button>
+          </div>
+          <button class="plus" id="plusBtn" aria-label="Attach"><svg width="16" height="16" viewBox="0 0 18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2v14M2 9h14"/></svg></button>
+          <input class="field" id="msgInput" placeholder="Message" autocomplete="off" aria-label="Message">
+          <button class="mic" id="sendBtn" aria-label="Send">
+            <svg class="ic-mic" width="14" height="20" viewBox="0 0 14 20" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round"><rect x="4" y="1" width="6" height="11" rx="3" fill="currentColor"/><path d="M1.500 9.500a5.500 5.500 0 0 0 11 0M7 15v4"/></svg>
+            <svg class="ic-send" width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M8 17V2M2 8l6-6 6 6"/></svg>
+          </button>
+        </div>
+        <span class="home" aria-hidden="true"></span>
+
+        <section id="settings" class="settings" aria-label="Settings">
+          <div class="st-head"><button class="icon-btn" data-menu aria-label="Menu"><svg width="20" height="16" viewBox="0 0 20 16" stroke="currentColor" stroke-width="2.400" stroke-linecap="round"><path d="M2 2h16M2 8h16M2 14h16"/></svg></button><h2>Settings</h2></div>
+          <div class="st-body">
+            <h4>Account</h4>
+            <label>Profile photo</label>
+            <img class="avatar" src="../../assets/dawid.jpg" alt="">
+            <label>Name</label><input class="inp" value="Dawid">
+            <p class="hint">What Boski calls you</p>
+            <label>Username</label><input class="inp" value="dawid">
+            <p class="hint">Your public username</p>
+            <label>Timezone</label><div class="inp sel">Warsaw <span>UTC+02:00</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.600" stroke-linecap="round" stroke-linejoin="round"><path d="m3 5 4 4 4-4"/></svg></div>
+            <p class="hint">Boski uses this for your local dates and times</p>
+            <label>Email address</label><input class="inp dis" value="dawid@example.com" disabled>
+            <label>Phone number</label><input class="inp" value="+48 600 000 000">
+            <h4>Channels</h4>
+            <div class="st-card">
+              <div class="st-row"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.600" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span>Web</span><button class="pill" data-ch="web">Make primary</button></div>
+              <div class="st-row"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.500 3 2 6.600 2 11c0 2.300 1.200 4.300 3.200 5.800-.2 1.200-.8 2.300-1.700 3.100 1.800.1 3.400-.5 4.700-1.500.9.2 1.800.3 2.800.3 5.500 0 10-3.600 10-8S17.500 3 12 3Z"/></svg><span>Messages</span><button class="pill dim" data-ch="msg">Primary</button></div>
+            </div>
+            <h4>Billing</h4>
+            <div class="st-card"><div class="st-row"><span><b>Regular</b><em>Your plan is active.</em></span><button class="pill">Manage</button></div></div>
+            <h4>Data</h4>
+            <div class="st-card">
+              <div class="st-row"><span>Export your data</span><button class="pill dim">Export</button></div>
+              <div class="st-row"><span>Delete your account</span><button class="pill danger">Delete</button></div>
+            </div>
+            <button class="signout">Sign out</button>
+          </div>
+        </section>
+
+        <aside id="drawer" class="drawer" aria-hidden="true">
+          <div class="dr-scrim" data-close></div>
+          <nav class="dr-panel">
+            <img class="dr-logo" src="boski-logo-black.svg" alt="Boski">
+            <button class="dr-item on" data-go="chat">Chat</button>
+            <button class="dr-item" data-go="settings">Settings</button>
+            <div class="dr-scn">
+              <span class="dr-label">Demo · scenariusze</span>
+              <button class="scn-btn" data-s="1"><i>1</i>Shop</button>
+              <button class="scn-btn" data-s="2"><i>2</i>InPost Pay</button>
+              <button class="scn-btn" data-s="3"><i>3</i>Zaufana osoba</button>
+              <button class="scn-btn" data-restart><i>↺</i>Restart</button>
+            </div>
+            <div class="dr-me"><img src="../../assets/dawid.jpg" alt=""><span><b>Dawid</b><em>Plan Regular</em></span></div>
+          </nav>
+        </aside>
+
+        <div id="dim" class="dim"></div>
+        <section id="addsheet" class="asheet" aria-hidden="true">
+          <div class="top"><h3>Add Boski</h3><button class="close" aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m2 2 10 10M12 2 2 12"/></svg></button></div>
+          <button class="addimsg"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.500 3 2 6.600 2 11c0 2.300 1.200 4.300 3.200 5.800-.2 1.200-.8 2.300-1.700 3.100 1.800.1 3.400-.5 4.700-1.500.9.2 1.800.3 2.800.3 5.500 0 10-3.600 10-8S17.500 3 12 3Z"/></svg>Add to iMessage</button>
+        </section>
+
+        <section id="shopflow" class="shopflow" aria-live="polite"></section>
+        <button id="ipshot" class="ipshot" aria-label="Wróć do Boski"><img src="inpost-cart.webp" alt="Koszyk w InPost Pay"><span>Dotknij, aby wrócić do Boski</span></button>
+        <div id="faceid" class="faceid" aria-hidden="true">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14V9a5 5 0 0 1 5-5h5M30 4h5a5 5 0 0 1 5 5v5M40 30v5a5 5 0 0 1-5 5h-5M14 40H9a5 5 0 0 1-5-5v-5M15 15v4M29 15v4M22 15v8h-2.500M15 29c4 4 10 4 14 0"/></svg>
+          <span id="faceidLabel">Face ID</span>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
