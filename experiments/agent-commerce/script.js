@@ -375,7 +375,8 @@ async function scenario3() {
     <div class="row"><span class="av sm">J</span><span class="k">Dodała Justyna · wspólny kalendarz</span></div>`, 500);
   await say("Chcesz, żebym zaplanował jakąś knajpę blisko?");
   if ((await choose(["Tak, poszukaj knajpy", "Nie, dzięki"])) === 0) {
-    await say("Jasne. Poszukam dobrych miejsc blisko Mazur i dam znać z propozycjami.", 2200, "Szukam knajp w okolicy wyjazdu");
+    await say("Znalazłem kilka dobrych miejsc blisko Mazur. Wysyłam Ci jako link, kliknij później, żeby otworzyć w Google Maps.", 2400, "Szukam knajp w okolicy wyjazdu");
+    await card(`<a class="row linkrow" href="https://www.google.com/maps/search/?api=1&query=restauracje+Mazury" target="_blank" rel="noopener"><span class="pin">📍</span><span><div class="v">Knajpy blisko Mazur</div><div class="k">google.com/maps</div></span><span class="go-ico ml-auto">${ARROW}</span></a>`, 500);
   } else {
     await say("Okej, daj znać, jeśli zmienisz zdanie.");
   }
