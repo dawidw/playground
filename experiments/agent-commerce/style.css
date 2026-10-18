@@ -606,15 +606,40 @@ button.row:hover { background: var(--s2); }
 .dr-panel { position: absolute; left: 8px; top: 8px; bottom: 8px; width: 76%; padding: 66px 14px 24px; display: flex; flex-direction: column; gap: 4px; background: var(--s1); border: 1px solid var(--ln2); border-radius: 44px; transform: translateX(-108%); transition: transform .5s var(--spring); }
 .drawer.on .dr-panel { transform: none; }
 .dr-logo { height: 20px; width: auto; align-self: flex-start; margin: 0 14px 22px; filter: invert(1); }
-.dr-item { min-height: 48px; padding: 14px 16px; border-radius: 999px; text-align: left; font-size: 16.5px; font-weight: 500; color: var(--t2); transition: background .2s, color .2s; }
-.dr-scn { display: none; flex-direction: column; gap: 6px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--ln); }
-.dr-label { padding: 0 14px 10px; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--t3); }
-.dr-scn .scn-btn {
-  height: 48px; gap: 12px; padding: 0 14px;
-  font-size: 15.5px; border-radius: 16px; color: var(--t2);
+.dr-item { flex: none; min-height: 48px; padding: 14px 16px; border-radius: 999px; text-align: left; font-size: 16.5px; font-weight: 500; color: var(--t2); transition: background .2s, color .2s; }
+.dr-scn {
+  display: none; flex: none; flex-direction: column; gap: 0;
+  margin: 20px 0 0; padding: 18px 0 0; border-top: 1px solid var(--ln);
 }
-.dr-scn .scn-btn i { width: 28px; height: 28px; font-size: 13px; }
-.dr-scn .scn-btn:hover { background: var(--s1); color: var(--t1); }
+.dr-label {
+  display: block; padding: 0 4px 12px;
+  font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--t3);
+}
+.dr-scn .scn-btn {
+  flex: none; width: 100%; height: 52px; gap: 14px;
+  margin: 0; padding: 0 14px;
+  border-radius: 18px; font-size: 16px; font-weight: 500; letter-spacing: -.01em;
+  color: var(--t2); background: transparent;
+}
+.dr-scn .scn-btn + .scn-btn { margin-top: 4px; }
+.dr-scn .scn-btn i {
+  width: 30px; height: 30px; font-size: 13px; font-weight: 650;
+  background: var(--s3); color: var(--t2);
+}
+.dr-scn .scn-btn:hover { background: var(--s2); color: var(--t1); }
+.dr-scn .scn-btn.on {
+  background: color-mix(in srgb, var(--color-canary-yellow-5) 16%, transparent);
+  color: var(--t1);
+}
+.dr-scn .scn-btn.on i {
+  background: var(--color-canary-yellow-5); color: var(--color-carbon-black-5);
+}
+.dr-scn .scn-btn[data-restart] {
+  margin-top: 12px; color: var(--t3);
+  border: 1px solid var(--ln);
+}
+.dr-scn .scn-btn[data-restart] i { background: transparent; border: 1px solid var(--ln2); font-size: 15px; font-weight: 500; }
+.dr-scn .scn-btn[data-restart]:hover { color: var(--t1); background: var(--s2); }
 @media (max-width: 640px) { .dr-scn { display: flex; } }
 .dr-me { margin-top: auto; display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 999px; background: var(--s1); border: 1px solid var(--ln); }
 .dr-me img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
