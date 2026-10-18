@@ -752,9 +752,15 @@ async function scenario2() {
     await showShot();   // the InPost Pay cart (screenshot); a tap brings the user back to Boski
     btn.textContent = "Otwarto w InPost Pay"; btn.classList.add("paid");
     await say("Płatność przeszła, zamówienie jest opłacone w InPost Pay. Paczka jedzie do WAW214M, dam znać, gdy będzie gotowa.", 3200, "Sprawdzam status zamówienia w InPost Pay");
-    const trk = await card(`<ul class="track">${["Zamówienie opłacone", "Paczka nadana", "W drodze do Paczkomatu", "Gotowa do odbioru"].map((t) => `<li><i></i>${t}</li>`).join("")}</ul>`, 500);
-    const items = trk.querySelectorAll("li");
-    for (const li of [items[0], items[1]]) { await wait(1000); li.classList.add("done"); }
+    const steps = ["Zamówienie opłacone", "Paczka nadana", "W drodze do Paczkomatu", "Gotowa do odbioru"];
+    const trk = await card(`<div class="tr-head">Status paczki</div>${trackHtml(steps, 0)}`, 500);
+    const items = [...trk.querySelectorAll(".track li")];
+    for (let i = 0; i < 2; i++) {
+      await wait(1000);
+      items[i].classList.remove("now");
+      items[i].classList.add("done");
+      if (items[i + 1]) items[i + 1].classList.add("now");
+    }
   } else {
     you("Zignoruj"); btn.textContent = "Zignorowano";
     await say("Jasne, koszyk zostaje w InPost Pay. Dam znać, jeśli cena jeszcze spadnie.");

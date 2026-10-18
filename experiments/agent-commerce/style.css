@@ -348,17 +348,51 @@ button.row:hover { background: var(--s2); }
 .cta.pay { background: var(--ip-yellow); color: var(--ip-ink); box-shadow: none; }
 .cta.pay.paid { background: var(--s2); color: var(--color-green-3); box-shadow: none; opacity: 1; }
 
-/* order tracker: quiet timeline */
-.track { position: relative; display: flex; flex-direction: column; gap: 14px; padding: 4px 0 2px; }
-.track li { position: relative; display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 400; color: color-mix(in srgb, var(--color-gray-0) 28%, transparent); transition: color .4s; }
-.track li:not(:last-child)::after { content: ""; position: absolute; left: 7px; top: 20px; width: 1px; height: 16px; background: var(--ln2); transition: background .5s; }
-.track li.done:not(:last-child)::after, .track li.now:not(:last-child)::after { background: color-mix(in srgb, var(--color-gray-0) 14%, transparent); }
-.track li i { flex: none; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--color-gray-0) 14%, transparent); display: grid; place-items: center; transition: background .4s, border-color .4s; }
-.track li.done { color: var(--t3); }
-.track li.done i { background: color-mix(in srgb, var(--color-gray-0) 32%, transparent); border-color: transparent; }
-.track li.done i::after { content: ""; width: 4px; height: 7px; border: solid var(--bg); border-width: 0 1.5px 1.5px 0; transform: translateY(-0.5px) rotate(45deg); }
-.track li.now { color: var(--t2); }
-.track li.now i { border-color: color-mix(in srgb, var(--color-gray-0) 45%, transparent); box-shadow: inset 0 0 0 3.5px var(--s2); }
+/* order tracker: inset timeline (never flush to card edge) */
+.tr-head {
+  padding: 14px 18px 2px; font-size: 12px; font-weight: 500; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--t3);
+}
+.track {
+  position: relative; display: flex; flex-direction: column; gap: 0;
+  margin: 0; padding: 8px 0 4px; list-style: none;
+}
+.card > .track { padding: 14px 18px 18px; }
+.card > .tr-head + .track { padding-top: 10px; }
+.track li {
+  position: relative; display: flex; align-items: flex-start; gap: 14px;
+  padding: 7px 0; min-height: 30px;
+  font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: -.01em;
+  color: color-mix(in srgb, var(--color-gray-0) 28%, transparent);
+  transition: color .4s;
+}
+.track li:not(:last-child)::after {
+  content: ""; position: absolute; left: 7.5px; top: 23px; bottom: -7px; width: 1px;
+  background: color-mix(in srgb, var(--color-gray-0) 10%, transparent);
+  transition: background .5s;
+}
+.track li.done:not(:last-child)::after,
+.track li.now:not(:last-child)::after {
+  background: color-mix(in srgb, var(--color-gray-0) 22%, transparent);
+}
+.track li i {
+  position: relative; z-index: 1; flex: none; width: 16px; height: 16px; margin-top: 2px;
+  border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--color-gray-0) 16%, transparent);
+  background: var(--s2); display: grid; place-items: center;
+  transition: background .4s, border-color .4s, box-shadow .4s;
+}
+.track li.done { color: color-mix(in srgb, var(--color-gray-0) 42%, transparent); font-weight: 400; }
+.track li.done i { background: color-mix(in srgb, var(--color-gray-0) 38%, transparent); border-color: transparent; }
+.track li.done i::after {
+  content: ""; width: 4px; height: 7px;
+  border: solid var(--bg); border-width: 0 1.5px 1.5px 0;
+  transform: translateY(-0.5px) rotate(45deg);
+}
+.track li.now { color: color-mix(in srgb, var(--color-gray-0) 78%, transparent); }
+.track li.now i {
+  border-color: color-mix(in srgb, var(--color-gray-0) 55%, transparent);
+  box-shadow: inset 0 0 0 3.5px var(--s2);
+}
 .thumb.th-plain { font-size: 22px; line-height: 1; background: var(--s3); }
 
 /* collective orders card */
@@ -383,7 +417,10 @@ button.row:hover { background: var(--s2); }
 .ps-emoji { display: none; }
 .ps-track { display: none; }
 .psheet[data-mode="order"] .ps-pick { background: var(--s2); color: var(--t2); }
-.psheet[data-mode="order"] .ps-track { display: block; margin-top: 18px; padding: 16px 16px 14px; border-radius: 16px; background: var(--s2); }
+.psheet[data-mode="order"] .ps-track { display: block; margin-top: 18px; padding: 14px 16px 12px; border-radius: 16px; background: var(--s1); }
+.psheet[data-mode="order"] .ps-track .track { padding: 4px 2px 2px; }
+.psheet[data-mode="order"] .ps-track .track li i { background: var(--s1); }
+.psheet[data-mode="order"] .ps-track .track li.now i { box-shadow: inset 0 0 0 3.5px var(--s1); }
 .psheet[data-mode="order"] .ps-hero.plain { display: grid; place-items: center; background: var(--s2); }
 .psheet[data-mode="order"] .ps-hero.plain img { display: none; }
 .psheet[data-mode="order"] .ps-hero.plain .ps-emoji { display: block; font-size: 56px; line-height: 1; }
