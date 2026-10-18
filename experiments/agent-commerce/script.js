@@ -21,6 +21,37 @@ const ICON = {
 const TRAIL_DOTS = '<svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.1"/><circle cx="7" cy="2.5" r="1.1"/><circle cx="11.5" cy="2.5" r="1.1"/><circle cx="2.5" cy="7" r="1.1"/><circle cx="7" cy="7" r="1.1"/><circle cx="11.5" cy="7" r="1.1"/><circle cx="2.5" cy="11.5" r="1.1"/><circle cx="7" cy="11.5" r="1.1"/><circle cx="11.5" cy="11.5" r="1.1"/></svg>';
 const TRAIL_CHECK = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
 
+/* Transitions.dev — Matrix dot loader: only for process-step cards */
+const MATRIX_CYCLE = 1200;
+const MATRIX_RING = [1, 2, 7, 11, 14, 13, 8, 4];
+const MATRIX_INNER = [5, 6, 9, 10];
+const MATRIX_TWINKLE = [7, 2, 11, 5, 14, 9, 0, 12, 3, 15, 6, 10, 13, 1, 8, 4];
+const MATRIX_VARIANTS = ["scan", "twinkle", "orbit", "pulse"];
+
+function matrixDelay(variant, idx, cycle = MATRIX_CYCLE) {
+  if (variant === "scan") return Math.round((idx % 4) * (cycle / 10));
+  if (variant === "twinkle") return Math.round(MATRIX_TWINKLE[idx] * (cycle / 16));
+  if (variant === "orbit") {
+    const k = MATRIX_RING.indexOf(idx);
+    return k === -1 ? null : Math.round(k * (cycle / 8));
+  }
+  if (variant === "pulse") return Math.round((MATRIX_INNER.includes(idx) ? 0 : 1) * (cycle * 0.16));
+  return 0;
+}
+
+function matrixHTML(variant = "scan") {
+  const dots = Array.from({ length: 16 }, (_, idx) => {
+    const d = matrixDelay(variant, idx);
+    if (d === null) return '<i style="animation:none"></i>';
+    return `<i style="--d:${d}"></i>`;
+  }).join("");
+  return `<span class="t-matrix" data-variant="${variant}" aria-hidden="true">${dots}</span>`;
+}
+
+function freezeMatrix(root) {
+  root?.querySelectorAll?.(".t-matrix").forEach((m) => m.classList.add("is-frozen"));
+}
+
 function trailStep(kind, label, iconHtml) {
   const ico = kind === "think" ? TRAIL_DOTS : kind === "done" ? TRAIL_CHECK : iconHtml;
   return el(`
@@ -151,8 +182,10 @@ const zl = (n) => n.toFixed(2).replace(".", ",") + " zł";
 
 // ---------- chat primitives ----------
 async function say(text, ms = 900, label) {
-  // label -> "Boski is working" line (grey mark + shimmering text); no label -> typing dots
-  const t = add(label ? el(`<i class="mark"></i><span class="txt" data-text="${label}">${label}</span>`, "think") : el("<i></i><i></i><i></i>", "typing"));
+  // label -> Boski mark + shimmer; no label -> typing dots
+  const t = add(label
+    ? el(`<i class="mark"></i><span class="txt" data-text="${label}">${label}</span>`, "think")
+    : el("<i></i><i></i><i></i>", "typing"));
   await wait(ms);
   t.remove();
   add(el(text, "msg in"));
@@ -572,6 +605,7 @@ const parseEmail = (t) => (t.match(/[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+/) || [])[0] |
 const TICKET_ADULT = 42, TICKET_CHILD = 28;
 const ticketTotal = (a, c) => a * TICKET_ADULT + c * TICKET_CHILD;
 
+// Each step gets a different ASCII vibe
 async function liveFetchCard({ steps, resultTitle, resultSub, resultTone = "empty" }) {
   const node = await card(`
     <div class="live-top">
@@ -586,7 +620,10 @@ async function liveFetchCard({ steps, resultTitle, resultSub, resultTone = "empt
       </div>
     </div>
     <ul class="live-steps">
-      ${steps.map((s, i) => `<li class="live-step" data-i="${i}"><i></i><span class="live-txt" data-text="${s}">${s}</span></li>`).join("")}
+      ${steps.map((s, i) => {
+        const v = MATRIX_VARIANTS[i % MATRIX_VARIANTS.length];
+        return `<li class="live-step" data-i="${i}">${matrixHTML(v)}<span class="live-txt" data-text="${s}">${s}</span></li>`;
+      }).join("")}
     </ul>
     <div class="live-result ${resultTone}" hidden>
       <b class="live-result-title"></b>
@@ -595,10 +632,12 @@ async function liveFetchCard({ steps, resultTitle, resultSub, resultTone = "empt
   node.classList.add("live");
   const items = [...node.querySelectorAll(".live-step")];
   for (let i = 0; i < items.length; i++) {
-    items[i].classList.add("now");
-    await wait(i === items.length - 1 ? 1400 : 1100); // long enough to see Orbs shimmer sweep
-    items[i].classList.remove("now");
-    items[i].classList.add("done");
+    const step = items[i];
+    step.classList.add("now");
+    await wait(i === items.length - 1 ? 1400 : 1100);
+    freezeMatrix(step);
+    step.classList.remove("now");
+    step.classList.add("done");
   }
   const res = node.querySelector(".live-result");
   res.hidden = false;
