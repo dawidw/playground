@@ -567,8 +567,100 @@ function trackHtml(steps, done) {
   }).join("")}</ul>`;
 }
 
-// Scenario 3: add a Trusted person (partner) -> invite -> confirmed -> shared calendar event -> restaurant offer
+// Scenario 3: trusted person -> shared calendar (Kopernik) -> ask Justyna's Boski for tickets -> interactive qty card
 const parseEmail = (t) => (t.match(/[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+/) || [])[0] || null;
+const TICKET_ADULT = 42, TICKET_CHILD = 28;
+const ticketTotal = (a, c) => a * TICKET_ADULT + c * TICKET_CHILD;
+
+async function liveFetchCard({ steps, resultTitle, resultSub, resultTone = "empty" }) {
+  const node = await card(`
+    <div class="live-top">
+      <div class="live-agents" aria-hidden="true">
+        <span class="av sm boski-av"><i></i></span>
+        <span class="live-link">${ARROW}</span>
+        <span class="av sm">J</span>
+      </div>
+      <div class="live-top-copy">
+        <div class="v">Boski → Boski Justyny</div>
+        <div class="k">Zapytanie o bilety · skrzynka + kalendarz</div>
+      </div>
+    </div>
+    <ul class="live-steps">
+      ${steps.map((s, i) => `<li class="live-step" data-i="${i}"><i></i><span class="live-txt" data-text="${s}">${s}</span></li>`).join("")}
+    </ul>
+    <div class="live-result ${resultTone}" hidden>
+      <b class="live-result-title"></b>
+      <em class="live-result-sub"></em>
+    </div>`, 350);
+  node.classList.add("live");
+  const items = [...node.querySelectorAll(".live-step")];
+  for (let i = 0; i < items.length; i++) {
+    items[i].classList.add("now");
+    await wait(i === items.length - 1 ? 1400 : 1100); // long enough to see Orbs shimmer sweep
+    items[i].classList.remove("now");
+    items[i].classList.add("done");
+  }
+  const res = node.querySelector(".live-result");
+  res.hidden = false;
+  res.querySelector(".live-result-title").textContent = resultTitle;
+  res.querySelector(".live-result-sub").textContent = resultSub;
+  node.classList.add("ready");
+  await wait(280);
+  return node;
+}
+
+function ticketQtyCard(adults0 = 2, kids0 = 0) {
+  const node = el(`
+    <div class="tr-head">Bilety · Centrum Nauki Kopernik</div>
+    <div class="qty-row" data-kind="adults">
+      <span class="qty-meta"><b>Dorośli</b><em>${zl(TICKET_ADULT)} / os.</em></span>
+      <div class="qty-ctrl">
+        <button type="button" class="qty-btn" data-d="-1" aria-label="Mniej dorosłych">−</button>
+        <span class="qty-n">${adults0}</span>
+        <button type="button" class="qty-btn" data-d="1" aria-label="Więcej dorosłych">+</button>
+      </div>
+    </div>
+    <div class="qty-row" data-kind="kids">
+      <span class="qty-meta"><b>Dzieci</b><em>${zl(TICKET_CHILD)} / os. · do 18 lat</em></span>
+      <div class="qty-ctrl">
+        <button type="button" class="qty-btn" data-d="-1" aria-label="Mniej dzieci">−</button>
+        <span class="qty-n">${kids0}</span>
+        <button type="button" class="qty-btn" data-d="1" aria-label="Więcej dzieci">+</button>
+      </div>
+    </div>
+    <div class="row qty-fetch"><span class="k">Cena z cennika CNK</span><span class="v ml-auto qty-price">${zl(ticketTotal(adults0, kids0))}</span></div>
+    <button class="cta qty-go" type="button">Kup bilety</button>`, "card qty");
+  let adults = adults0, kids = kids0;
+  const priceEl = node.querySelector(".qty-price");
+  const fetchRow = node.querySelector(".qty-fetch .k");
+  const sync = (flash) => {
+    node.querySelector('[data-kind="adults"] .qty-n').textContent = adults;
+    node.querySelector('[data-kind="kids"] .qty-n').textContent = kids;
+    priceEl.textContent = zl(ticketTotal(adults, kids));
+    if (flash) {
+      fetchRow.textContent = "Pobieram cenę…";
+      priceEl.classList.add("pulse");
+      clearTimeout(sync._t);
+      sync._t = setTimeout(() => {
+        fetchRow.textContent = "Cena z cennika CNK";
+        priceEl.classList.remove("pulse");
+      }, 420);
+    }
+  };
+  node.querySelectorAll(".qty-row").forEach((row) => {
+    const kind = row.dataset.kind;
+    row.querySelectorAll(".qty-btn").forEach((btn) => {
+      btn.onclick = () => {
+        const d = +btn.dataset.d;
+        if (kind === "adults") adults = Math.max(1, Math.min(8, adults + d));
+        else kids = Math.max(0, Math.min(8, kids + d));
+        sync(true);
+      };
+    });
+  });
+  return { node, get: () => ({ adults, kids, total: ticketTotal(adults, kids) }) };
+}
+
 async function scenario3() {
   add(el("Fri 16 Oct at 8:05", "stamp"));
   await wait(400);
@@ -579,7 +671,6 @@ async function scenario3() {
 
   let email = null;
   if (relation === "Partner") {
-    // the agent recognises the person in the user's contacts and only asks to confirm
     await say("W Twoich kontaktach mam Justyna z dopiskiem „Bejbe”, czy to ona?", 1700, "Przeglądam Twoje kontakty");
     await card(`<div class="row"><span class="av">J</span><span><div class="v">Justyna <em class="nick">Bejbe</em></div><div class="k">Kontakty · justyna@example.com</div></span></div>`, 400);
     if ((await choose(["Tak, to ona", "Nie, podam inny e-mail"])) === 0) email = "justyna@example.com";
@@ -595,7 +686,6 @@ async function scenario3() {
     <div class="row"><span class="k">Co zobaczy ta osoba</span><span class="v ml-auto">Wspólny kalendarz</span></div>`, 500);
   await say("Zaproszenie wysłane. Dam znać, gdy zostanie potwierdzone.");
 
-  // time passes: the invited person confirms
   await wait(2200);
   add(el("Fri 16 Oct at 8:21", "stamp"));
   showPush("Boski", "Justyna potwierdziła zaproszenie.", { boski: true });
@@ -604,20 +694,65 @@ async function scenario3() {
   const st = inv.querySelector(".status"); st.textContent = "Połączono"; st.classList.replace("wait", "ok");
   await say(`Justyna potwierdziła zaproszenie. Od teraz jest Twoją Zaufaną osobą (${relation.toLowerCase()}), a ja widzę Wasz wspólny kalendarz.`, 1200);
 
-  // later: the agent notices a new shared-calendar event
   await wait(1200);
   add(el("Fri 16 Oct at 19:40", "stamp"));
-  await say("Justyna dodała do wspólnego kalendarza wyjazd na grzyby na Mazury na weekend.", 2600, "Sprawdzam wspólny kalendarz");
+  await say("Justyna dodała do wspólnego kalendarza wyjście do Centrum Nauki Kopernik.", 2400, "Sprawdzam wspólny kalendarz");
   await card(`
-    <div class="row"><span class="cal"><b>24</b><small>PAŹ</small></span><span><div class="v">Grzybobranie na Mazurach 🍄</div><div class="k">Sob–Nie, 24–25 października</div></div></div>
+    <div class="row"><span class="cal"><b>26</b><small>PAŹ</small></span><span><div class="v">Centrum Nauki Kopernik</div><div class="k">Niedziela, 26 października · 11:00</div></div></div>
     <div class="row"><span class="av sm">J</span><span class="k">Dodała Justyna · wspólny kalendarz</span></div>`, 500);
-  await say("Chcesz, żebym zaplanował jakąś knajpę blisko?");
-  if ((await choose(["Tak, poszukaj knajpy", "Nie, dzięki"])) === 0) {
-    await say("Znalazłem kilka dobrych miejsc blisko Mazur. Wysyłam Ci jako link, kliknij później, żeby otworzyć w Google Maps.", 2400, "Szukam knajp w okolicy wyjazdu");
-    await card(`<a class="row linkrow" href="https://www.google.com/maps/search/?api=1&query=restauracje+Mazury" target="_blank" rel="noopener"><span class="pin">📍</span><span><div class="v">Knajpy blisko Mazur</div><div class="k">google.com/maps</div></span><span class="go-ico ml-auto">${ARROW}</span></a>`, 500);
-  } else {
-    await say("Okej, daj znać, jeśli zmienisz zdanie.");
+
+  await say("Sprawdzam, czy macie już bilety. Zapytam też Boskiego Justyny, czy coś wpadło na jej skrzynkę.", 1600, "Łączę się z Boskim Justyny");
+  await liveFetchCard({
+    steps: [
+      "Łączę z Boskim Justyny",
+      "Przeszukuję mail pod kątem CNK / Kopernik",
+      "Sprawdzam załączniki i potwierdzenia",
+    ],
+    resultTitle: "Brak biletów",
+    resultSub: "W skrzynce Justyny nic o Koperniku. Kalendarz ma tylko event, bez rezerwacji.",
+    resultTone: "empty",
+  });
+
+  await say("Nie macie jeszcze biletów. Mogę od razu ogarnąć kupno?");
+  if ((await choose(["Tak, ogarnij bilety", "Nie, dzięki"])) !== 0) {
+    await say("OK. Jak zmienisz zdanie, napisz.");
+    await endOfScenario(3);
+    return;
   }
+
+  await say("Ile osób idzie? Ustaw w karcie. Cena dociąga się na żywo z cennika CNK.");
+  const { node: qty, get } = ticketQtyCard(2, 1);
+  add(qty);
+  await wait(200);
+  let counts = await new Promise((resolve) => {
+    const go = qty.querySelector(".qty-go");
+    const done = () => { unregister(); hideOptions(); go.disabled = true; resolve(get()); };
+    go.onclick = done;
+    register((text) => { you(text); done(); });
+  });
+
+  await say(`Biorę ${counts.adults}× dorosły${counts.kids ? ` i ${counts.kids}× dziecko` : ""}, razem ${zl(counts.total)}. Rezerwuję…`, 1400, "Łączę się z kasą CNK");
+
+  await wait(600);
+  you("Dodałem jedną osobę, weźmiemy babcię");
+  await wait(500);
+  // interactive card reacts: bump adult + refetch price
+  qty.querySelector(".qty-go").disabled = false;
+  const plus = qty.querySelector('[data-kind="adults"] [data-d="1"]');
+  while (get().adults < 3) plus.click();
+  counts = get();
+  qty.querySelector(".qty-fetch .k").textContent = "Aktualizuję koszyk…";
+  await wait(700);
+  qty.querySelector(".qty-fetch .k").textContent = "Cena z cennika CNK";
+  qty.querySelector(".qty-go").disabled = true;
+  qty.querySelector(".qty-go").textContent = "Zaktualizowano";
+
+  const kidsLabel = counts.kids === 1 ? "1 dziecko" : counts.kids ? `${counts.kids} dzieci` : "";
+  await say(`Ok, fajnie, że rodzinny wypad. Razem ${counts.adults} dorosłych${kidsLabel ? `, ${kidsLabel}` : ""}, ${zl(counts.total)}.`, 1600, "Aktualizuję rezerwację CNK");
+  await card(`
+    <div class="row"><span class="pin">🎟️</span><span><div class="v">Bilety CNK · 26 paź, 11:00</div><div class="k">${counts.adults} dorosłych${counts.kids ? ` · ${counts.kids} dzieci` : ""} · ${zl(counts.total)}</div></span><span class="status ok ml-auto">Zarezerwowane</span></div>
+    <div class="row"><span class="k">Wysłane do Justyny</span><span class="v ml-auto">Kalendarz + mail</span></div>`, 500);
+  await say("Gotowe. Justyna dostanie potwierdzenie na maila, a w kalendarzu macie już bilety.");
   await endOfScenario(3);
 }
 

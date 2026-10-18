@@ -205,6 +205,146 @@ body { background: var(--color-carbon-black-10); overflow-x: hidden; }
 .cal b { font-size: 22px; font-weight: 750; letter-spacing: -.04em; }
 .cal small { margin-top: 3px; font-size: 10px; font-weight: 700; letter-spacing: .08em; color: var(--color-red-5); }
 
+/* Live fetch card: Boski ↔ Boski Justyny, stepped query + result */
+.card.live { overflow: hidden; padding-bottom: 4px; }
+.live-top {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px 12px;
+}
+.live-agents { flex: none; display: flex; align-items: center; gap: 6px; }
+.live-agents .av.sm { width: 28px; height: 28px; font-size: 12px; }
+.live-agents .boski-av {
+  position: relative; background: var(--s3); border-color: var(--ln2); color: transparent;
+}
+.live-agents .boski-av i {
+  position: absolute; left: 50%; top: 50%; width: 11px; height: 16px; transform: translate(-50%, -52%);
+  background: var(--t1);
+  -webkit-mask: url("boski-logo-black.svg") 0 50% / auto 100% no-repeat;
+  mask: url("boski-logo-black.svg") 0 50% / auto 100% no-repeat;
+}
+.live-link {
+  display: grid; place-items: center; width: 16px; color: var(--t3); opacity: .7;
+}
+.live-link svg { width: 12px; height: 12px; }
+.live-top-copy { min-width: 0; flex: 1; }
+.live-top-copy .v { font-size: 14.5px; line-height: 19px; }
+.live-top-copy .k { margin-top: 2px; font-size: 12px; }
+.live-steps {
+  margin: 0 12px; padding: 10px 12px; list-style: none;
+  border-radius: 14px; background: var(--s1);
+}
+.live-step {
+  position: relative; display: flex; align-items: center; gap: 12px;
+  padding: 8px 2px; min-height: 30px;
+  font-size: 13.5px; line-height: 18px; font-weight: 500; letter-spacing: -.01em;
+  color: color-mix(in srgb, var(--color-gray-0) 26%, transparent);
+  transition: color .35s;
+}
+.live-step:not(:last-child)::after {
+  content: ""; position: absolute; left: 8.5px; top: 24px; bottom: -8px; width: 1.5px;
+  background: color-mix(in srgb, var(--color-gray-0) 10%, transparent);
+}
+.live-step.done:not(:last-child)::after,
+.live-step.now:not(:last-child)::after {
+  background: color-mix(in srgb, var(--color-gray-0) 28%, transparent);
+}
+.live-step i {
+  position: relative; z-index: 1; flex: none; width: 18px; height: 18px;
+  border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--color-gray-0) 16%, transparent);
+  background: transparent;
+}
+.live-txt { position: relative; display: inline-block; }
+/* Orbs-style shimmer while the step is active (Maciek loading) */
+.live-step.now {
+  color: color-mix(in srgb, var(--color-gray-0) 50%, transparent);
+}
+.live-step.now i {
+  border-color: color-mix(in srgb, var(--color-gray-0) 40%, transparent);
+  box-shadow: inset 0 0 0 4px var(--s1);
+}
+.live-step.now .live-txt {
+  color: color-mix(in srgb, var(--color-gray-0) 50%, transparent);
+}
+.live-step.now .live-txt::before {
+  content: attr(data-text);
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 40%,
+    var(--color-gray-0) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size: 400% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: tShimmer 1.8s linear infinite;
+}
+.live-step.done { color: color-mix(in srgb, var(--color-gray-0) 52%, transparent); font-weight: 400; }
+.live-step.done .live-txt { color: inherit; }
+.live-step.done .live-txt::before { content: none; animation: none; }
+.live-step.done i {
+  background: color-mix(in srgb, var(--color-gray-0) 62%, transparent);
+  border-color: transparent;
+}
+.live-step.done i::after {
+  content: ""; position: absolute; left: 5.5px; top: 3px; width: 5px; height: 8px;
+  border: solid var(--color-carbon-black-10); border-width: 0 1.7px 1.7px 0;
+  transform: rotate(45deg);
+}
+.live-result {
+  margin: 10px 12px 12px; padding: 12px 14px; border-radius: 14px;
+  animation: rise .35s var(--spring) both;
+}
+.live-result.empty {
+  background: color-mix(in srgb, var(--color-gray-0) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-gray-0) 9%, transparent);
+}
+.live-result-title {
+  display: block; font-size: 14.5px; font-weight: 500; letter-spacing: -.01em;
+  color: color-mix(in srgb, var(--color-gray-0) 68%, transparent);
+}
+.live-result-sub {
+  display: block; margin-top: 4px; font-style: normal; font-size: 12.5px; line-height: 17px;
+  color: color-mix(in srgb, var(--color-gray-0) 38%, transparent);
+}
+
+/* Interactive ticket qty card */
+.card.qty { padding-bottom: 12px; }
+.card.qty .tr-head { padding-bottom: 8px; }
+.qty-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 18px; border-top: 1px solid var(--ln);
+}
+.qty-meta { flex: 1; min-width: 0; }
+.qty-meta b { display: block; font-size: 15px; font-weight: 500; letter-spacing: -.01em; color: var(--t1); }
+.qty-meta em { display: block; margin-top: 2px; font-style: normal; font-size: 12.5px; color: var(--t3); }
+.qty-ctrl {
+  flex: none; display: flex; align-items: center; gap: 4px;
+  padding: 3px; border-radius: 999px;
+  background: var(--s1); border: 1px solid var(--ln);
+}
+.qty-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 18px; font-weight: 500; line-height: 1; color: var(--t1);
+  transition: background .2s, transform .2s var(--spring);
+}
+.qty-btn:hover { background: var(--s3); }
+.qty-btn:active { transform: scale(.92); }
+.qty-n {
+  min-width: 28px; text-align: center;
+  font-size: 16px; font-weight: 550; font-variant-numeric: tabular-nums; color: var(--t1);
+}
+.qty-fetch { border-top: 1px solid var(--ln); }
+.qty-price { transition: opacity .2s, color .2s; }
+.qty-price.pulse { opacity: .45; }
+.card.qty .cta { width: calc(100% - 32px); margin: 10px 16px 4px; }
+
 /* ================= Dock: ONE shell. Closed = pill. Open = 28 radius (no 999 on tall box). ================= */
 .dock {
   position: relative; z-index: 4; flex: none; display: flex; flex-direction: column;
