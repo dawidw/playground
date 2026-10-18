@@ -18,7 +18,6 @@ const ICON = {
   x: '<svg width="14" height="14" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m2 2 10 10M12 2 2 12"/></svg>',
   ok: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7.500"/></svg>',
 };
-const TRAIL_DOTS = '<svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.1"/><circle cx="7" cy="2.5" r="1.1"/><circle cx="11.5" cy="2.5" r="1.1"/><circle cx="2.5" cy="7" r="1.1"/><circle cx="7" cy="7" r="1.1"/><circle cx="11.5" cy="7" r="1.1"/><circle cx="2.5" cy="11.5" r="1.1"/><circle cx="7" cy="11.5" r="1.1"/><circle cx="11.5" cy="11.5" r="1.1"/></svg>';
 const TRAIL_CHECK = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
 
 /* Transitions.dev — Matrix dot loader: only for process-step cards */
@@ -53,7 +52,7 @@ function freezeMatrix(root) {
 }
 
 function trailStep(kind, label, iconHtml) {
-  const ico = kind === "think" ? TRAIL_DOTS : kind === "done" ? TRAIL_CHECK : iconHtml;
+  const ico = kind === "think" ? matrixHTML("twinkle") : kind === "done" ? TRAIL_CHECK : iconHtml;
   return el(`
     <span class="tr-ico" aria-hidden="true"><span class="tr-ring"></span><span class="tr-glyph">${ico}</span></span>
     <span class="tr-txt" data-text="${label}">${label}</span>
@@ -67,6 +66,7 @@ async function memSave(iconHtml, value) {
   const save = trailStep("run", `memory · ${value}`, iconHtml);
   trail.appendChild(save);
   await wait(1600);
+  freezeMatrix(save);
   save.className = "tr-step done";
   save.querySelector(".tr-glyph").innerHTML = TRAIL_CHECK;
   const txt = save.querySelector(".tr-txt");
@@ -75,7 +75,7 @@ async function memSave(iconHtml, value) {
   await wait(700);
   trail.classList.add("collapse");
   await wait(280);
-  trail.innerHTML = `<span class="tr-sum"><i class="tr-star" aria-hidden="true"></i>memory · ${value}</span>`;
+  trail.innerHTML = `<span class="tr-sum"><i class="tr-mark" aria-hidden="true"></i>memory · ${value}</span>`;
   trail.classList.remove("collapse");
   trail.classList.add("sum");
 }
@@ -1030,7 +1030,9 @@ async function scenario4() {
   await say("Oto 10 ostatnich. Możesz kliknąć pozycję, żeby zobaczyć szczegóły.", 1600, "Ładuję historię zamówień");
   bindOrdersCard(await card(ordersListHtml("10 ostatnich zamówień", last10, true), 500), last10);
 
-  await choose(["Kurde, ten sweter z Answear po pierwszym praniu do kitu. Zapamiętaj, żeby nie zamawiać z tego miejsca"]);
+  await wait(600);
+  you("Kurde, ten sweter z Answear po pierwszym praniu do kitu. Zapamiętaj, żeby nie zamawiać z tego miejsca");
+  await wait(500);
   await memSave(ICON.bag, "Unikaj · Answear");
   await say("Zapamiętane: nie zamawiam z Answear. Chcesz, żebym od razu złożył reklamację i dogadał to ze sklepem do końca?");
   if ((await choose(["Tak, ogarnij reklamację", "Nie, wystarczy zapamiętać"])) === 0) {
