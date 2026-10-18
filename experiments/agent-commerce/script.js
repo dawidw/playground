@@ -25,7 +25,7 @@ function trailStep(kind, label, iconHtml) {
   const ico = kind === "think" ? TRAIL_DOTS : kind === "done" ? TRAIL_CHECK : iconHtml;
   return el(`
     <span class="tr-ico" aria-hidden="true"><span class="tr-ring"></span><span class="tr-glyph">${ico}</span></span>
-    <span class="tr-txt">${label}</span>
+    <span class="tr-txt" data-text="${label}">${label}</span>
   `, `tr-step ${kind === "done" ? "done" : kind === "think" ? "think" : "run"}`);
 }
 
@@ -38,7 +38,9 @@ async function memSave(iconHtml, value) {
   await wait(720);
   save.className = "tr-step done";
   save.querySelector(".tr-glyph").innerHTML = TRAIL_CHECK;
-  save.querySelector(".tr-txt").textContent = `memory · ${value}`;
+  const txt = save.querySelector(".tr-txt");
+  txt.textContent = `memory · ${value}`;
+  txt.dataset.text = `memory · ${value}`;
   await wait(480);
   trail.classList.add("collapse");
   await wait(240);
@@ -150,7 +152,7 @@ const zl = (n) => n.toFixed(2).replace(".", ",") + " zł";
 // ---------- chat primitives ----------
 async function say(text, ms = 900, label) {
   // label -> "Boski is working" line (grey mark + shimmering text); no label -> typing dots
-  const t = add(label ? el(`<i class="mark"></i><span class="txt">${label}</span>`, "think") : el("<i></i><i></i><i></i>", "typing"));
+  const t = add(label ? el(`<i class="mark"></i><span class="txt" data-text="${label}">${label}</span>`, "think") : el("<i></i><i></i><i></i>", "typing"));
   await wait(ms);
   t.remove();
   add(el(text, "msg in"));
