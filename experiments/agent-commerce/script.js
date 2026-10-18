@@ -770,26 +770,18 @@ async function scenario3() {
     register((text) => { you(text); done(); });
   });
 
-  await say(`Biorę ${counts.adults}× dorosły${counts.kids ? ` i ${counts.kids}× dziecko` : ""}, razem ${zl(counts.total)}. Rezerwuję…`, 1400, "Łączę się z kasą CNK");
+  const kidsLabel = counts.kids === 1 ? "1 dziecko" : counts.kids ? `${counts.kids} dzieci` : "";
+  const kidsShort = counts.kids === 1 ? "1× dziecko" : counts.kids ? `${counts.kids}× dziecko` : "";
+  await say(`Biorę ${counts.adults}× dorosły${kidsShort ? ` i ${kidsShort}` : ""}, razem ${zl(counts.total)}. Rezerwuję…`, 1400, "Łączę się z kasą CNK");
 
+  // User adds context (babcia) — reservation already matches the card counts, no update
   await wait(600);
   you("Dodałem jedną osobę, weźmiemy babcię");
   await wait(500);
-  // interactive card reacts: bump adult + refetch price
-  qty.querySelector(".qty-go").disabled = false;
-  const plus = qty.querySelector('[data-kind="adults"] [data-d="1"]');
-  while (get().adults < 3) plus.click();
-  counts = get();
-  qty.querySelector(".qty-fetch .k").textContent = "Aktualizuję koszyk…";
-  await wait(700);
-  qty.querySelector(".qty-fetch .k").textContent = "Cena z cennika CNK";
-  qty.querySelector(".qty-go").disabled = true;
-  qty.querySelector(".qty-go").textContent = "Zaktualizowano";
+  await say("Ok, fajnie, że rodzinny wypad — babcia jest w tych biletach dorosłych.");
 
-  const kidsLabel = counts.kids === 1 ? "1 dziecko" : counts.kids ? `${counts.kids} dzieci` : "";
-  await say(`Ok, fajnie, że rodzinny wypad. Razem ${counts.adults} dorosłych${kidsLabel ? `, ${kidsLabel}` : ""}, ${zl(counts.total)}.`, 1600, "Aktualizuję rezerwację CNK");
   await card(`
-    <div class="row"><span class="pin">🎟️</span><span><div class="v">Bilety CNK · 26 paź, 11:00</div><div class="k">${counts.adults} dorosłych${counts.kids ? ` · ${counts.kids} dzieci` : ""} · ${zl(counts.total)}</div></span><span class="status ok ml-auto">Zarezerwowane</span></div>
+    <div class="row"><span class="pin">🎟️</span><span><div class="v">Bilety CNK · 26 paź, 11:00</div><div class="k">${counts.adults} dorosłych${kidsLabel ? ` · ${kidsLabel}` : ""} · ${zl(counts.total)}</div></span><span class="status ok ml-auto">Zarezerwowane</span></div>
     <div class="row"><span class="k">Wysłane do Justyny</span><span class="v ml-auto">Kalendarz + mail</span></div>`, 500);
   await say("Gotowe. Justyna dostanie potwierdzenie na maila, a w kalendarzu macie już bilety.");
   await endOfScenario(3);
