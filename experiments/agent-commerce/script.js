@@ -13,29 +13,93 @@ const add = (node) => { thread.appendChild(node); requestAnimationFrame(() => (t
 const ICON = {
   bag: '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10l2 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7l2-4Z"/><path d="M5 7h14M9.500 12.500c0 1.400 1.100 2.500 2.500 2.500s2.500-1.100 2.500-2.500"/></svg>',
   pin: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.100 7-11.500a7 7 0 1 0-14 0C5 14.900 12 21 12 21Z"/><circle cx="12" cy="9.500" r="2.500"/></svg>',
+  wallet: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h13A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5v-9Z"/><path d="M3 10h18M16 14.5h2"/></svg>',
+  truck: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7V10Z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></svg>',
   x: '<svg width="14" height="14" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m2 2 10 10M12 2 2 12"/></svg>',
   ok: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7.500"/></svg>',
 };
+const TRAIL_DOTS = '<svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.1"/><circle cx="7" cy="2.5" r="1.1"/><circle cx="11.5" cy="2.5" r="1.1"/><circle cx="2.5" cy="7" r="1.1"/><circle cx="7" cy="7" r="1.1"/><circle cx="11.5" cy="7" r="1.1"/><circle cx="2.5" cy="11.5" r="1.1"/><circle cx="7" cy="11.5" r="1.1"/><circle cx="11.5" cy="11.5" r="1.1"/></svg>';
+const TRAIL_CHECK = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+
+function trailStep(kind, label, iconHtml) {
+  const ico = kind === "think" ? TRAIL_DOTS : kind === "done" ? TRAIL_CHECK : iconHtml;
+  return el(`
+    <span class="tr-ico" aria-hidden="true"><span class="tr-ring"></span><span class="tr-glyph">${ico}</span></span>
+    <span class="tr-txt">${label}</span>
+  `, `tr-step ${kind === "done" ? "done" : kind === "think" ? "think" : "run"}`);
+}
+
+async function memSave(iconHtml, value) {
+  const trail = add(el("", "trail"));
+  trail.appendChild(trailStep("think", "Thinking..."));
+  await wait(280);
+  const save = trailStep("run", `memory · ${value}`, iconHtml);
+  trail.appendChild(save);
+  await wait(720);
+  save.className = "tr-step done";
+  save.querySelector(".tr-glyph").innerHTML = TRAIL_CHECK;
+  save.querySelector(".tr-txt").textContent = `memory · ${value}`;
+  await wait(480);
+  trail.classList.add("collapse");
+  await wait(240);
+  trail.innerHTML = `<span class="tr-sum"><i class="tr-star" aria-hidden="true"></i>memory · ${value}</span>`;
+  trail.classList.remove("collapse");
+  trail.classList.add("sum");
+}
 
 const STORE = "Zoo Corner"; // merchant found through Shop
-// age: puppy | adult | senior, kg: [min, max] of the dog's weight the food is for
-// Photos hotlinked from Unsplash (Unsplash License): Rafael Rodrigues, Ayla Verschueren, Michael G. Not matched to the product text on purpose.
-const U = ["1764249453874-46864677b10e", "1714068691210-073dc52c6c1d", "1632236568054-12f36ecee2f6", "1632236568025-1256513514b7", "1714068691256-cd3d65f97795", "1649923625461-2638b4a86d8b"]
-  .map((id) => `https://images.unsplash.com/photo-${id}?w=640&q=70&auto=format&fit=crop`);
+// Local photos in ./food (Unsplash License). age: puppy|adult|senior, kg: [min,max]
+const F = (n) => `food/${String(n).padStart(2, "0")}.jpg`;
 // ppk = price per kg (zł), sizes = bag sizes in kg
 const PRODUCTS = [
-  { name: "Nordic Paws Puppy", img: U[5], flavour: "Kurczak", ppk: 15.9, sizes: [3, 10, 15], tag: "Szczenięta", age: "puppy", kg: [8, 40], bg: "var(--color-green-3)" },
-  { name: "Nordic Paws Puppy Large", img: U[3], flavour: "Łosoś", ppk: 16.6, sizes: [3, 12, 15], tag: "Duże rasy", age: "puppy", kg: [20, 90], bg: "var(--color-canary-yellow-5)" },
-  { name: "Nordic Paws Puppy Mini", img: U[4], flavour: "Kurczak", ppk: 23, sizes: [1, 3], tag: "Małe rasy", age: "puppy", kg: [1, 10], bg: "var(--color-blue-3)" },
-  { name: "Nordic Paws Mini", img: U[4], flavour: "Kaczka i ryż", ppk: 26.3, sizes: [1.5, 3, 7], tag: "Małe rasy", age: "adult", kg: [1, 10], bg: "var(--color-blue-3)" },
-  { name: "Wild Trail Small Grain Free", img: U[1], flavour: "Indyk", ppk: 38, sizes: [1.5, 5], tag: "Bez zbóż", age: "adult", kg: [1, 12], bg: "var(--color-green-3)" },
-  { name: "Nordic Paws Medium", img: U[3], flavour: "Kurczak i ryż", ppk: 16.1, sizes: [3, 8, 12], tag: "Średnie rasy", age: "adult", kg: [8, 25], bg: "var(--color-orange-3)" },
-  { name: "Nordic Paws Adult Large", img: U[0], flavour: "Łosoś i ryż", ppk: 15.75, sizes: [3, 12, 15], tag: "Ostatnio kupowana", age: "adult", kg: [20, 90], bg: "var(--color-canary-yellow-5)" },
-  { name: "Nordic Paws Active", img: U[1], flavour: "Kurczak i ryż", ppk: 14.1, sizes: [3, 12, 15], tag: "Taniej", age: "adult", kg: [10, 90], bg: "var(--color-blue-3)" },
-  { name: "Wild Trail Grain Free", img: U[2], flavour: "Jagnięcina", ppk: 22.9, sizes: [2, 10, 12], tag: "Bez zbóż", age: "adult", kg: [10, 90], bg: "var(--color-green-3)" },
-  { name: "Nordic Paws Senior", img: U[5], flavour: "Indyk i ryż", ppk: 14.9, sizes: [3, 12], tag: "Na stawy", age: "senior", kg: [10, 90], bg: "var(--color-orange-3)" },
-  { name: "Nordic Paws Senior Light", img: U[2], flavour: "Kurczak", ppk: 14.1, sizes: [3, 12, 15], tag: "Mniej kalorii", age: "senior", kg: [1, 90], bg: "var(--color-blue-3)" },
-  { name: "Wild Trail Senior Mini", img: U[4], flavour: "Kaczka", ppk: 31.7, sizes: [1.5, 3], tag: "Małe rasy", age: "senior", kg: [1, 10], bg: "var(--color-green-3)" },
+  { name: "Nordic Paws Puppy", img: F(1), flavour: "Kurczak", ppk: 15.9, sizes: [3, 10, 15], tag: "Szczenięta", age: "puppy", kg: [8, 40],
+    about: "Kompletna karma dla szczeniąt średnich i dużych ras. Wspiera wzrost kości i mięśni dzięki podwyższonej ilości białka i wapnia.",
+    protein: "28%", fat: "16%", fibre: "2,5%", forWhom: "Szczenięta 2–12 mies., 8–40 kg",
+    ingredients: "Kurczak świeży 28%, kurczak suszony 18%, ryż, tłuszcz z kurczaka, burak cukrowy, olej z łososia, glukozamina." },
+  { name: "Nordic Paws Puppy Large", img: F(2), flavour: "Łosoś", ppk: 16.6, sizes: [3, 12, 15], tag: "Duże rasy", age: "puppy", kg: [20, 90],
+    about: "Dla szczeniąt ras dużych: kontrolowany wzrost dzięki zbilansowanemu stosunkowi wapnia do fosforu i omega-3 z łososia.",
+    protein: "27%", fat: "14%", fibre: "2,8%", forWhom: "Szczenięta dużych ras, 20–90 kg",
+    ingredients: "Łosoś świeży 30%, łosoś suszony 16%, ziemniak, tłuszcz z łososia, groszek, siemię lniane, chondroityna." },
+  { name: "Nordic Paws Puppy Mini", img: F(3), flavour: "Kurczak", ppk: 23, sizes: [1, 3], tag: "Małe rasy", age: "puppy", kg: [1, 10],
+    about: "Małe granulki dla szczeniąt ras miniaturowych. Wysoka energia w małej porcji, dopasowana do szybkiego metabolizmu.",
+    protein: "30%", fat: "18%", fibre: "2%", forWhom: "Szczenięta małych ras, do 10 kg",
+    ingredients: "Kurczak 42%, ryż, tłuszcz drobiowy, hydrolizat białka, jabłko, witaminy A/D3/E." },
+  { name: "Nordic Paws Mini", img: F(4), flavour: "Kaczka i ryż", ppk: 26.3, sizes: [1.5, 3, 7], tag: "Małe rasy", age: "adult", kg: [1, 10],
+    about: "Dzienna karma dla dorosłych psów małych ras. Kaczka jako delikatne źródło białka, łatwostrawny ryż.",
+    protein: "26%", fat: "15%", fibre: "2,4%", forWhom: "Dorosłe psy małych ras, 1–10 kg",
+    ingredients: "Kaczka 34%, ryż 22%, tłuszcz z kaczki, burak, olej z łososia, prebiotyki FOS." },
+  { name: "Wild Trail Small Grain Free", img: F(5), flavour: "Indyk", ppk: 38, sizes: [1.5, 5], tag: "Bez zbóż", age: "adult", kg: [1, 12],
+    about: "Bezzbożowa formuła z indykiem. Idealna przy wrażliwym układzie pokarmowym i alergiach pokarmowych.",
+    protein: "32%", fat: "17%", fibre: "3%", forWhom: "Dorosłe psy 1–12 kg, dieta bez zbóż",
+    ingredients: "Indyk 40%, batat, groch, tłuszcz z indyka, jabłko, żurawina, zioła." },
+  { name: "Nordic Paws Medium", img: F(6), flavour: "Kurczak i ryż", ppk: 16.1, sizes: [3, 8, 12], tag: "Średnie rasy", age: "adult", kg: [8, 25],
+    about: "Zrównoważona karma dla aktywnych psów średnich ras. Utrzymuje kondycję bez nadmiaru kalorii.",
+    protein: "25%", fat: "13%", fibre: "3%", forWhom: "Dorosłe psy 8–25 kg",
+    ingredients: "Kurczak 36%, ryż, jęczmień, tłuszcz drobiowy, marchew, burak, tauryna." },
+  { name: "Nordic Paws Adult Large", img: F(7), flavour: "Łosoś i ryż", ppk: 15.75, sizes: [3, 12, 15], tag: "Ostatnio kupowana", age: "adult", kg: [20, 90],
+    about: "Twoja poprzednia karma Luny. Łosoś wspiera skórę i sierść, a większe granulki spowalniają jedzenie.",
+    protein: "24%", fat: "12%", fibre: "3,2%", forWhom: "Dorosłe psy dużych ras, 20–90 kg",
+    ingredients: "Łosoś 33%, ryż 20%, tłuszcz z łososia, burak, glukozamina, chondroityna, MSM." },
+  { name: "Nordic Paws Active", img: F(8), flavour: "Kurczak i ryż", ppk: 14.1, sizes: [3, 12, 15], tag: "Taniej", age: "adult", kg: [10, 90],
+    about: "Więcej energii w niższej cenie za kilogram. Dobra na codzienne spacery i umiarkowaną aktywność.",
+    protein: "26%", fat: "15%", fibre: "2,8%", forWhom: "Dorosłe psy aktywne, od 10 kg",
+    ingredients: "Kurczak 30%, ryż, kukurydza, tłuszcz drobiowy, olej roślinny, witaminy." },
+  { name: "Wild Trail Grain Free", img: F(9), flavour: "Jagnięcina", ppk: 22.9, sizes: [2, 10, 12], tag: "Bez zbóż", age: "adult", kg: [10, 90],
+    about: "Monobiałkowa jagnięcina bez zbóż. Dla psów z alergiami i wymagających diety eliminacyjnej.",
+    protein: "29%", fat: "16%", fibre: "3%", forWhom: "Dorosłe psy od 10 kg, bez zbóż",
+    ingredients: "Jagnięcina 38%, batat, groch, tłuszcz jagnięcy, jabłko, rozmaryn." },
+  { name: "Nordic Paws Senior", img: F(10), flavour: "Indyk i ryż", ppk: 14.9, sizes: [3, 12], tag: "Na stawy", age: "senior", kg: [10, 90],
+    about: "Dla starszych psów: mniej kalorii, więcej wsparcia stawów (glukozamina + chondroityna).",
+    protein: "22%", fat: "10%", fibre: "4%", forWhom: "Psy 7+, od 10 kg",
+    ingredients: "Indyk 28%, ryż, jęczmień, glukozamina, chondroityna, olej z łososia, L-karnityna." },
+  { name: "Nordic Paws Senior Light", img: F(11), flavour: "Kurczak", ppk: 14.1, sizes: [3, 12, 15], tag: "Mniej kalorii", age: "senior", kg: [1, 90],
+    about: "Light dla seniorów z tendencją do nadwagi. Wysoka sytość przy obniżonej kaloryczności.",
+    protein: "23%", fat: "8%", fibre: "5%", forWhom: "Starsze psy z nadwagą",
+    ingredients: "Kurczak 26%, ryż, celuloza, burak, L-karnityna, witamina E." },
+  { name: "Wild Trail Senior Mini", img: F(12), flavour: "Kaczka", ppk: 31.7, sizes: [1.5, 3], tag: "Małe rasy", age: "senior", kg: [1, 10],
+    about: "Małe granulki dla starszych psów miniaturowych. Kaczka + wsparcie stawów i zębów.",
+    protein: "25%", fat: "11%", fibre: "3,5%", forWhom: "Seniorzy małych ras, do 10 kg",
+    ingredients: "Kaczka 32%, ryż, groszek, glukozamina, ekstrakt z zielonej herbaty." },
 ];
 const GRAMS_PER_KG = { puppy: 35, adult: 15, senior: 13 }; // daily portion = body weight x this (g)
 // 3 best matches: right life stage first, then weight inside the food's range, then closest range
@@ -53,8 +117,12 @@ function plan(p, dailyG, weeks) {
   if (!best) { const sz = Math.max(...p.sizes); best = { size: sz, qty: Math.ceil(need / sz) }; }
   const { size, qty } = best;
   const covers = Math.floor((size * qty * 1000) / dailyG / 7);
-  return { name: p.name, img: p.img, flavour: p.flavour, tag: p.tag, bg: p.bg, size, qty, price: Math.round(p.ppk * size * qty),
-    note: `${qty > 1 ? qty + " × " : ""}${String(size).replace(".", ",")} kg · starczy na ~${covers} tyg.` };
+  return {
+    name: p.name, img: p.img, flavour: p.flavour, tag: p.tag, size, qty,
+    price: Math.round(p.ppk * size * qty),
+    note: `${qty > 1 ? qty + " × " : ""}${String(size).replace(".", ",")} kg · starczy na ~${covers} tyg.`,
+    about: p.about, protein: p.protein, fat: p.fat, fibre: p.fibre, forWhom: p.forWhom, ingredients: p.ingredients,
+  };
 }
 const zl0 = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " zł";
 function parseBudget(text) {
@@ -110,14 +178,31 @@ let stick = true;
 thread.addEventListener("scroll", () => { stick = thread.scrollHeight - thread.scrollTop - thread.clientHeight < 140; });
 new ResizeObserver(() => { if (stick) { thread.style.scrollBehavior = "auto"; thread.scrollTop = thread.scrollHeight; thread.style.scrollBehavior = ""; } }).observe(thread);
 const ARROW = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h8M7.500 3.500 11 7l-3.500 3.500"/></svg>';
+const dock = $("#dock");
 function showOptions(labels, onPick, hint = true) {
   opIn.innerHTML = `<div class="op-card"><div class="op-head">Wybierz odpowiedź</div>
-    ${labels.map((l, i) => `<button class="opt-row" data-i="${i}"><kbd>${i + 1}</kbd><span>${l}</span>${ARROW}</button>`).join("")}
+    ${labels.map((l, i) => `<button class="opt-row" data-i="${i}"><i class="n">${i + 1}</i><span>${l}</span></button>`).join("")}
     ${hint ? '<div class="op-hint">Albo wpisz własną odpowiedź poniżej</div>' : ""}</div>`;
   opIn.querySelectorAll(".opt-row").forEach((b) => (b.onclick = () => onPick(+b.dataset.i)));
+  dock.classList.add("expanded"); // 28px radius while tall — keep until collapse ends
   optpanel.classList.add("on");
 }
-function hideOptions() { optpanel.classList.remove("on"); }
+function hideOptions() {
+  if (!optpanel.classList.contains("on")) {
+    dock.classList.remove("expanded");
+    return;
+  }
+  optpanel.classList.remove("on");
+  // radius stays 28 until height finishes collapsing, else Safari U-clips the bottom
+  const done = (e) => {
+    if (e && e.target !== optpanel) return;
+    if (e && e.propertyName && e.propertyName !== "grid-template-rows") return;
+    optpanel.removeEventListener("transitionend", done);
+    if (!optpanel.classList.contains("on")) dock.classList.remove("expanded");
+  };
+  optpanel.addEventListener("transitionend", done);
+  setTimeout(done, 520); // fallback if transitionend doesn't fire
+}
 document.addEventListener("keydown", (e) => {   // 1-9 picks an option when the message box is not focused
   if (waiter && waiter.keys && document.activeElement !== input && /^[1-9]$/.test(e.key)) waiter.keys(+e.key - 1);
 });
@@ -161,24 +246,151 @@ function parseDog(text) {
   return { age: months < 12 ? "puppy" : months < 84 ? "adult" : "senior", kg: Math.round(kg) };
 }
 
-// Food carousel: swipe / drag, tap "Wybierz". Resolves with the product.
+// Product detail sheet: FLIP from the tapped card to fullscreen, then pick or dismiss.
+const psheet = $("#psheet"), psPanel = psheet.querySelector(".ps-panel");
+let psOrigin = null, psDragY = 0;
+function fillSheet(p) {
+  psheet.dataset.mode = "product";
+  const hero = psheet.querySelector(".ps-hero");
+  hero.classList.remove("plain");
+  hero.querySelector("img").src = p.img;
+  hero.querySelector(".ps-emoji").textContent = "";
+  psheet.querySelector(".ps-meta").innerHTML = `<span>${p.tag}</span>${p.note ? `<span>${p.note}</span>` : ""}`;
+  psheet.querySelector(".ps-title").textContent = p.name;
+  psheet.querySelector(".ps-flavour").textContent = p.flavour;
+  psheet.querySelector(".ps-about").textContent = p.about || "";
+  psheet.querySelector(".ps-facts").innerHTML = [
+    ["Białko", p.protein], ["Tłuszcz", p.fat], ["Błonnik", p.fibre], ["Dla", p.forWhom],
+  ].filter(([, v]) => v).map(([k, v]) => `<li><em>${k}</em><b>${v}</b></li>`).join("");
+  psheet.querySelector(".ps-track").innerHTML = "";
+  psheet.querySelector(".ps-ings").innerHTML = p.ingredients ? `<em>Skład</em>${p.ingredients}` : "";
+  psheet.querySelector(".ps-price").textContent = zl(p.price);
+  psheet.querySelector(".ps-pick").textContent = "Wybierz";
+}
+function fillOrderSheet(o) {
+  psheet.dataset.mode = "order";
+  const hero = psheet.querySelector(".ps-hero");
+  if (o.img) {
+    hero.classList.remove("plain");
+    hero.querySelector("img").src = o.img;
+    hero.querySelector(".ps-emoji").textContent = "";
+  } else {
+    hero.classList.add("plain");
+    hero.querySelector("img").removeAttribute("src");
+    hero.querySelector(".ps-emoji").textContent = o.emoji || "📦";
+  }
+  psheet.querySelector(".ps-meta").innerHTML = `<span>${o.store}</span><span>${o.who}</span>`;
+  psheet.querySelector(".ps-title").textContent = o.name;
+  psheet.querySelector(".ps-flavour").textContent = o.sub;
+  psheet.querySelector(".ps-about").textContent = o.note || "";
+  psheet.querySelector(".ps-facts").innerHTML = [
+    ["Dostawa", o.dest], ["Status", o.status], ["Zamówiono", o.when],
+  ].map(([k, v]) => `<li><em>${k}</em><b>${v}</b></li>`).join("");
+  psheet.querySelector(".ps-track").innerHTML = trackHtml(o.steps, o.done);
+  psheet.querySelector(".ps-ings").innerHTML = "";
+  psheet.querySelector(".ps-price").textContent = o.price != null ? zl(o.price) : "";
+  psheet.querySelector(".ps-pick").textContent = "Zamknij";
+}
+function openOrderSheet(origin, o) {
+  fillOrderSheet(o);
+  const r = origin.getBoundingClientRect(), s = screen.getBoundingClientRect();
+  psOrigin = origin; origin.style.opacity = "0";
+  const panel = psPanel;
+  panel.style.transition = "none";
+  panel.style.left = `${r.left - s.left}px`; panel.style.top = `${r.top - s.top}px`;
+  panel.style.width = `${r.width}px`; panel.style.height = `${r.height}px`; panel.style.borderRadius = "16px";
+  psheet.classList.add("on"); psheet.setAttribute("aria-hidden", "false");
+  psheet.querySelector(".ps-pick").onclick = () => closeSheet(false);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    panel.style.transition = "left .55s var(--spring), top .55s var(--spring), width .55s var(--spring), height .55s var(--spring), border-radius .55s var(--spring)";
+    panel.style.left = "0"; panel.style.top = "0"; panel.style.width = "100%"; panel.style.height = "100%"; panel.style.borderRadius = "0";
+    psheet.classList.add("expanded");
+  }));
+}
+function closeSheet(restore) {
+  if (!psheet.classList.contains("on")) return;
+  const panel = psPanel;
+  if (psOrigin && restore !== false) {
+    const r = psOrigin.getBoundingClientRect(), s = screen.getBoundingClientRect();
+    panel.style.transition = "left .45s var(--spring), top .45s var(--spring), width .45s var(--spring), height .45s var(--spring), border-radius .45s var(--spring)";
+    panel.style.left = `${r.left - s.left}px`; panel.style.top = `${r.top - s.top}px`;
+    panel.style.width = `${r.width}px`; panel.style.height = `${r.height}px`; panel.style.borderRadius = "24px";
+    psheet.classList.remove("expanded");
+    setTimeout(() => {
+      psheet.classList.remove("on"); psheet.setAttribute("aria-hidden", "true");
+      if (psOrigin) psOrigin.style.opacity = "";
+      panel.style.cssText = ""; psOrigin = null;
+    }, 420);
+  } else {
+    psheet.classList.remove("on", "expanded"); psheet.setAttribute("aria-hidden", "true");
+    if (psOrigin) psOrigin.style.opacity = "";
+    panel.style.cssText = ""; psOrigin = null;
+  }
+}
+function openSheet(card, p, onPick) {
+  fillSheet(p);
+  const r = card.getBoundingClientRect(), s = screen.getBoundingClientRect();
+  psOrigin = card; card.style.opacity = "0";
+  const panel = psPanel;
+  panel.style.transition = "none";
+  panel.style.left = `${r.left - s.left}px`; panel.style.top = `${r.top - s.top}px`;
+  panel.style.width = `${r.width}px`; panel.style.height = `${r.height}px`; panel.style.borderRadius = "24px";
+  psheet.classList.add("on"); psheet.setAttribute("aria-hidden", "false");
+  psheet.querySelector(".ps-pick").onclick = () => { closeSheet(false); onPick(); };
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    panel.style.transition = "left .55s var(--spring), top .55s var(--spring), width .55s var(--spring), height .55s var(--spring), border-radius .55s var(--spring)";
+    panel.style.left = "0"; panel.style.top = "0"; panel.style.width = "100%"; panel.style.height = "100%"; panel.style.borderRadius = "0";
+    psheet.classList.add("expanded");
+  }));
+}
+psheet.addEventListener("click", (e) => { if (e.target.closest("[data-ps-close]")) closeSheet(); });
+// swipe down on the hero to dismiss
+psheet.querySelector(".ps-hero").addEventListener("pointerdown", (e) => {
+  if (!psheet.classList.contains("expanded")) return;
+  psDragY = e.clientY;
+  const move = (ev) => {
+    const dy = Math.max(0, ev.clientY - psDragY);
+    psPanel.style.transition = "none";
+    psPanel.style.transform = `translateY(${dy}px)`;
+    psheet.style.setProperty("--scrim", String(Math.max(0.2, 1 - dy / 320)));
+  };
+  const up = (ev) => {
+    screen.removeEventListener("pointermove", move); screen.removeEventListener("pointerup", up);
+    const dy = Math.max(0, ev.clientY - psDragY);
+    if (dy > 110) { psPanel.style.transform = ""; psheet.style.removeProperty("--scrim"); closeSheet(); }
+    else { psPanel.style.transition = "transform .35s var(--spring)"; psPanel.style.transform = ""; psheet.style.removeProperty("--scrim"); }
+  };
+  screen.addEventListener("pointermove", move); screen.addEventListener("pointerup", up);
+});
+
+// Food carousel: swipe / drag, tap card → details, "Wybierz" → pick.
 function pickProduct(list) {
   return new Promise((resolve) => {
     const wrap = el(list.map((p, i) => `<article class="pcard" data-i="${i}">
       <div class="pimg"><img src="${p.img}" alt="" draggable="false"><span class="ptag">${p.tag}</span>${i === 0 ? '<span class="best">Najlepsze dopasowanie</span>' : ""}<span class="chk">${ICON.ok.replace('width="26" height="26"', 'width="16" height="16"')}</span></div>
       <div class="pbody"><div class="pn">${p.name}</div><div class="pf">${p.flavour}</div><div class="pnote">${p.note}</div><div class="pprice">${zl(p.price)}</div>
       <button class="cta">Wybierz</button></div></article>`).join(""), "carousel");
-    let down = false, sx = 0, sl = 0;
-    wrap.onpointerdown = (e) => { if (e.pointerType === "mouse") { down = true; sx = e.clientX; sl = wrap.scrollLeft; wrap.style.scrollSnapType = "none"; } };
-    wrap.onpointermove = (e) => { if (down) wrap.scrollLeft = sl - (e.clientX - sx); };
+    let down = false, sx = 0, sl = 0, moved = false;
+    wrap.addEventListener("scroll", () => { moved = true; }, { passive: true });
+    wrap.onpointerdown = (e) => {
+      moved = false;
+      if (e.pointerType === "mouse") { down = true; sx = e.clientX; sl = wrap.scrollLeft; wrap.style.scrollSnapType = "none"; }
+    };
+    wrap.onpointermove = (e) => { if (down) { wrap.scrollLeft = sl - (e.clientX - sx); if (Math.abs(e.clientX - sx) > 6) moved = true; } };
     wrap.onpointerup = wrap.onpointerleave = () => { down = false; wrap.style.scrollSnapType = ""; };
-    wrap.querySelectorAll(".cta").forEach((b) => (b.onclick = () => {
-      pickIt(+b.closest(".pcard").dataset.i);
-    }));
+    wrap.querySelectorAll(".cta").forEach((b) => (b.onclick = (e) => { e.stopPropagation(); pickIt(+b.closest(".pcard").dataset.i); }));
+    wrap.querySelectorAll(".pcard").forEach((card) => {
+      card.addEventListener("click", (e) => {
+        if (e.target.closest(".cta") || moved) { moved = false; return; }
+        const i = +card.dataset.i;
+        openSheet(card, list[i], () => pickIt(i));
+      });
+    });
     const pickIt = (i, text) => {
-      unregister();
+      unregister(); closeSheet(false);
       const p = list[i];
       wrap.querySelectorAll(".cta").forEach((x) => (x.disabled = true));
+      wrap.querySelectorAll(".pcard").forEach((c) => c.style.opacity = "");
       wrap.querySelectorAll(".pcard")[i].classList.add("picked");
       you(text || p.name); resolve(p);
     };
@@ -221,28 +433,43 @@ function pickOnMap() {
   });
 }
 
-// ---------- Shop connect flow (mirrors the Shop OAuth screens: interstitial -> permissions -> connected) ----------
+// ---------- Shop connect flow (interstitial -> permissions -> connected) ----------
 const PERMS = [
-  ["🧺", "Prepare checkouts", "Pre-fill with contact information, phone and address"],
-  ["🏠", "View your addresses", null],
-  ["💳", "Use wallet for payment", "Use an eligible saved payment method at checkout"],
+  ["Koszyk", "Wypełnię dane kontaktowe, telefon i adres"],
+  ["Adresy", "Zobaczę zapisane adresy dostawy"],
+  ["Portfel", "Użyję zapisanej karty przy płatności"],
 ];
-// Integrations that share the same connect screens (only the logo and a few strings change).
-const SHOP = { key: "shop", name: "Shop", pay: "Shop Pay", acct: "Shop account", logo: '<span class="shoplogo">shop</span>', cta: "Połącz Shop",
+const SHOP = {
+  key: "shop", name: "Shop", pay: "Shop Pay", acct: "konta Shop",
+  logo: '<span class="shoplogo">shop</span>', cta: "Połącz Shop",
   lead: "Żebym mógł zamawiać za Ciebie, potrzebuję dostępu do Twojego konta Shop.",
-  bullets: [["🧺", "Przygotuję koszyk z Twoimi danymi"], ["🏠", "Zobaczę Twoje zapisane adresy"], ["💳", "Zapłacę kartą z portfela Shop"]] };
-const INPOST = { key: "inpost", name: "InPost Pay", pay: "InPost Pay", acct: "InPost Pay account", logo: '<span class="shoplogo inpost"><img src="inpost-icon.png" alt="InPost Pay"></span>', brand: '<img class="ipword" src="inpost-logo.png" alt="InPost">', cta: "Połącz InPost Pay",
+  bullets: [
+    ["Koszyk", "Przygotuję go z Twoimi danymi"],
+    ["Adresy", "Odczytam zapisane lokalizacje"],
+    ["Płatność", "Zapłacę kartą z portfela Shop"],
+  ],
+};
+const INPOST = {
+  key: "inpost", name: "InPost Pay", pay: "InPost Pay", acct: "konta InPost Pay",
+  logo: '<span class="shoplogo inpost"><img src="inpost-icon.png" alt="InPost Pay"></span>',
+  brand: '<img class="ipword" src="inpost-logo.png" alt="InPost">', cta: "Połącz InPost Pay",
   lead: "Z InPost Pay znajdę tę samą karmę w większej liczbie sklepów i dopilnuję lepszej ceny.",
-  bullets: [["🏪", "Przeszukam więcej sklepów naraz"], ["💸", "Porównam ceny i znajdę taniej"], ["🛒", "Przygotuję koszyk, Ty tylko potwierdzisz w InPost Pay"]] };
-const logos = (p) => `<div class="sf-logos">${p.logo}<span class="dotgrid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="applogo"><img src="boski-logo-black.svg" alt="Boski"></span></div>`;
-// Card that asks to connect an integration. Resolves true on the CTA, false on "Nie teraz".
+  bullets: [
+    ["Sklepy", "Przeszukam więcej miejsc naraz"],
+    ["Cena", "Porównam oferty i wybiorę taniej"],
+    ["Koszyk", "Ty tylko potwierdzisz w InPost Pay"],
+  ],
+};
+const LINK = '<span class="sf-link" aria-hidden="true"><i></i><i></i><i></i></span>';
+const logos = (p) => `<div class="sf-logos">${p.logo}${LINK}<span class="applogo" aria-label="Boski"><i></i></span></div>`;
 function shopCard(p = SHOP) {
   return new Promise((resolve) => {
     const node = el(`${logos(p)}
+      <p class="cn-eye">Integracja</p>
       <h4>${p.cta}</h4>
       <p class="lead">${p.lead}</p>
-      <ul>${p.bullets.map(([i, t]) => `<li><span>${i}</span>${t}</li>`).join("")}</ul>
-      <button class="go">${p.cta}</button><button class="no">Nie teraz</button>`, "card connect");
+      <ul class="cn-list">${p.bullets.map(([k, d]) => `<li><b>${k}</b><em>${d}</em></li>`).join("")}</ul>
+      <div class="cn-actions"><button class="go">${p.cta}</button><button class="no">Nie teraz</button></div>`, "card connect");
     node.dataset.p = p.key;
     const finish = (ok, text) => { unregister(); node.querySelectorAll("button").forEach((b) => (b.disabled = true)); you(text || (ok ? p.cta : "Nie teraz")); resolve(ok); };
     node.querySelector(".go").onclick = () => finish(true);
@@ -251,31 +478,33 @@ function shopCard(p = SHOP) {
   });
 }
 
-const BRAND = '<img class="sf-brand" src="boski-logo-black.svg" alt="Boski">';
-const interstitial = (title, sub, extra, brand = BRAND, top = "", noCancel = false) => `<div class="sf-inter">${brand}<div class="sf-mid">${top}<h3>${title}</h3><p>${sub}</p>${extra}</div>${noCancel ? '<span class="sf-cancel ghost">Cancel</span>' : '<button class="sf-cancel" data-cancel>Cancel</button>'}</div>`;
-function showFlow(html) { flow.innerHTML = html; flow.classList.add("on"); screen.classList.add("light"); }
-function hideFlow() { flow.classList.remove("on"); screen.classList.remove("light"); }
+const BRAND = '<span class="sf-brand" aria-label="Boski"><i></i></span>';
+const interstitial = (title, sub, extra, brand = BRAND, top = "", noCancel = false) =>
+  `<div class="sf-inter">${brand}<div class="sf-mid">${top}<h3>${title}</h3><p>${sub}</p>${extra}</div>${noCancel ? '<span class="sf-cancel ghost">Anuluj</span>' : '<button class="sf-cancel" data-cancel>Anuluj</button>'}</div>`;
+function showFlow(html) { flow.innerHTML = html; flow.classList.add("on"); }
+function hideFlow() { flow.classList.remove("on"); }
 
-// resolves true when connected, false when cancelled
 function connectShop(p = SHOP) {
   return new Promise(async (resolve) => {
     flow.dataset.p = p.key;
     flow.onclick = (e) => { if (e.target.closest("[data-cancel]")) { hideFlow(); resolve(false); } };
     try {
-      showFlow(interstitial(`Connecting ${p.pay}`, `Taking you to ${p.name} to sign in.`, '<i class="dotline"></i>', p.brand, logos(p)));
+      showFlow(interstitial(`Łączenie z ${p.pay}`, `Przekierowuję do ${p.name}…`, '<i class="dotline"></i>', p.brand || BRAND, logos(p)));
       await wait(1900);
       showFlow(`<div class="sf-perm">
         ${logos(p)}
-        <h3>Connect Boski</h3><p class="lead">Review permissions before continuing</p>
+        <h3>Połącz z Boski</h3>
+        <p class="lead">Sprawdź uprawnienia przed kontynuacją</p>
         <span class="mail"><i></i>dawid@example.com</span>
-        <ul class="perms">${PERMS.map(([i, t, d]) => `<li><span class="pi">${i}</span><span><b>${t}</b><em>${d || `All addresses saved to your ${p.acct}`}</em></span></li>`).join("")}</ul>
-        <button class="sf-go" id="sfgo">Continue</button>
-        <button class="sf-no" data-cancel>Cancel</button>
-        <p class="legal">By continuing, you agree that ${p.name} will give Boski the access described above. <u>Learn more</u>.</p></div>`);
+        <ul class="perms">${PERMS.map(([t, d]) => `<li><span><b>${t}</b><em>${d}</em></span></li>`).join("")}</ul>
+        <button class="sf-go" id="sfgo">Kontynuuj</button>
+        <button class="sf-no" data-cancel>Anuluj</button>
+        <p class="legal">${p.name} udostępni Boskiemu dostęp opisany powyżej. <u>Więcej</u></p>
+      </div>`);
       await new Promise((r) => { $("#sfgo").onclick = r; });
-      showFlow(interstitial(`Connecting ${p.pay}`, `Linking your ${p.acct} to Boski.`, '<i class="dotline"></i>', p.brand, logos(p)));
+      showFlow(interstitial(`Łączenie z ${p.pay}`, `Łączę ${p.acct} z Boski…`, '<i class="dotline"></i>', p.brand || BRAND, logos(p)));
       await wait(1500);
-      showFlow(interstitial(`${p.name} connected`, "Taking you back to Boski.", '<i class="bar"></i>', p.brand, `<div class="okring"><span class="okmark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5.500 12.500 4.200 4.200L18.500 8" pathLength="1"/></svg></span></div>`, true));
+      showFlow(interstitial(`${p.name} połączony`, "Wracam do Boski…", '<i class="bar"></i>', p.brand || BRAND, `<div class="okring"><span class="okmark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5.500 12.500 4.200 4.200L18.500 8" pathLength="1"/></svg></span></div>`, true));
       await wait(1200);
       hideFlow();
       await wait(450);
@@ -314,8 +543,8 @@ function showPush(title, body, opts = {}) {
 }
 
 // ---------- the scenario ----------
-const NAMES = { 1: "Shop", 2: "InPost Pay", 3: "Zaufana osoba" };
-let scn = [1, 2, 3].includes(+new URLSearchParams(location.search).get("s")) ? +new URLSearchParams(location.search).get("s") : 1;
+const NAMES = { 1: "Shop", 2: "InPost Pay", 3: "Zaufana osoba", 4: "Status i zwrot" };
+let scn = [1, 2, 3, 4].includes(+new URLSearchParams(location.search).get("s")) ? +new URLSearchParams(location.search).get("s") : 1;
 function setScenario(n) {
   scn = n;
   document.querySelectorAll("[data-s]").forEach((b) => b.classList.toggle("on", +b.dataset.s === n));
@@ -324,9 +553,16 @@ function setScenario(n) {
 }
 
 async function endOfScenario(cur) {
-  const nx = (cur % 3) + 1;
+  const nx = (cur % 4) + 1;
   const pick = await choose(["Zagraj jeszcze raz", `Scenariusz ${nx}: ${NAMES[nx]}`]);
   setScenario(pick === 1 ? nx : cur);
+}
+
+function trackHtml(steps, done) {
+  return `<ul class="track">${steps.map((t, i) => {
+    const cls = i < done ? "done" : i === done ? "now" : "";
+    return `<li class="${cls}"><i></i>${t}</li>`;
+  }).join("")}</ul>`;
 }
 
 // Scenario 3: add a Trusted person (partner) -> invite -> confirmed -> shared calendar event -> restaurant offer
@@ -406,8 +642,7 @@ async function scenario1() {
     await say("Ile maksymalnie w miesiącu mogę wydać na zakupy? Wpisz kwotę albo wybierz.");
     const budget = parseBudget(await typed("np. 500 zł", ["300 zł", "500 zł", "1000 zł"])) || 500;
     await say(`Zapisane. Do ${zl0(budget)} miesięcznie kupuję sam, a przy większej kwocie zawsze zapytam.`, 900);
-    add(el(`<div class="row"><span class="pin">💰</span><span><div class="k">Zapisano w pamięci Boski</div><div class="v">Budżet miesięczny ${zl0(budget)}</div></span></div>`, "card"));
-    await wait(600);
+    await memSave(ICON.wallet, `Budżet miesięczny ${zl0(budget)}`);
 
     await say("Jak wolisz dostawę: do paczkomatu (zwykle taniej) czy kurierem (zwykle drożej)?");
     const courier = (await choose(["Paczkomat", "Kurier"])) === 1;
@@ -422,25 +657,23 @@ async function scenario1() {
       }
 
       await say(`Zapisane. Przy zamówieniach z InPostem będę wybierać ${picked.id} (${picked.addr}).`, 700);
-      add(el(`<div class="row"><span class="pin">${ICON.pin}</span><span><div class="k">Zapisano w pamięci Boski</div><div class="v">Paczkomat ${picked.id}</div></span></div>`, "card"));
-      await wait(600);
+      await memSave(ICON.pin, `Paczkomat ${picked.id}`);
 
-      ship = { price: DELIVERY, label: `InPost ${picked.id} (z pamięci)`,
-        confirm: `Zamówione. Paczka będzie w Paczkomacie ${picked.id} jutro do 14:00.`,
-        steps: ["Zamówienie przyjęte", "Paczka nadana", "W drodze do Paczkomatu", "Gotowa do odbioru"],
-        push: [`Paczka czeka w ${picked.id}.<br>Kod odbioru: 482 913`],
-        final: "Paczka już czeka, kod masz w powiadomieniu. Dam znać za jakieś 6 tygodni, że karma znowu będzie się kończyć, i już nie będę pytać o paczkomat." };
+      ship = {
+        price: DELIVERY,
+        label: `InPost ${picked.id} (z pamięci)`,
+        confirm: `Zamówione. Paczka powinna być w Twoim paczkomacie ${picked.id} w ciągu 48 godzin.`,
+      };
     } else {
       await say("Okej, kurier. Biorę adres z Twojego konta w Shopie: ul. Puławska 10, Warszawa. Dobrze?", 1700, "Czytam adres z Shopa");
       await choose(["Tak, ten adres"]);
       await say("Zapisane. Przy zamówieniach z kurierem będę wysyłać na ten adres.", 700);
-      add(el(`<div class="row"><span class="pin">${ICON.pin}</span><span><div class="k">Zapisano w pamięci Boski</div><div class="v">Kurier: ul. Puławska 10, Warszawa</div></span></div>`, "card"));
-      await wait(600);
-      ship = { price: DELIVERY_COURIER, label: "Kurier InPost, ul. Puławska 10 (z pamięci)",
-        confirm: "Zamówione. Kurier dowiezie paczkę pod Twoje drzwi jutro między 10:00 a 14:00.",
-        steps: ["Zamówienie przyjęte", "Paczka nadana", "Kurier w drodze", "Doręczona"],
-        push: ["Kurier jest w drodze.<br>Dostawa dziś między 10:00 a 14:00"],
-        final: "Kurier już jedzie, szczegóły masz w powiadomieniu. Dam znać za jakieś 6 tygodni, że karma znowu będzie się kończyć, i już nie będę pytać o sposób dostawy." };
+      await memSave(ICON.truck, "Kurier · ul. Puławska 10, Warszawa");
+      ship = {
+        price: DELIVERY_COURIER,
+        label: "Kurier InPost, ul. Puławska 10 (z pamięci)",
+        confirm: "Zamówione. Paczka powinna być u Ciebie w ciągu 48 godzin.",
+      };
     }
 
     await say("Żeby dobrać karmę, potrzebuję dwóch rzeczy: ile Luna ma lat i ile waży? Wpisz to w wiadomości.");
@@ -474,16 +707,8 @@ async function scenario1() {
     await payWithFaceId();
 
     await say(ship.confirm, 1600, "Składam zamówienie");
-    const steps = ship.steps;
-    const trk = await card(`<ul class="track">${steps.map((t) => `<li><i></i>${t}</li>`).join("")}</ul>`, 500);
-    const items = trk.querySelectorAll("li");
-    for (const li of items) { await wait(1300); li.classList.add("done"); }
-
-    showPush("InPost", ship.push[0]);
-    await wait(900);
-    await say(ship.final);
     await choose(["Dzięki!"]);
-    await say("Nie ma sprawy.", 700);
+    await say("Nie ma sprawy. Dam znać, jak karma znów będzie się kończyć.", 700);
     await endOfScenario(1);
 }
 
@@ -509,7 +734,7 @@ async function scenario2() {
   await say("Znalazłem tę samą karmę taniej: PetHub ma ją za 171 zł, w Zoo Corner było 189 zł. Przygotowałem koszyk i wybrałem Twój paczkomat WAW214M. Zostało tylko potwierdzić w InPost Pay.", 2800, "Porównuję ceny w sklepach z InPost Pay");
   const cart = await card(`
     <div class="row"><span class="ipicon"><img src="inpost-icon.png" alt=""></span><span><div class="v">Koszyk gotowy</div><div class="k">PetHub · InPost Pay</div></span><span class="save ml-auto">−18 zł</span></div>
-    <div class="row"><div class="thumb"><img src="${U[0]}" alt=""></div><div><div class="v">Nordic Paws Adult Large</div><div class="k">Łosoś i ryż · 12 kg</div></div><span class="v ml-auto">${zl(171)}</span></div>
+    <div class="row"><div class="thumb"><img src="${F(7)}" alt=""></div><div><div class="v">Nordic Paws Adult Large</div><div class="k">Łosoś i ryż · 12 kg</div></div><span class="v ml-auto">${zl(171)}</span></div>
     <div class="row"><span class="pin">${ICON.pin}</span><span><div class="k">Dostawa</div><div class="v">Paczkomat WAW214M</div></span><span class="k ml-auto">z pamięci</span></div>
     <button class="cta pay">Otwórz w InPost Pay</button>`, 700);
   const opened = new Promise((r) => {   // live as soon as the card is shown
@@ -535,11 +760,129 @@ async function scenario2() {
   await endOfScenario(2);
 }
 
+function bindOrdersCard(node, list) {
+  node.classList.add("orders");
+  node.querySelectorAll(".ord-row").forEach((btn) => {
+    btn.onclick = () => openOrderSheet(btn, list[+btn.dataset.i]);
+  });
+  return node;
+}
+function ordersListHtml(title, list, tall) {
+  return `
+    <div class="ord-head">${title}</div>
+    <div class="ord-list${tall ? " tall" : ""}">
+      ${list.map((o, i) => `
+        <button type="button" class="ord-row" data-i="${i}">
+          ${o.img ? `<span class="thumb"><img src="${o.img}" alt=""></span>` : `<span class="thumb th-plain">${o.emoji}</span>`}
+          <span><div class="v">${o.name}</div><div class="k">${o.status}${o.store ? ` · ${o.store}` : ""}</div></span>
+          <span class="ord-go" aria-hidden="true">${ARROW}</span>
+        </button>`).join("")}
+    </div>`;
+}
+
+async function claimSweaterFlow(sweater, reason) {
+  await say(`OK. Otwieram reklamację w ${sweater.store} i nie odpuszczę, aż zamkną sprawę.`, 1600, `Otwieram reklamację · ${sweater.store}`);
+  const claimCard = await card(`
+    <div class="row"><span class="thumb th-plain">${sweater.emoji}</span><span><div class="v">${sweater.name}</div><div class="k">${sweater.store} · ${zl(sweater.price)}</div></span><span class="status wait ml-auto">W toku</span></div>
+    <div class="row"><span class="k">Powód</span><span class="v ml-auto">${reason}</span></div>`, 400);
+
+  await say(`Napisałem do ${sweater.store}: „${reason}. Proszę o wymianę albo zwrot.” Czekam na odpowiedź.`, 2000, `Piszę do ${sweater.store}`);
+  await wait(1600);
+  add(el("Sat 18 Oct at 14:22", "stamp"));
+  await say(`${sweater.store} odpisał: potrzebują zdjęcia wady. Wysyłam z Twojej galerii.`, 1800, "Wysyłam zdjęcie wady");
+  await choose(["OK, wyślij zdjęcie"]);
+
+  await say("Zdjęcie poszło. Dopinam wątek, nie zostawiam tego na „odezwiemy się”.", 1600, `Follow-up · ${sweater.store}`);
+  await wait(1800);
+  add(el("Sat 18 Oct at 16:05", "stamp"));
+  await say(`${sweater.store} napisał, że to „normalne zużycie”. Odpisałem z regulaminem i zdjęciami po praniu. Trzymam sprawę otwartą.`, 2400, "Odwołuję decyzję sklepu");
+  await wait(1600);
+  add(el("Sat 18 Oct at 17:40", "stamp"));
+  await say("Ustąpili. Do wyboru: zwrot 289 zł na kartę albo wymiana na rozmiar L.", 1400, "Negocjuję zamknięcie");
+  const refund = (await choose(["Weź zwrot 289 zł", "Wymiana na L"])) === 0;
+  await say(refund
+    ? "Przyjąłem zwrot. Środki mają wrócić w 3–5 dni roboczych. Potwierdzę, jak wejdą."
+    : "Zamówiłem wymianę na L. Paczka powinna być w paczkomacie w ciągu 48 godzin.", 1800, `Zamykam reklamację · ${sweater.store}`);
+
+  const st = claimCard.querySelector(".status");
+  if (st) { st.textContent = "Załatwione"; st.classList.replace("wait", "ok"); }
+  await memSave(ICON.ok, refund ? "Reklamacja · Sweter · zwrot" : "Reklamacja · Sweter · wymiana");
+  await say("Załatwione. Answear omijamy. Jak sklep znowu będzie kręcił przy zwrocie, wrócę do wątku sam.");
+}
+
+// Scenario 4: status + returns/claims (last 10, sweater complaint until resolved)
+async function scenario4() {
+  const stepsLocker = ["Zamówienie przyjęte", "Paczka nadana", "W drodze do Paczkomatu", "Gotowa do odbioru"];
+  const stepsCourier = ["Zamówienie przyjęte", "Paczka nadana", "Kurier w drodze", "Doręczona"];
+  const stepsDone = ["Zamówienie przyjęte", "Paczka nadana", "W drodze", "Doręczona"];
+  const sweater = {
+    name: "Sweter wełniany merino", sub: "Granatowy · M", store: "Answear", who: "Ty",
+    emoji: "🧶", dest: "Paczkomat WAW214M", status: "Doręczony", when: "2 paź",
+    steps: stepsDone, done: 4, price: 289,
+    note: "Doręczony 2 października. Możesz zgłosić reklamację: agent dogada sprawę ze sklepem do końca.",
+    claimable: true,
+  };
+  const last10 = [
+    { name: "Nordic Paws Adult Large", sub: "12 kg", store: "Zoo Corner", emoji: "🐕", img: F(7), dest: "WAW214M", status: "W drodze", when: "15 paź", steps: stepsLocker, done: 2, price: 189, note: "Karma dla Luny." },
+    { name: "Oral-B iO Series 7", sub: "Czarna", store: "MediaExpert", emoji: "🪥", dest: "Kurier", status: "Nadana", when: "16 paź", steps: stepsCourier, done: 1, price: 649, note: "W drodze do Ciebie." },
+    sweater,
+    { name: "Kawa Ethiope 1 kg", sub: "Ziarnista", store: "CoffeeDesk", emoji: "☕", dest: "Kurier", status: "Doręczona", when: "28 wrz", steps: stepsDone, done: 4, price: 78, note: "" },
+    { name: "Legowisko Ortho L", sub: "Grafit", store: "Zoo Corner", emoji: "🛏️", dest: "WAW214M", status: "Doręczona", when: "20 wrz", steps: stepsDone, done: 4, price: 219, note: "" },
+    { name: "Słuchawki Sony WH-1000XM5", sub: "Czarne", store: "MediaExpert", emoji: "🎧", dest: "Kurier", status: "Doręczona", when: "12 wrz", steps: stepsDone, done: 4, price: 1299, note: "" },
+    { name: "Olej z łososia 1 L", sub: "Dla psa", store: "Zoo Corner", emoji: "🧴", dest: "WAW214M", status: "Doręczona", when: "5 wrz", steps: stepsDone, done: 4, price: 64, note: "" },
+    { name: "Buty Nike Pegasus 41", sub: "42", store: "Sizeer", emoji: "👟", dest: "Kurier", status: "Doręczona", when: "28 sie", steps: stepsDone, done: 4, price: 549, note: "" },
+    { name: "Powerbank Anker 20K", sub: "Czarny", store: "Amazon", emoji: "🔋", dest: "WAW214M", status: "Doręczona", when: "18 sie", steps: stepsDone, done: 4, price: 159, note: "" },
+    { name: "Herbata Sencha 100 g", sub: "Organiczna", store: "Pękala", emoji: "🍵", dest: "Kurier", status: "Doręczona", when: "10 sie", steps: stepsDone, done: 4, price: 42, note: "" },
+  ];
+  const active = last10.filter((o) => o.done < 4);
+  const hers = [{
+    name: "Frosch zestawy czystości", sub: "Uniwersalny + łazienka", store: "Rossmann", who: "Justyna",
+    emoji: "🧴", dest: "Paczkomat WAW214M", status: "Gotowa do odbioru", when: "17 paź",
+    steps: stepsLocker, done: 3, price: 67.9,
+    note: "Zamówione przez Justynę, bo Oksana zgłaszała braki środków czystości.",
+  }];
+
+  add(el("Sat 18 Oct at 11:04", "stamp"));
+  await wait(400);
+  const path = await choose([
+    "Pokaż mi moje 10 ostatnich zamówień",
+    "Gdzie są moje paczki?",
+    "Co ostatnio zamawiałem?",
+  ]);
+
+  if (path === 0) {
+    await say("Oto 10 ostatnich. Możesz kliknąć pozycję, żeby zobaczyć szczegóły.", 1600, "Ładuję historię zamówień");
+    bindOrdersCard(await card(ordersListHtml("10 ostatnich zamówień", last10, true), 500), last10);
+
+    await choose(["Kurde, ten sweter z Answear po pierwszym praniu do kitu. Zapamiętaj, żeby nie zamawiać z tego miejsca"]);
+    await memSave(ICON.bag, "Unikaj · Answear");
+    await say("Zapamiętane: nie zamawiam z Answear. Chcesz, żebym od razu złożył reklamację i dogadał to ze sklepem do końca?");
+    if ((await choose(["Tak, ogarnij reklamację", "Nie, wystarczy zapamiętać"])) === 0) {
+      await claimSweaterFlow(sweater, "Po pierwszym praniu do kitu");
+    } else {
+      await say("OK. Answear omijamy. Jak zmienisz zdanie w sprawie reklamacji, napisz.");
+    }
+  } else {
+    await say(`Masz ${active.length} aktywne zamówienia.`, 1400, "Sprawdzam zamówienia");
+    bindOrdersCard(await card(ordersListHtml("Twoje zamówienia", active, false), 500), active);
+  }
+
+  await say("Pokazać też zamówienia Justyny?");
+  if ((await choose(["Tak, pokaż", "Nie, wystarczy"])) === 0) {
+    await say("Justyna zamówiła środki czystości, bo Oksana zgłaszała braki.", 1500, "Sprawdzam zakupy Justyny");
+    bindOrdersCard(await card(ordersListHtml("Zamówienia Justyny", hers, false), 500), hers);
+  } else {
+    await say("OK.");
+  }
+
+  await endOfScenario(4);
+}
+
 async function play() {
-  const id = ++run;
-  thread.innerHTML = ""; hideOptions(); hideFlow(); closeChrome(); waiter = null; queued = null; resetInput(); $("#ipshot").classList.remove("on"); $("#ipshot").onclick = null; faceid.classList.remove("on"); push.classList.remove("on", "tap"); push.onclick = null;
+  ++run;
+  thread.innerHTML = ""; hideOptions(); hideFlow(); closeChrome(); closeSheet(false); waiter = null; queued = null; resetInput(); $("#ipshot").classList.remove("on"); $("#ipshot").onclick = null; faceid.classList.remove("on"); push.classList.remove("on", "tap"); push.onclick = null;
   document.querySelectorAll("[data-s]").forEach((b) => b.classList.toggle("on", +b.dataset.s === scn));
-  try { await ({ 1: scenario1, 2: scenario2, 3: scenario3 }[scn])(); } catch (e) { if (e !== CANCEL) throw e; }
+  try { await ({ 1: scenario1, 2: scenario2, 3: scenario3, 4: scenario4 }[scn])(); } catch (e) { if (e !== CANCEL) throw e; }
 }
 
 // ---------- app chrome: menu drawer, Settings, "Add Boski" sheet, attach popover ----------
@@ -576,4 +919,18 @@ addEventListener("resize", fit); fit();
 $("#reset").onclick = play;
 document.querySelectorAll("[data-restart]").forEach((b) => (b.onclick = play));
 document.querySelectorAll("[data-s]").forEach((b) => (b.onclick = () => setScenario(+b.dataset.s)));
+// Web-only "why this scenario" tips next to the page-head list
+document.querySelectorAll(".page-head .scn-info").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = btn.getAttribute("aria-expanded") === "true";
+    document.querySelectorAll(".page-head .scn-info").forEach((x) => x.setAttribute("aria-expanded", "false"));
+    btn.setAttribute("aria-expanded", open ? "false" : "true");
+  });
+});
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".page-head .scn-info")) {
+    document.querySelectorAll(".page-head .scn-info").forEach((x) => x.setAttribute("aria-expanded", "false"));
+  }
+});
 play();

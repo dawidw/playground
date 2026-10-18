@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex">
   <title>Agentic commerce</title>
   <link rel="stylesheet" href="../../theme.css">
-  <link rel="stylesheet" href="style.css?v=46">
+  <link rel="stylesheet" href="style.css?v=74">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="../../tailwind-config.js"></script>
 </head>
@@ -17,9 +17,50 @@
       <h1>Agentic commerce</h1>
       <p>Karma dla psa, od rozmowy z agentem do paczkomatu. Klikaj podpowiedzi albo pisz w oknie wiadomości.</p>
       <div class="scn" role="tablist" aria-label="Scenariusz">
-        <button class="scn-btn" data-s="1" role="tab"><i>1</i>Shop</button>
-        <button class="scn-btn" data-s="2" role="tab"><i>2</i>InPost Pay</button>
-        <button class="scn-btn" data-s="3" role="tab"><i>3</i>Zaufana osoba</button>
+        <div class="scn-row">
+          <button class="scn-btn" data-s="1" role="tab"><i>1</i>Shop</button>
+          <button class="scn-info" type="button" aria-label="Dlaczego Shop" aria-expanded="false">
+            <span aria-hidden="true">i</span>
+            <div class="scn-tip" role="tooltip">
+              <b>Shop / Shop Pay: rail US &amp; DTC</b>
+              <p>Shopify to <strong>&gt;14%</strong> US e-commerce (2025; &gt;12% w 2024). Shop Pay: <strong>200M+</strong> userów, GMV +50% YoY (2024), ~38% GMV Shopify.</p>
+              <p>Otwieramy: kupujących z Shop Pay + miliony sklepów DTC. Jeden OAuth → checkout, adresy, karta. Agent kupuje bez N integracji.</p>
+            </div>
+          </button>
+        </div>
+        <div class="scn-row">
+          <button class="scn-btn" data-s="2" role="tab"><i>2</i>InPost Pay</button>
+          <button class="scn-info" type="button" aria-label="Dlaczego InPost Pay" aria-expanded="false">
+            <span aria-hidden="true">i</span>
+            <div class="scn-tip" role="tooltip">
+              <b>InPost Pay: rail PL</b>
+              <p>Paczkomat: <strong>~87%</strong> preferowanej dostawy (Gemius 2025), 95% jako motywator zakupów. InPost Pay: <strong>~10M</strong> userów, 4k+ sklepów, transakcje ×3 (2025).</p>
+              <p>Otwieramy: PL e-shopperów (paczkomat = default) + lokalny checkout. Agent porównuje ceny i domyka koszyk w znanym UX.</p>
+            </div>
+          </button>
+        </div>
+        <div class="scn-row">
+          <button class="scn-btn" data-s="3" role="tab"><i>3</i>Zaufana osoba</button>
+          <button class="scn-info" type="button" aria-label="Dlaczego Zaufana osoba" aria-expanded="false">
+            <span aria-hidden="true">i</span>
+            <div class="scn-tip" role="tooltip">
+              <b>Zaufana osoba: household context</b>
+              <p>Duża część koszyków to zakupy współdzielone (dom, pet, gift, wyjazd). Bez zaufanej osoby agent widzi tylko 1 usera.</p>
+              <p>Otwieramy: pary / rodziny / shared calendars → intent poza reorderem. Retention: powód wrócić z kontekstem, nie tylko z koszykiem.</p>
+            </div>
+          </button>
+        </div>
+        <div class="scn-row">
+          <button class="scn-btn" data-s="4" role="tab"><i>4</i>Status i zwrot</button>
+          <button class="scn-info" type="button" aria-label="Dlaczego Status i zwrot" aria-expanded="false">
+            <span aria-hidden="true">i</span>
+            <div class="scn-tip" role="tooltip">
+              <b>Status i zwrot: post-purchase + reklamacje</b>
+              <p>Po zakupie user wraca z „gdzie paczka?” albo „reklamacja”. Agent trzyma wątek ze sklepem, aż sprawa jest zamknięta.</p>
+              <p>Otwieramy: retention bez nowego koszyka + trust przy sporze (zwrot / wymiana).</p>
+            </div>
+          </button>
+        </div>
       </div>
       <button id="reset" class="btn-reset">Restart</button>
     </header>
@@ -47,18 +88,20 @@
 
         <div id="thread" class="thread" role="log" aria-live="polite"></div>
 
-        <div id="optpanel" class="optpanel"><div class="op-in"></div></div>
-        <div class="composer">
-          <div id="attach" class="attach" role="menu">
-            <button role="menuitem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.800"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg>Choose a photo</button>
-            <button role="menuitem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.500-2.500h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.500"/></svg>Take a photo</button>
+        <div class="dock" id="dock">
+          <div id="optpanel" class="optpanel"><div class="op-in"></div></div>
+          <div class="composer">
+            <div id="attach" class="attach" role="menu">
+              <button role="menuitem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.800"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg>Choose a photo</button>
+              <button role="menuitem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.500-2.500h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.500"/></svg>Take a photo</button>
+            </div>
+            <button class="plus" id="plusBtn" aria-label="Attach"><svg width="16" height="16" viewBox="0 0 18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2v14M2 9h14"/></svg></button>
+            <input class="field" id="msgInput" placeholder="Message" autocomplete="off" aria-label="Message">
+            <button class="mic" id="sendBtn" aria-label="Send">
+              <svg class="ic-mic" width="14" height="20" viewBox="0 0 14 20" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round"><rect x="4" y="1" width="6" height="11" rx="3" fill="currentColor"/><path d="M1.500 9.500a5.500 5.500 0 0 0 11 0M7 15v4"/></svg>
+              <svg class="ic-send" width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M8 17V2M2 8l6-6 6 6"/></svg>
+            </button>
           </div>
-          <button class="plus" id="plusBtn" aria-label="Attach"><svg width="16" height="16" viewBox="0 0 18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2v14M2 9h14"/></svg></button>
-          <input class="field" id="msgInput" placeholder="Message" autocomplete="off" aria-label="Message">
-          <button class="mic" id="sendBtn" aria-label="Send">
-            <svg class="ic-mic" width="14" height="20" viewBox="0 0 14 20" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round"><rect x="4" y="1" width="6" height="11" rx="3" fill="currentColor"/><path d="M1.500 9.500a5.500 5.500 0 0 0 11 0M7 15v4"/></svg>
-            <svg class="ic-send" width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M8 17V2M2 8l6-6 6 6"/></svg>
-          </button>
         </div>
         <span class="home" aria-hidden="true"></span>
 
@@ -103,6 +146,7 @@
               <button class="scn-btn" data-s="1"><i>1</i>Shop</button>
               <button class="scn-btn" data-s="2"><i>2</i>InPost Pay</button>
               <button class="scn-btn" data-s="3"><i>3</i>Zaufana osoba</button>
+              <button class="scn-btn" data-s="4"><i>4</i>Status i zwrot</button>
               <button class="scn-btn" data-restart><i>↺</i>Restart</button>
             </div>
             <div class="dr-me"><img src="../../assets/dawid.jpg" alt=""><span><b>Dawid</b><em>Plan Regular</em></span></div>
@@ -116,6 +160,26 @@
         </section>
 
         <section id="shopflow" class="shopflow" aria-live="polite"></section>
+        <section id="psheet" class="psheet" aria-hidden="true">
+          <div class="ps-scrim" data-ps-close></div>
+          <article class="ps-panel">
+            <button class="ps-close" data-ps-close aria-label="Zamknij"><svg width="14" height="14" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m2 2 10 10M12 2 2 12"/></svg></button>
+            <div class="ps-hero"><img alt=""><span class="ps-emoji" aria-hidden="true"></span></div>
+            <div class="ps-scroll">
+              <div class="ps-meta"></div>
+              <h3 class="ps-title"></h3>
+              <p class="ps-flavour"></p>
+              <p class="ps-about"></p>
+              <ul class="ps-facts"></ul>
+              <div class="ps-track" hidden></div>
+              <p class="ps-ings"></p>
+            </div>
+            <div class="ps-foot">
+              <div class="ps-price"></div>
+              <button class="ps-pick">Wybierz</button>
+            </div>
+          </article>
+        </section>
         <button id="ipshot" class="ipshot" aria-label="Wróć do Boski"><img src="inpost-cart.webp" alt="Koszyk w InPost Pay"><span>Dotknij, aby wrócić do Boski</span></button>
         <div id="faceid" class="faceid" aria-hidden="true">
           <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14V9a5 5 0 0 1 5-5h5M30 4h5a5 5 0 0 1 5 5v5M40 30v5a5 5 0 0 1-5 5h-5M14 40H9a5 5 0 0 1-5-5v-5M15 15v4M29 15v4M22 15v8h-2.500M15 29c4 4 10 4 14 0"/></svg>
@@ -124,6 +188,6 @@
       </div>
     </div>
   </main>
-  <script src="script.js"></script>
+  <script src="script.js?v=74"></script>
 </body>
 </html>
