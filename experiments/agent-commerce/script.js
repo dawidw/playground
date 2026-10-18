@@ -32,18 +32,18 @@ function trailStep(kind, label, iconHtml) {
 async function memSave(iconHtml, value) {
   const trail = add(el("", "trail"));
   trail.appendChild(trailStep("think", "Thinking..."));
-  await wait(280);
+  await wait(900);
   const save = trailStep("run", `memory · ${value}`, iconHtml);
   trail.appendChild(save);
-  await wait(720);
+  await wait(1600);
   save.className = "tr-step done";
   save.querySelector(".tr-glyph").innerHTML = TRAIL_CHECK;
   const txt = save.querySelector(".tr-txt");
   txt.textContent = `memory · ${value}`;
   txt.dataset.text = `memory · ${value}`;
-  await wait(480);
+  await wait(700);
   trail.classList.add("collapse");
-  await wait(240);
+  await wait(280);
   trail.innerHTML = `<span class="tr-sum"><i class="tr-star" aria-hidden="true"></i>memory · ${value}</span>`;
   trail.classList.remove("collapse");
   trail.classList.add("sum");
