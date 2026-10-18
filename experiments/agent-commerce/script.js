@@ -762,23 +762,30 @@ async function scenario3() {
   await say("Ile osób idzie? Ustaw w karcie. Cena dociąga się na żywo z cennika CNK.");
   const { node: qty, get } = ticketQtyCard(2, 1);
   add(qty);
-  await wait(200);
-  let counts = await new Promise((resolve) => {
-    const go = qty.querySelector(".qty-go");
-    const done = () => { unregister(); hideOptions(); go.disabled = true; resolve(get()); };
-    go.onclick = done;
-    register((text) => { you(text); done(); });
+  const go = qty.querySelector(".qty-go");
+  const bought = new Promise((resolve) => {
+    go.onclick = () => { unregister(); hideOptions(); go.disabled = true; resolve(get()); };
   });
+  await wait(500);
+
+  // User corrects via chat — agent updates the card, then taps buy
+  you("daj 3 dorosłych, weźmiemy babcię");
+  await wait(400);
+  const updating = add(el(`<i class="mark"></i><span class="txt" data-text="Aktualizuję rezerwację">Aktualizuję rezerwację</span>`, "think"));
+  await wait(900);
+  const plus = qty.querySelector('[data-kind="adults"] [data-d="1"]');
+  while (get().adults < 3) {
+    plus.click();
+    await wait(320);
+  }
+  await wait(450);
+  go.click();
+  const counts = await bought;
+  updating.remove();
 
   const kidsLabel = counts.kids === 1 ? "1 dziecko" : counts.kids ? `${counts.kids} dzieci` : "";
   const kidsShort = counts.kids === 1 ? "1× dziecko" : counts.kids ? `${counts.kids}× dziecko` : "";
-  await say(`Biorę ${counts.adults}× dorosły${kidsShort ? ` i ${kidsShort}` : ""}, razem ${zl(counts.total)}. Rezerwuję…`, 1400, "Łączę się z kasą CNK");
-
-  // User adds context (babcia) — reservation already matches the card counts, no update
-  await wait(600);
-  you("Dodałem jedną osobę, weźmiemy babcię");
-  await wait(500);
-  await say("Ok, fajnie, że rodzinny wypad — babcia jest w tych biletach dorosłych.");
+  await say(`Ok, fajnie, że rodzinny wypad. Biorę ${counts.adults}× dorosły${kidsShort ? ` i ${kidsShort}` : ""}, razem ${zl(counts.total)}.`, 1400, "Łączę się z kasą CNK");
 
   await card(`
     <div class="row"><span class="pin">🎟️</span><span><div class="v">Bilety CNK · 26 paź, 11:00</div><div class="k">${counts.adults} dorosłych${kidsLabel ? ` · ${kidsLabel}` : ""} · ${zl(counts.total)}</div></span><span class="status ok ml-auto">Zarezerwowane</span></div>
