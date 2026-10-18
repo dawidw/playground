@@ -191,6 +191,11 @@ async function say(text, ms = 900, label) {
   add(el(text, "msg in"));
   await wait(250);
 }
+async function boskiBusy(label, ms = 1400) {
+  const t = add(el(`<i class="mark"></i><span class="txt" data-text="${label}">${label}</span>`, "think"));
+  await wait(ms);
+  t.remove();
+}
 function you(text) { add(el(text, "msg out")); }
 // What the scenario is waiting for right now. Whatever the user types goes to the main path of that step;
 // text typed while Boski is busy is queued and used at the next step.
@@ -509,7 +514,7 @@ function shopCard(p = SHOP) {
     const finish = (ok, text) => { unregister(); node.querySelectorAll("button").forEach((b) => (b.disabled = true)); you(text || (ok ? p.cta : "Nie teraz")); resolve(ok); };
     node.querySelector(".go").onclick = () => finish(true);
     node.querySelector(".no").onclick = () => finish(false);
-    wait(900).then(() => { add(node); register((text) => finish(true, text)); }).catch(() => {});
+    wait(400).then(() => { add(node); register((text) => finish(true, text)); }).catch(() => {});
   });
 }
 
@@ -809,6 +814,7 @@ async function scenario1() {
     await say("Najłatwiejszy i kompletnie bezobsługowy z Twojej strony jest Shop. Poprowadzę cały proces sam, a Ty tylko potwierdzisz. Zaproponuję Ci go:", 1300);
     let connected = false;
     while (!connected) {
+      await boskiBusy("Przygotowuję integrację Shop", 1500);
       if (await shopCard()) connected = await connectShop();
       if (!connected) await say("Bez Shopa nie zamówię, ale możemy wrócić do tego, kiedy chcesz.");
     }
@@ -901,6 +907,7 @@ async function scenario2() {
   await say("Ostatnio kupowaliśmy karmę dla Luny przez Shop. Jeśli połączymy InPost Pay, będę mógł szukać w większej liczbie sklepów i znajdować taniej.");
   let connected = false;
   while (!connected) {
+    await boskiBusy("Przygotowuję integrację InPost Pay", 1500);
     if (await shopCard(INPOST)) connected = await connectShop(INPOST);
     if (!connected) await say("Okej, wrócimy do tego, kiedy zechcesz. Karmę nadal kupię przez Shop.");
   }
