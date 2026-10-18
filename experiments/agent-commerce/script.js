@@ -842,7 +842,6 @@ async function scenario4() {
     { name: "Powerbank Anker 20K", sub: "Czarny", store: "Amazon", emoji: "🔋", dest: "WAW214M", status: "Doręczona", when: "18 sie", steps: stepsDone, done: 4, price: 159, note: "" },
     { name: "Herbata Sencha 100 g", sub: "Organiczna", store: "Pękala", emoji: "🍵", dest: "Kurier", status: "Doręczona", when: "10 sie", steps: stepsDone, done: 4, price: 42, note: "" },
   ];
-  const active = last10.filter((o) => o.done < 4);
   const hers = [{
     name: "Frosch zestawy czystości", sub: "Uniwersalny + łazienka", store: "Rossmann", who: "Justyna",
     emoji: "🧴", dest: "Paczkomat WAW214M", status: "Gotowa do odbioru", when: "17 paź",
@@ -852,27 +851,18 @@ async function scenario4() {
 
   add(el("Sat 18 Oct at 11:04", "stamp"));
   await wait(400);
-  const path = await choose([
-    "Pokaż mi moje 10 ostatnich zamówień",
-    "Gdzie są moje paczki?",
-    "Co ostatnio zamawiałem?",
-  ]);
+  you("Pokaż mi moje 10 ostatnich zamówień");
+  await wait(500);
+  await say("Oto 10 ostatnich. Możesz kliknąć pozycję, żeby zobaczyć szczegóły.", 1600, "Ładuję historię zamówień");
+  bindOrdersCard(await card(ordersListHtml("10 ostatnich zamówień", last10, true), 500), last10);
 
-  if (path === 0) {
-    await say("Oto 10 ostatnich. Możesz kliknąć pozycję, żeby zobaczyć szczegóły.", 1600, "Ładuję historię zamówień");
-    bindOrdersCard(await card(ordersListHtml("10 ostatnich zamówień", last10, true), 500), last10);
-
-    await choose(["Kurde, ten sweter z Answear po pierwszym praniu do kitu. Zapamiętaj, żeby nie zamawiać z tego miejsca"]);
-    await memSave(ICON.bag, "Unikaj · Answear");
-    await say("Zapamiętane: nie zamawiam z Answear. Chcesz, żebym od razu złożył reklamację i dogadał to ze sklepem do końca?");
-    if ((await choose(["Tak, ogarnij reklamację", "Nie, wystarczy zapamiętać"])) === 0) {
-      await claimSweaterFlow(sweater, "Po pierwszym praniu do kitu");
-    } else {
-      await say("OK. Answear omijamy. Jak zmienisz zdanie w sprawie reklamacji, napisz.");
-    }
+  await choose(["Kurde, ten sweter z Answear po pierwszym praniu do kitu. Zapamiętaj, żeby nie zamawiać z tego miejsca"]);
+  await memSave(ICON.bag, "Unikaj · Answear");
+  await say("Zapamiętane: nie zamawiam z Answear. Chcesz, żebym od razu złożył reklamację i dogadał to ze sklepem do końca?");
+  if ((await choose(["Tak, ogarnij reklamację", "Nie, wystarczy zapamiętać"])) === 0) {
+    await claimSweaterFlow(sweater, "Po pierwszym praniu do kitu");
   } else {
-    await say(`Masz ${active.length} aktywne zamówienia.`, 1400, "Sprawdzam zamówienia");
-    bindOrdersCard(await card(ordersListHtml("Twoje zamówienia", active, false), 500), active);
+    await say("OK. Answear omijamy. Jak zmienisz zdanie w sprawie reklamacji, napisz.");
   }
 
   await say("Pokazać też zamówienia Justyny?");
