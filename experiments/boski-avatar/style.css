@@ -1,14 +1,23 @@
 /* Boski avatar showcase. Brand ink #202020 is Boski's own color (from their brandmark), not a library token. */
+.canvas,
+.window,
+#stage,
+#stage .grid,
+.hero,
+.side,
+.panel,
+.phone { box-sizing: border-box; max-width: 100%; }
+
 #stage { --boski-ink: #202020; color: var(--color-text-primary); padding: 40px; }
 #stage .grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 32px; align-items: stretch; }
 @media (max-width: 960px) { #stage .grid { grid-template-columns: 1fr; } #stage { padding: 20px; } }
 
-.hero { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 40px 24px 32px; border-radius: 28px; background: var(--color-bg-white); box-shadow: var(--shadow-xs); }
-.hero-avatar { display: grid; place-items: center; width: min(380px, 70vw); aspect-ratio: 1; }
-.hero-avatar svg { width: 100%; height: 100%; }
-.caption { min-height: 20px; font-size: 14px; line-height: 20px; color: var(--color-text-muted); text-align: center; }
+.hero { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; min-width: 0; width: 100%; padding: 40px 24px 32px; border-radius: 28px; background: var(--color-bg-white); box-shadow: var(--shadow-xs); }
+.hero-avatar { display: grid; place-items: center; width: min(380px, 70vw); max-width: 100%; aspect-ratio: 1; }
+.hero-avatar svg { width: 100%; height: 100%; max-width: 100%; }
+.caption { min-height: 20px; max-width: 100%; font-size: 14px; line-height: 20px; color: var(--color-text-muted); text-align: center; overflow-wrap: anywhere; }
 
-.seg { position: relative; display: inline-flex; gap: 2px; padding: 4px; border-radius: 999px; background: var(--color-gray-0-5); }
+.seg { position: relative; display: inline-flex; gap: 2px; max-width: 100%; padding: 4px; border-radius: 999px; background: var(--color-gray-0-5); }
 .seg button { height: 36px; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--color-text-muted); transition: background .25s, color .25s, box-shadow .25s; }
 .seg button[aria-selected="true"] { background: var(--color-bg-white); color: var(--color-text-primary); box-shadow: var(--shadow-xs), 0 0 0 1px var(--color-border-subtle); }
 .seg button:focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: 2px; }
@@ -54,3 +63,38 @@ body.preview main { padding: 0 !important; } body.preview header { display: none
 body.preview #stage { padding: 0; } body.preview .side { display: none; } body.preview #stage .grid { display: block; }
 body.preview .window #stage { height: 100vh !important; } body.preview .hero { border-radius: 0; height: 100vh; box-shadow: none; }
 @media (prefers-reduced-motion: reduce) { .status { animation: none; color: #fff; background: none; } .row { animation: none; } }
+
+/* Narrow phones: fit the browser frame and panels without horizontal page scroll */
+@media (max-width: 480px) {
+  main.flex { padding-left: 16px !important; padding-right: 16px !important; padding-top: 24px !important; padding-bottom: 24px !important; gap: 24px !important; }
+  header .flex.flex-wrap { gap: 12px !important; }
+
+  #stage { padding: 12px; }
+  #stage .grid { gap: 16px; }
+
+  .hero { gap: 20px; padding: 20px 12px 18px; border-radius: 20px; }
+  .hero-avatar { width: clamp(160px, 72%, 280px); }
+
+  .seg {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    border-radius: 20px;
+    gap: 4px;
+  }
+  .seg button { height: 34px; padding: 0 10px; font-size: 13px; }
+
+  .caption { font-size: 13px; line-height: 18px; padding-inline: 4px; }
+
+  .phone { height: min(280px, 52vh); border-radius: 18px; }
+  .phone-head { padding: 12px 14px; min-width: 0; }
+  .thread { padding: 12px; }
+
+  .panel { padding: 14px; border-radius: 16px; }
+  .sizes { gap: 6px; }
+  .sz { height: 88px; border-radius: 12px; min-width: 0; }
+
+  .files { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .files a { padding: 10px 6px 8px; font-size: 11px; line-height: 14px; }
+  .files img { width: 48px; height: 48px; max-width: 100%; }
+}
