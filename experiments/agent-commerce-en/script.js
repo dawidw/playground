@@ -176,7 +176,7 @@ const AGES = [["puppy", "Puppy", "under 1 year"], ["adult", "Adult", "1–7 year
 const LOCKERS = [
   { id: "WAW214M", addr: "12 Puławska St", dist: "120 m", x: 56, y: 40 },
   { id: "WAW087N", addr: "3 Madalińskiego St", dist: "340 m", x: 24, y: 70 },
-  { id: "WAW152P", addr: "ul. Rakowiecka 8", dist: "410 m", x: 78, y: 24 },
+  { id: "WAW152P", addr: "8 Rakowiecka St", dist: "410 m", x: 78, y: 24 },
 ];
 const DELIVERY = 12.99, DELIVERY_COURIER = 18.99; // paczkomat vs kurier
 const zl = (n) => n.toFixed(2).replace(".", ",") + " PLN";
@@ -436,15 +436,15 @@ function pickProduct(list) {
     const wrap = el(list.map((p, i) => `<article class="pcard" data-i="${i}">
       <div class="pimg"><img src="${p.img}" alt="" draggable="false"><span class="ptag">${p.tag}</span>${i === 0 ? '<span class="best">Best match</span>' : ""}<span class="chk">${ICON.ok.replace('width="26" height="26"', 'width="16" height="16"')}</span></div>
       <div class="pbody"><div class="pn">${p.name}</div><div class="pf">${p.flavour}</div><div class="pnote">${p.note}</div><div class="pprice">${zl(p.price)}</div>
-      <button class="cta">Wybierz</button></div></article>`).join(""), "carousel");
+      <button class="cta">Choose</button></div></article>`).join(""), "carousel");
     let down = false, sx = 0, sl = 0, moved = false;
     wrap.addEventListener("scroll", () => { moved = true; }, { passive: true });
     wrap.onpointerdown = (e) => {
       moved = false;
-      if (e.pointerYoupe === "mouse") { down = true; sx = e.clientX; sl = wrap.scrollLeft; wrap.style.scrollSnapYoupe = "none"; }
+      if (e.pointerType === "mouse") { down = true; sx = e.clientX; sl = wrap.scrollLeft; wrap.style.scrollSnapType = "none"; }
     };
     wrap.onpointermove = (e) => { if (down) { wrap.scrollLeft = sl - (e.clientX - sx); if (Math.abs(e.clientX - sx) > 6) moved = true; } };
-    wrap.onpointerup = wrap.onpointerleave = () => { down = false; wrap.style.scrollSnapYoupe = ""; };
+    wrap.onpointerup = wrap.onpointerleave = () => { down = false; wrap.style.scrollSnapType = ""; };
     wrap.querySelectorAll(".cta").forEach((b) => (b.onclick = (e) => { e.stopPropagation(); pickIt(+b.closest(".pcard").dataset.i); }));
     wrap.querySelectorAll(".pcard").forEach((card) => {
       card.addEventListener("click", (e) => {
@@ -813,7 +813,7 @@ async function scenario3() {
   // User corrects via chat — agent updates the card, then taps buy
   you("make it 3 adults, we're bringing grandma");
   await wait(400);
-  const updating = add(el(`<i class="mark"></i><span class="txt" data-text="Updating booking">Updating booking</span>`, "think"));
+  const updating = add(el(thinkHTML("Updating booking"), "think"));
   await wait(900);
   const plus = qty.querySelector('[data-kind="adults"] [data-d="1"]');
   while (get().adults < 3) {
@@ -826,8 +826,8 @@ async function scenario3() {
   updating.remove();
 
   const kidsLabel = counts.kids === 1 ? "1 child" : counts.kids ? `${counts.kids} children` : "";
-  const kidsShort = counts.kids === 1 ? "1× child" : counts.kids ? `${counts.kids}× dziecko` : "";
-  await say(`Great family outing. I'm taking ${counts.adults}× adult${kidsShort ? ` i ${kidsShort}` : ""}, razem ${zl(counts.total)}.`, 1400, "Connecting to CSC checkout");
+  const kidsShort = counts.kids === 1 ? "1× child" : counts.kids ? `${counts.kids}× children` : "";
+  await say(`Great family outing. I'm taking ${counts.adults}× adult${kidsShort ? ` and ${kidsShort}` : ""}, ${zl(counts.total)} total.`, 1400, "Connecting to CSC checkout");
 
   await card(`
     <div class="row"><span class="pin">🎟️</span><span><div class="v">CSC tickets · 26 Oct, 11:00</div><div class="k">${counts.adults} adults${kidsLabel ? ` · ${kidsLabel}` : ""} · ${zl(counts.total)}</div></span><span class="status ok ml-auto">Reserved</span></div>
@@ -842,7 +842,7 @@ async function scenario1() {
     await wait(500);
     await say("Hi Dawid! Luna has about four days of food left.");
     await say("Want me to order more?");
-    let c = await choose(["Yes, order", "Przypomnij jutro"]);
+    let c = await choose(["Yes, order", "Remind me tomorrow"]);
     while (c === 1) {
       await say("Sure, I'll ping you tomorrow morning.");
       c = await choose(["Order now instead"]);
@@ -857,9 +857,9 @@ async function scenario1() {
     }
 
     await say("Shop is connected. Address and card are loaded.", 1800, "Reading address and card from Shop");
-    await say("What's the most I can spend per month on purchases? Youpe an amount or pick one.");
+    await say("What's the most I can spend per month on purchases? Type an amount or pick one.");
     const budget = parseBudget(await typed("e.g. 500 PLN", ["300 PLN", "500 PLN", "1000 PLN"])) || 500;
-    await say(`Saved. Up to ${zl0(budget)} per month I buy on my own, a above that I always ask.`, 900);
+    await say(`Saved. Up to ${zl0(budget)} per month I buy on my own; above that I always ask.`, 900);
     await memSave(ICON.wallet, `Monthly budget ${zl0(budget)}`);
 
     await say("Delivery preference: parcel locker (usually cheaper) or courier (usually pricier)?");
@@ -869,7 +869,7 @@ async function scenario1() {
       await say("One thing: Shop Pay can't set a default locker — you pick it at checkout. I'll ask once and remember.");
       await say(`From your Shop address (10 Puławska St, Warsaw) the nearest locker is ${LOCKERS[0].id}, ${LOCKERS[0].dist} from home (${LOCKERS[0].addr}). Save it?`, 1800, "Finding lockers near your address");
       picked = LOCKERS[0];
-      if ((await choose([`Tak, ${LOCKERS[0].id}`, "Wybierz z mapy"])) === 1) {
+      if ((await choose([`Yes, ${LOCKERS[0].id}`, "Pick on map"])) === 1) {
         await say("Three nearest lockers. Pick from the list or tap a pin on the map:", 800);
         picked = await pickOnMap();
       }
@@ -894,21 +894,21 @@ async function scenario1() {
       };
     }
 
-    await say("To pick food I need Luna's age and weight. Youpe it in a message.");
+    await say("To pick food I need Luna's age and weight. Type it in a message.");
     const dog = parseDog(await typed("e.g. 4 years, 28 kg", ["4 years, 28 kg", "8 years, 32 kg"])) || { age: "adult", kg: 25 };
     await say(`Saved: ${AGES.find((a) => a[0] === dog.age)[1].toLowerCase()}, ${dog.kg} kg. Searching ${STORE}.`, 2000, `Searching ${STORE}`);
-    await say("How many weeks should the food last? Youpe weeks or pick one.");
+    await say("How many weeks should the food last? Type weeks or pick one.");
     const weeks = parseWeeks(await typed("e.g. 8 weeks", ["4 weeks", "8 weeks", "12 weeks"])) || 8;
     const dailyG = Math.round((dog.kg * GRAMS_PER_KG[dog.age]) / 5) * 5;
     const needKg = Math.round((dailyG * 7 * weeks) / 100) / 10;
-    await say(`Luna eats about ${dailyG} g per day, so for ${weeks} weeks you need roughly ${String(needKg).replace(".", ",")} kg. Picking bag sizes.`, 2000, "Calculating portions and bag size");
+    await say(`Luna eats about ${dailyG} g per day, so for ${weeks} weeks you need roughly ${needKg} kg. Picking bag sizes.`, 2000, "Calculating portions and bag size");
     const list = pick3(dog.age, dog.kg).map((p) => plan(p, dailyG, weeks));
     await say("Here are three foods, each in a bag sized for your weeks. The first is the best match. Swipe and choose:");
     const product = await pickProduct(list);
     await say("Good choice.", 600);
 
     const preTotal = product.price + ship.price;
-    await say(preTotal > budget ? `Summary. To over your monthly budget by ${zl0(preTotal - budget)}, so I'll order only after your OK:` : "Summary. I'll order only after your OK:", 1500, "Adding delivery to total");
+    await say(preTotal > budget ? `Summary. This exceeds your monthly budget by ${zl0(preTotal - budget)}, so I'll order only after your OK:` : "Summary. I'll order only after your OK:", 1500, "Adding delivery to total");
     const total = product.price + ship.price;
     const sum = await card(`
       <div class="row"><div class="thumb"><img src="${product.img}" alt=""></div><div><div class="v">${product.name}</div><div class="k">${product.flavour} · ${product.note}</div></div></div>
@@ -949,7 +949,7 @@ async function scenario2() {
     if (!connected) await say("OK, we can revisit later. I can still buy food through Shop.");
   }
 
-  await say("Gotowe, InPost Pay jest connected.", 1400, "Connecting to InPost Pay");
+  await say("Done — InPost Pay is connected.", 1400, "Connecting to InPost Pay");
   await say("Found the same food cheaper: PetHub has it for 171 PLN vs 189 PLN at Zoo Corner. Cart is ready with locker WAW214M. Just confirm in InPost Pay.", 2800, "Comparing InPost Pay store prices");
   const cart = await card(`
     <div class="row"><span class="ipicon"><img src="${ASSET('inpost-icon.png')}" alt=""></span><span><div class="v">Cart ready</div><div class="k">PetHub · InPost Pay</div></span><span class="save ml-auto">−18 PLN</span></div>
@@ -979,7 +979,7 @@ async function scenario2() {
       if (items[i + 1]) items[i + 1].classList.add("now");
     }
   } else {
-    you("Zignoruj"); btn.textContent = "Ignored";
+    you("Ignore"); btn.textContent = "Ignored";
     await say("Sure, the cart stays in InPost Pay. I'll tell you if the price drops again.");
   }
   await endOfScenario(2);
@@ -1024,7 +1024,7 @@ async function claimSweaterFlow(sweater, reason) {
   await wait(1600);
   add(el("Sat 18 Oct at 17:40", "stamp"));
   await say("They relented. Refund 289 PLN to your card or exchange for size L.", 1400, "Closing negotiation");
-  const refund = (await choose(["Take the 289 PLN refund", "Wymiana na L"])) === 0;
+  const refund = (await choose(["Take the 289 PLN refund", "Exchange for size L"])) === 0;
   await say(refund
     ? "Refund accepted. Funds should return in 3–5 business days. I'll confirm when they land."
     : "Exchange for L ordered. Parcel should be in a locker within 48 hours.", 1800, `Closing claim · ${sweater.store}`);
@@ -1051,13 +1051,13 @@ async function scenario4() {
     { name: "Nordic Paws Adult Large", sub: "12 kg", store: "Zoo Corner", emoji: "🐕", img: F(7), dest: "WAW214M", status: "In transit", when: "15 Oct", steps: stepsLocker, done: 2, price: 189, note: "Luna's food." },
     { name: "Oral-B iO Series 7", sub: "Black", store: "MediaExpert", emoji: "🪥", dest: "Courier", status: "Dispatched", when: "16 Oct", steps: stepsCourier, done: 1, price: 649, note: "On the way to you." },
     sweater,
-    { name: "Ethiopia coffee 1 kg", sub: "Whole bean", store: "CoffeeDesk", emoji: "☕", dest: "Kurier", status: "Delivered", when: "28 wrz", steps: stepsDone, done: 4, price: 78, note: "" },
-    { name: "Ortho bed L", sub: "Graphite", store: "Zoo Corner", emoji: "🛏️", dest: "WAW214M", status: "Delivered", when: "20 wrz", steps: stepsDone, done: 4, price: 219, note: "" },
-    { name: "Sony WH-1000XM5", sub: "Czarne", store: "MediaExpert", emoji: "🎧", dest: "Kurier", status: "Delivered", when: "12 wrz", steps: stepsDone, done: 4, price: 1299, note: "" },
-    { name: "Salmon oil 1 L", sub: "Dla psa", store: "Zoo Corner", emoji: "🧴", dest: "WAW214M", status: "Delivered", when: "5 wrz", steps: stepsDone, done: 4, price: 64, note: "" },
-    { name: "Nike Pegasus 41", sub: "42", store: "Sizeer", emoji: "👟", dest: "Kurier", status: "Delivered", when: "28 sie", steps: stepsDone, done: 4, price: 549, note: "" },
+    { name: "Ethiopia coffee 1 kg", sub: "Whole bean", store: "CoffeeDesk", emoji: "☕", dest: "Courier", status: "Delivered", when: "28 Sep", steps: stepsDone, done: 4, price: 78, note: "" },
+    { name: "Ortho bed L", sub: "Graphite", store: "Zoo Corner", emoji: "🛏️", dest: "WAW214M", status: "Delivered", when: "20 Sep", steps: stepsDone, done: 4, price: 219, note: "" },
+    { name: "Sony WH-1000XM5", sub: "Black", store: "MediaExpert", emoji: "🎧", dest: "Courier", status: "Delivered", when: "12 Sep", steps: stepsDone, done: 4, price: 1299, note: "" },
+    { name: "Salmon oil 1 L", sub: "For dogs", store: "Zoo Corner", emoji: "🧴", dest: "WAW214M", status: "Delivered", when: "5 Sep", steps: stepsDone, done: 4, price: 64, note: "" },
+    { name: "Nike Pegasus 41", sub: "42", store: "Sizeer", emoji: "👟", dest: "Courier", status: "Delivered", when: "28 Aug", steps: stepsDone, done: 4, price: 549, note: "" },
     { name: "Anker 20K power bank", sub: "Black", store: "Amazon", emoji: "🔋", dest: "WAW214M", status: "Delivered", when: "18 Aug", steps: stepsDone, done: 4, price: 159, note: "" },
-    { name: "Sencha tea 100 g", sub: "Organic", store: "Pekala", emoji: "🍵", dest: "Kurier", status: "Delivered", when: "10 sie", steps: stepsDone, done: 4, price: 42, note: "" },
+    { name: "Sencha tea 100 g", sub: "Organic", store: "Pekala", emoji: "🍵", dest: "Courier", status: "Delivered", when: "10 Aug", steps: stepsDone, done: 4, price: 42, note: "" },
   ];
   const hers = [{
     name: "Frosch cleaning bundle", sub: "All-purpose + bathroom", store: "Rossmann", who: "Justyna",
@@ -1081,12 +1081,12 @@ async function scenario4() {
   if ((await choose(["Yes, handle the return", "No, just remember"])) === 0) {
     await claimSweaterFlow(sweater, "Fell apart after the first wash");
   } else {
-    await say("OK. Skipping Answear. Jak zmienisz zdanie w sprawie reklamacji, napisz.");
+    await say("OK. Skipping Answear. If you change your mind about the claim, let me know.");
   }
 
   await say("Show Justyna's orders too?");
-  if ((await choose(["Yes, show them", "Nie, wystarczy"])) === 0) {
-    await say("Justyna ordered cleaning supplies because Oksana reported shortages.", 1500, "Sprawdzam zakupy Justyny");
+  if ((await choose(["Yes, show them", "No, that's enough"])) === 0) {
+    await say("Justyna ordered cleaning supplies because Oksana reported shortages.", 1500, "Checking Justyna's orders");
     bindOrdersCard(await card(ordersListHtml("Justyna's orders", hers, false), 500), hers);
   } else {
     await say("OK.");

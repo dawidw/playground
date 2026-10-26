@@ -231,7 +231,7 @@ body { background: var(--color-carbon-black-10); overflow-x: hidden; }
 .cal b { font-size: 22px; font-weight: 750; letter-spacing: -.04em; }
 .cal small { margin-top: 3px; font-size: 10px; font-weight: 700; letter-spacing: .08em; color: var(--color-red-5); }
 
-/* Live fetch card: Boski ↔ Boski Justyny, stepped query + result */
+/* Live fetch card: agent ↔ partner agent, stepped query + result */
 .card.live { overflow: hidden; padding-bottom: 4px; }
 .live-top {
   display: flex; align-items: center; gap: 12px;
