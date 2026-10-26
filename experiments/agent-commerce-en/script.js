@@ -182,21 +182,47 @@ const DELIVERY = 12.99, DELIVERY_COURIER = 18.99; // paczkomat vs kurier
 const zl = (n) => n.toFixed(2).replace(".", ",") + " PLN";
 
 // ---------- chat primitives ----------
+function thinkHTML(label) {
+  return `${matrixHTML("twinkle")}<span class="txt" data-text="${label}">${label}</span>`;
+}
+
 async function say(text, ms = 900, label) {
-  // label -> Agent mark + shimmer; no label -> typing dots
-  const t = add(label
-    ? el(`<i class="mark"></i><span class="txt" data-text="${label}">${label}</span>`, "think")
-    : el("<i></i><i></i><i></i>", "typing"));
+  // label -> matrix loader + shimmer; no label -> typing dots
+  const t = add(label ? el(thinkHTML(label), "think") : el("<i></i><i></i><i></i>", "typing"));
   await wait(ms);
   t.remove();
   add(el(text, "msg in"));
   await wait(250);
 }
-async function agentBusy(label, ms = 1400) {
-  const t = add(el(`<i class="mark"></i><span class="txt" data-text="${label}">${label}</span>`, "think"));
-  await wait(ms);
-  t.remove();
+
+// Inline step loader (same timing/animation as liveFetchCard live-steps).
+async function thinkSteps(steps) {
+  const node = add(el(`<ul class="live-steps think-steps">${steps.map((s, i) => {
+    const v = MATRIX_VARIANTS[i % MATRIX_VARIANTS.length];
+    return `<li class="live-step" data-i="${i}">${matrixHTML(v)}<span class="live-txt" data-text="${s}">${s}</span></li>`;
+  }).join("")}</ul>`, "think-block"));
+  const items = [...node.querySelectorAll(".live-step")];
+  for (let i = 0; i < items.length; i++) {
+    const step = items[i];
+    step.classList.add("now");
+    await wait(i === items.length - 1 ? 1400 : 1100);
+    freezeMatrix(step);
+    step.classList.remove("now");
+    step.classList.add("done");
+  }
+  node.remove();
 }
+
+const PREP_SHOP = [
+  "Preparing Shop integration",
+  "Loading Shop Pay permissions",
+  "Opening connection flow",
+];
+const PREP_INPOST = [
+  "Preparing InPost Pay integration",
+  "Checking InPost Pay stores",
+  "Opening connection flow",
+];
 function you(text) { add(el(text, "msg out")); }
 // What the scenario is waiting for right now. Whatever the user types goes to the main path of that step;
 // text typed while Agent is busy is queued and used at the next step.
@@ -825,7 +851,7 @@ async function scenario1() {
     await say("Shop is the easiest, hands-off option on your side. I'll run the whole flow; you just confirm. I'll suggest it:", 1300);
     let connected = false;
     while (!connected) {
-      await agentBusy("Preparing Shop integration", 1500);
+      await thinkSteps(PREP_SHOP);
       if (await shopCard()) connected = await connectShop();
       if (!connected) await say("Without Shop I can't place the order, but we can come back whenever you want.");
     }
@@ -918,7 +944,7 @@ async function scenario2() {
   await say("We last bought Luna's food through Shop. With InPost Pay I can search more stores and find cheaper prices.");
   let connected = false;
   while (!connected) {
-    await agentBusy("Preparing InPost Pay integration", 1500);
+    await thinkSteps(PREP_INPOST);
     if (await shopCard(INPOST)) connected = await connectShop(INPOST);
     if (!connected) await say("OK, we can revisit later. I can still buy food through Shop.");
   }
